@@ -23,7 +23,7 @@ public class MainPageOrganizer extends MainPage {
         contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         // Filter panel with button
-        JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 50, 10));
+        JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 50, 15));
         filterPanel.setBackground(pageBackground);
         filterPanel.add(createFilterButton());
         contentPanel.add(filterPanel);
@@ -175,7 +175,6 @@ public class MainPageOrganizer extends MainPage {
 
     private void filterEventCards(String filter) {
         // Filter implementation would go here
-        System.out.println("Filter changed to: " + filter);
         repaint();
         revalidate();
     }
@@ -292,10 +291,10 @@ public class MainPageOrganizer extends MainPage {
         JPopupMenu optionsMenu = new JPopupMenu();
         
         JMenuItem editItem = new JMenuItem("Edit");
-        editItem.addActionListener(e -> System.out.println("Edit option selected"));
+        editItem.addActionListener(e -> {});
         
         JMenuItem deleteItem = new JMenuItem("Delete");
-        deleteItem.addActionListener(e -> System.out.println("Delete option selected"));
+        deleteItem.addActionListener(e -> {});
         
         optionsMenu.add(editItem);
         optionsMenu.addSeparator();

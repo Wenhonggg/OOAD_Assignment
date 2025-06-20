@@ -137,15 +137,45 @@ public abstract class MainPage extends JFrame {
     }
     
     private JLabel createLogoutButton() {
-        JLabel logOutIcon = new JLabel("LOG OUT") {
+        // Create a label with custom painting
+        final JLabel logOutIcon = new JLabel("LOG OUT") {
+            boolean isHovered = false;
+            
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D)g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(Color.BLACK);
+                g2.setColor(isHovered ? Color.GRAY : Color.BLACK);
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), getHeight(), getHeight());
                 g2.dispose();
                 super.paintComponent(g);
+            }
+            
+            // Initialize with mouse listeners
+            {
+                addMouseListener(new MouseAdapter() {
+                    public void mouseEntered(MouseEvent e) {
+                        isHovered = true;
+                        setCursor(new Cursor(Cursor.HAND_CURSOR));
+                        repaint();
+                    }
+                    
+                    public void mouseExited(MouseEvent e) {
+                        isHovered = false;
+                        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                        repaint();
+                    }
+                    
+                    public void mouseClicked(MouseEvent e) {
+                        dispose();
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                new LoginPage().setVisible(true);
+                            }
+                        });
+                    }
+                });
             }
         };
 

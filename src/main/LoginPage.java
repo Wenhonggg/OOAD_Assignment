@@ -24,6 +24,7 @@ public class LoginPage extends javax.swing.JFrame {
     public LoginPage() {
         initComponents();
         init();
+        setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
     }
 
     private void init(){
