@@ -1,11 +1,25 @@
 package main;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
+import java.awt.event.*;
 
 public class MainPageParticipant extends MainPage {
     public MainPageParticipant() {
-        super("Course Overview"); // Set page title
+        super("Event Participant");
+    }
+    
+    @Override
+    protected JComponent createCategoryButton() {
+        JPanel myEventButton = createStandardCategoryButton("MY EVENT", true);
+        myEventButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("My courses button clicked in Participant page");
+            }
+        });
+        return myEventButton;
     }
 
     @Override
@@ -15,54 +29,92 @@ public class MainPageParticipant extends MainPage {
         contentPanel.setBackground(pageBackground);
         contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        // Add filter controls at the top
-        JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        filterPanel.setBackground(pageBackground);
-        
-        JLabel inProgressLabel = new JLabel("In progress");
-        inProgressLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        filterPanel.add(inProgressLabel);
-        
-        // Add spacing
-        filterPanel.add(Box.createHorizontalStrut(20));
-        
-        JLabel sortLabel = new JLabel("Sort by last accessed");
-        sortLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        sortLabel.setForeground(Color.GRAY);
-        filterPanel.add(sortLabel);
-        
-        contentPanel.add(filterPanel);
-        contentPanel.add(Box.createVerticalStrut(15));
-
-        // Add course cards in a grid
-        JPanel gridPanel = new JPanel(new GridLayout(0, 3, 15, 15));
+        // Grid panel setup with event cards
+        JPanel gridPanel = new JPanel(new GridLayout(0, 3, 55, 55));
         gridPanel.setBackground(pageBackground);
-
-        // Add mock course cards (replace with real data) 
-        gridPanel.add(createCourseCard("C#10 TO 2010", "CMA6134-COMPUTATIONAL METHODS", "In progress", "icon/celebration.png"));
-        gridPanel.add(createCourseCard("C#09 TO 2010", "COP6214-ALGORITHM DESIGN AND ANALYSIS", "In progress", "icon/cyber.png"));
-        gridPanel.add(createCourseCard("C#20 TO 2010", "COP6224-0040", "Not started", "icon/earth-day.png"));
-        gridPanel.add(createCourseCard("C#30 TO 2010", "CSN6224-COMPUTER NETWORKS", "Completed", "icon/glass.png"));
-        gridPanel.add(createCourseCard("C#50 TO 2010", "CCS6214-CYBERSECURITY FUNDAMENTALS", "In progress", "icon/olympia.png"));
-        gridPanel.add(createCourseCard("C#10 TO 2010", "CMA6134-COMPUTATIONAL METHODS", "In progress", "icon/singing.png"));
-        gridPanel.add(createCourseCard("C#09 TO 2010", "COP6214-ALGORITHM DESIGN AND ANALYSIS", "In progress", "icon/soccer.png"));
-        gridPanel.add(createCourseCard("C#20 TO 2010", "COP6224-0040", "Not started", "icon/valentine.png"));
-        gridPanel.add(createCourseCard("C#30 TO 2010", "CSN6224-COMPUTER NETWORKS", "Completed", "icon/volunteer.png"));
-        gridPanel.add(createCourseCard("C#50 TO 2010", "CCS6214-CYBERSECURITY FUNDAMENTALS", "In progress", "icon/celebration.png"));
-        contentPanel.add(gridPanel);
+        gridPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
         
-        // Add "Show more" at the bottom
-        JPanel showMorePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        // Add mock event cards with sample data
+        String[] eventIDs = {"C#10 TO 2010", "C#09 TO 2010", "C#20 TO 2010", "C#30 TO 2010", "C#50 TO 2010"};
+        String[] eventNames = {"CMA6134-COMPUTATIONAL METHODS", "COP6214-ALGORITHM DESIGN AND ANALYSIS", 
+                              "COP6224-0040", "CSN6224-COMPUTER NETWORKS", "CCS6214-CYBERSECURITY FUNDAMENTALS"};
+        String[] images = {"icon/celebration.png", "icon/cyber.png", "icon/earth-day.png", "icon/glass.png", 
+                          "icon/olympia.png", "icon/singing.png", "icon/soccer.png", "icon/valentine.png", 
+                          "icon/volunteer.png"};
+        
+        // Create cards in a loop instead of repeating code
+        for (int i = 0; i < 10; i++) {
+            gridPanel.add(createEventCard(
+                eventIDs[i % 5], 
+                eventNames[i % 5], 
+                images[i % 9]
+            ));
+        }
+        
+        // Add grid to wrapper with margins
+        JPanel gridWrapper = new JPanel(new BorderLayout());
+        gridWrapper.setBackground(pageBackground);
+        gridWrapper.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 50));
+        gridWrapper.add(gridPanel, BorderLayout.CENTER);
+        contentPanel.add(gridWrapper);
+        
+        // Show more text at bottom right
+        JPanel showMorePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         showMorePanel.setBackground(pageBackground);
-        
-        JLabel showMoreLabel = new JLabel("Show 12");
-        showMoreLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        showMoreLabel.setForeground(Color.GRAY);
-        showMorePanel.add(showMoreLabel);
+        showMorePanel.add(new JLabel("Show 12") {{
+            setFont(new Font("Arial", Font.PLAIN, 12));
+            setForeground(Color.GRAY);
+        }});
         
         contentPanel.add(Box.createVerticalStrut(15));
         contentPanel.add(showMorePanel);
 
-        return new JScrollPane(contentPanel); // Make scrollable
+        // Scrollable panel with modern scrollbar
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.getVerticalScrollBar().setUI(new ModernScrollBarUI());
+        scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, Integer.MAX_VALUE));
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        
+        return scrollPane;
+    }
+    
+    // Modern, minimal scroll bar UI
+    private class ModernScrollBarUI extends BasicScrollBarUI {
+        @Override protected JButton createDecreaseButton(int orientation) { return new JButton() {{ setPreferredSize(new Dimension(0, 0)); }}; }
+        @Override protected JButton createIncreaseButton(int orientation) { return new JButton() {{ setPreferredSize(new Dimension(0, 0)); }}; }
+        
+        @Override
+        protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setPaint(new Color(160, 160, 160, 180));
+            g2.fillRoundRect(thumbBounds.x + 1, thumbBounds.y + 1, thumbBounds.width - 2, thumbBounds.height - 2, 8, 8);
+            g2.dispose();
+        }
+        
+        @Override
+        protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
+            g.setColor(new Color(220, 220, 220, 80));
+            g.fillRect(trackBounds.x, trackBounds.y, trackBounds.width, trackBounds.height);
+        }
+    }
+
+    @Override
+    protected JLabel createLogo() {
+        JLabel logoLabel = new JLabel("STUDENT EVENT PORTAL");
+        logoLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        logoLabel.setForeground(Color.BLACK);
+        
+        try {
+            ImageIcon mmuIcon = new ImageIcon(getClass().getClassLoader().getResource("icon/MMU.jpg"));
+            Image img = mmuIcon.getImage().getScaledInstance(90, 50, Image.SCALE_SMOOTH);
+            logoLabel.setIcon(new ImageIcon(img));
+            logoLabel.setIconTextGap(10);
+        } catch (Exception e) {
+            System.err.println("Could not load MMU icon");
+        }
+        
+        return logoLabel;
     }
 }

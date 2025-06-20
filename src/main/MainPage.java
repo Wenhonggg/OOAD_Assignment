@@ -1,12 +1,15 @@
 package main;
+
 import javax.swing.*;
 import java.awt.*;
-import swing.ButtonOutLine;
+import java.awt.event.*;
 import javax.swing.border.EmptyBorder;
 
 public abstract class MainPage extends JFrame {
-    // Common properties for all pages
+    // Core properties
     protected String pageTitle;
+    
+    // Color scheme
     protected Color headerBackground = Color.WHITE;
     protected Color headerTextColor = Color.BLACK;
     protected Color cardBackground = Color.WHITE;
@@ -14,180 +17,256 @@ public abstract class MainPage extends JFrame {
     protected Color pageBackground = new Color(240, 240, 240); // Light grey
     protected Color buttonColor = new Color(70, 130, 180); // Steel blue
     protected Color buttonHoverColor = new Color(100, 149, 237); // Cornflower blue
-
+    
     public MainPage(String title) {
         this.pageTitle = title;
         setupPage();
     }
-
-    // Template method: Defines the skeleton of the page
+    
+    // Abstract methods to be implemented by subclasses
+    protected abstract JComponent createCategoryButton();
+    protected abstract JComponent createContent();
+    protected abstract JLabel createLogo();
+    
+    // Template method defining the page structure
     private void setupPage() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 800);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setResizable(false);
         setLayout(new BorderLayout());
-
-        // Header (common to all pages)
         add(createHeader(), BorderLayout.NORTH);
-
-        // Content (specific to each subclass)
         add(createContent(), BorderLayout.CENTER);
-
         setVisible(true);
     }
-
-    // Common header for all pages - redesigned to match reference image
+    
     private JPanel createHeader() {
+        // Main header panel with logo, category buttons, search and logout
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(headerBackground);
-        headerPanel.setBorder(new EmptyBorder(10, 20, 10, 20));
+        headerPanel.setBorder(new EmptyBorder(13, 0, 10, 20));
         headerPanel.setPreferredSize(new Dimension(getWidth(), 70));
-
-        // Left side: Logo
-        JLabel logoLabel = new JLabel("MMU STUDENT EVENT PORTAL");
-        logoLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        logoLabel.setForeground(new Color(0, 120, 215)); // Microsoft blue
-        headerPanel.add(logoLabel, BorderLayout.WEST);
-
-        // Center: Navigation buttons
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
-        buttonPanel.setBackground(headerBackground);
         
-        String[] buttonLabels = {"EVENT", "MY EVENT"};
-        for (String label : buttonLabels) {
-            JButton button = createHeaderButton(label);
-            buttonPanel.add(button);
+        // Left side with logo and category buttons
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 30, 0));
+        leftPanel.setBackground(headerBackground);
+        leftPanel.add(createLogo());
+        
+        JComponent categoryButton = createCategoryButton();
+        if (categoryButton != null) {
+            leftPanel.add(categoryButton);
         }
-        headerPanel.add(buttonPanel, BorderLayout.CENTER);
-
-        // Right side: Search and profile
-        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
-        rightPanel.setBackground(headerBackground);
-
-        // Search field with icon
-        JTextField searchField = new JTextField(15);
-        searchField.setPreferredSize(new Dimension(200, 30));
-        searchField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.GRAY),
-            BorderFactory.createEmptyBorder(0, 5, 0, 5)
-        ));
-        rightPanel.add(searchField);
-
-        // Profile icon (round)
-        JLabel profileIcon = new JLabel("MK");
-        profileIcon.setOpaque(true);
-        profileIcon.setBackground(new Color(200, 200, 200));
-        profileIcon.setForeground(Color.WHITE);
-        profileIcon.setFont(new Font("Arial", Font.BOLD, 14));
-        profileIcon.setHorizontalAlignment(SwingConstants.CENTER);
-        profileIcon.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        headerPanel.add(leftPanel, BorderLayout.WEST);
         
-        // Make it round
-        profileIcon.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        profileIcon.setPreferredSize(new Dimension(40, 40));
-        profileIcon.setBackground(new Color(70, 130, 180)); // Steel blue
-        rightPanel.add(profileIcon);
-
+        // Right side with search and logout
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
+        rightPanel.setBackground(headerBackground);
+        rightPanel.add(createSearchPanel());
+        rightPanel.add(createLogoutButton());
         headerPanel.add(rightPanel, BorderLayout.EAST);
 
         return headerPanel;
     }
-
-    private JButton createHeaderButton(String text) {
-        // Use your custom Button class instead of JButton
-        ButtonOutLine button = new ButtonOutLine();
+    
+    protected JPanel createStandardCategoryButton(String text, boolean isActive) {
+        JPanel buttonPanel = new JPanel(new BorderLayout());
+        buttonPanel.setOpaque(true);
+        buttonPanel.setBackground(headerBackground);
         
-        // Configure the button
-        button.setText(text);
-        button.setFont(new Font("Arial", Font.BOLD, 14));
-        button.setBackground(headerBackground);
-        button.setForeground(headerTextColor);
-        button.setFocusPainted(false);
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        button.setBorderPainted(true);
-        // Set preferred size to ensure proper spacing
-        button.setPreferredSize(new Dimension(120, 40));
+        JLabel buttonLabel = new JLabel(text);
+        buttonLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        buttonLabel.setForeground(Color.BLACK);
+        buttonLabel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        buttonPanel.add(buttonLabel, BorderLayout.CENTER);
         
-        // Hover effect
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                button.setBackground(new Color(38, 187, 237)); // Lighter blue on hover
-                button.setForeground(buttonColor);
+        buttonPanel.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                buttonPanel.setBackground(new Color(240, 240, 240));
+                buttonPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
             }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                button.setBackground(new Color(0, 120, 215)); 
-                button.setForeground(headerTextColor);
+            
+            public void mouseExited(MouseEvent e) {
+                buttonPanel.setBackground(headerBackground);
+                buttonPanel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+            
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("Category button clicked: " + text);
             }
         });
+        
+        return buttonPanel;
+    }
+    
+    private JPanel createSearchPanel() {
+        // Search panel with rounded border and search icon
+        JPanel searchPanel = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D)g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), getHeight(), getHeight());
+                g2.setColor(Color.GRAY);
+                g2.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, getHeight(), getHeight());
+                g2.dispose();
+            }
+        };
+        searchPanel.setOpaque(false);
+        searchPanel.setPreferredSize(new Dimension(170, 30));
 
-        return button;
+        // Add text field and search icon
+        JTextField searchField = new JTextField(15);
+        searchField.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 5));
+        searchField.setOpaque(false);
+        searchField.setPreferredSize(new Dimension(140, 30));
+        searchPanel.add(searchField, BorderLayout.CENTER);
+        
+        try {
+            ImageIcon searchIcon = new ImageIcon(getClass().getClassLoader().getResource("icon/search_icon.png"));
+            Image img = searchIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+            JLabel iconLabel = new JLabel(new ImageIcon(img));
+            iconLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 10));
+            iconLabel.setOpaque(false);
+            searchPanel.add(iconLabel, BorderLayout.EAST);
+        } catch (Exception e) {
+            System.err.println("Could not load search icon");
+        }
+        
+        return searchPanel;
+    }
+    
+    private JLabel createLogoutButton() {
+        JLabel logOutIcon = new JLabel("LOG OUT") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D)g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.BLACK);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), getHeight(), getHeight());
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+
+        logOutIcon.setOpaque(false);
+        logOutIcon.setForeground(Color.WHITE);
+        logOutIcon.setFont(new Font("Arial", Font.BOLD, 14));
+        logOutIcon.setHorizontalAlignment(SwingConstants.CENTER);
+        logOutIcon.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        logOutIcon.setPreferredSize(new Dimension(100, 30));
+        
+        return logOutIcon;
     }
 
-    // Abstract method for content (to be implemented by subclasses)
-    protected abstract JComponent createContent();
-
-    // Shared helper method for creating course cards (updated to match reference)
-    protected JPanel createCourseCard(String courseCode, String courseName, String status, String imagePath) {
-        JPanel card = new JPanel();
-        card.setLayout(new BorderLayout());
+    protected JPanel createEventCard(String eventID, String eventName, String imagePath) {
+        final int hoverRise = 10;
+        
+        // Create card with rounded corners and hover effect
+        JPanel card = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                g2.setColor(cardBackground);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                
+                g2.setColor(getClientProperty("hovered") != null ? Color.BLACK : Color.LIGHT_GRAY);
+                g2.setStroke(new BasicStroke(getClientProperty("hovered") != null ? 2f : 1f));
+                g2.drawRoundRect(2, 2, getWidth()-4, getHeight()-4, 30, 30);
+                
+                g2.dispose();
+            }
+        };
+        
+        // Add hover effect
+        card.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                card.setLocation(card.getX(), card.getY() - hoverRise);
+                card.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                card.putClientProperty("hovered", Boolean.TRUE);
+                card.repaint();
+            }
+            
+            public void mouseExited(MouseEvent e) {
+                card.setLocation(card.getX(), card.getY() + hoverRise);
+                card.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                card.putClientProperty("hovered", null);
+                card.repaint();
+            }
+        });
+        
+        card.setOpaque(false);
         card.setBackground(cardBackground);
-        card.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
-            BorderFactory.createEmptyBorder(0, 0, 0, 0)
-        ));
-        card.setPreferredSize(new Dimension(200, 290));
+        card.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+        card.setPreferredSize(new Dimension(180, 250));
 
-        //-- Image (80% height) ---
-        JLabel imageLabel = new JLabel();
+        // Add image to card with rounded corners
+        JLabel imageLabel = new JLabel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
+                
+                if (getIcon() != null) {
+                    g2.setClip(new java.awt.geom.RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 20, 20));
+                    getIcon().paintIcon(this, g2, 0, 0);
+                }
+                g2.dispose();
+            }
+        };
+        
+        imageLabel.setOpaque(false);
+        imageLabel.setBackground(cardBackground);
+        
         try {
-            // Use the classloader to find resources in the classpath
             java.net.URL imageUrl = getClass().getClassLoader().getResource(imagePath);
             if (imageUrl != null) {
                 ImageIcon originalIcon = new ImageIcon(imageUrl);
-                Image scaledImage = originalIcon.getImage().getScaledInstance(
-                    500,  // Width matches card
-                    250,  // 80% of 150px height
-                    Image.SCALE_SMOOTH
-                );
+                Image scaledImage = originalIcon.getImage().getScaledInstance(420, 190, Image.SCALE_SMOOTH);
                 imageLabel.setIcon(new ImageIcon(scaledImage));
             } else {
-                System.err.println("Could not find image: " + imagePath);
                 imageLabel.setText("No Image");
                 imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             imageLabel.setText("No Image");
             imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         }
         card.add(imageLabel, BorderLayout.CENTER);
+        
+        // Add info panel to card
+        JPanel infoPanel = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
+                g2.dispose();
+            }
+        };
+        
+        infoPanel.setOpaque(false);
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
 
-        // --- Bottom Label (20% height) ---
-        JPanel infoPanel = new JPanel(new BorderLayout());
-        infoPanel.setBackground(Color.WHITE);
-        infoPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-
-        // Create a panel for code and name
+        // Add event ID and name
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        leftPanel.setBackground(Color.WHITE);
+        leftPanel.setOpaque(false);
         
-        JLabel codeLabel = new JLabel(courseCode);
-        codeLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        leftPanel.add(codeLabel);
+        JLabel idLabel = new JLabel(eventID);
+        idLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        leftPanel.add(idLabel);
         
-        // Add course name below the course code
-        JLabel nameLabel = new JLabel(courseName);
+        JLabel nameLabel = new JLabel(eventName);
         nameLabel.setFont(new Font("Arial", Font.PLAIN, 10));
         leftPanel.add(nameLabel);
         
-        infoPanel.add(leftPanel, BorderLayout.WEST);
-
-        JLabel statusLabel = new JLabel(status, SwingConstants.RIGHT);
-        statusLabel.setFont(new Font("Arial", Font.PLAIN, 10));
-        statusLabel.setForeground(Color.GRAY);
-        infoPanel.add(statusLabel, BorderLayout.EAST);
-
+        infoPanel.add(leftPanel, BorderLayout.CENTER);
         card.add(infoPanel, BorderLayout.SOUTH);
 
         return card;
