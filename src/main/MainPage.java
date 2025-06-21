@@ -89,10 +89,6 @@ public abstract class MainPage extends JFrame {
                 buttonPanel.setBackground(headerBackground);
                 buttonPanel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
-            
-            public void mouseClicked(MouseEvent e) {
-                System.out.println("Category button clicked: " + text);
-            }
         });
         
         return buttonPanel;

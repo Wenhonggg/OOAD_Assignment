@@ -6,17 +6,52 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class MainPageParticipant extends MainPage {
+    private String userType;
+    private JLabel logoLabel; // Add this field to store reference
+
     public MainPageParticipant() {
+        this.userType = "STUDENT";
         super("Event Participant");
     }
     
+    public void setUserType(String userType) {
+        this.userType = userType;
+        // Update the logo label if it exists
+        if (logoLabel != null) {
+            if (userType.equals("STUDENT")) {
+                logoLabel.setText("STUDENT EVENT PORTAL");
+            } else if (userType.equals("STAFF")) {
+                logoLabel.setText("STAFF EVENT PORTAL");
+            } else {
+                logoLabel.setText("EVENT PORTAL");
+            }
+        }
+        refreshEventDisplay();
+    }
+
+    // Method to refresh the event display based on user type
+    private void refreshEventDisplay() {
+        // This method will be implemented later when you have Excel files for different event types
+        // For now it just shows different titles based on user type
+        if (userType.equals("STUDENT")) {
+            setTitle("Student Event Portal");
+        } else if (userType.equals("STAFF")) {
+            setTitle("Staff Event Portal");
+        }
+        
+        // In the future, this will filter events based on userType
+        // using Excel data for student vs staff events
+        repaint();
+        revalidate();
+    }
+
     @Override
     protected JComponent createCategoryButton() {
         JPanel myEventButton = createStandardCategoryButton("MY EVENT", true);
         myEventButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println("My courses button clicked in Participant page");
+                return ;
             }
         });
         return myEventButton;
@@ -102,7 +137,14 @@ public class MainPageParticipant extends MainPage {
 
     @Override
     protected JLabel createLogo() {
-        JLabel logoLabel = new JLabel("STUDENT EVENT PORTAL");
+        if (userType.equals("STUDENT")) {
+            logoLabel = new JLabel("STUDENT EVENT PORTAL");
+        } else if (userType.equals("STAFF")) {
+            logoLabel = new JLabel("STAFF EVENT PORTAL");
+        } else {
+            logoLabel = new JLabel("EVENT PORTAL");
+        }
+        
         logoLabel.setFont(new Font("Arial", Font.BOLD, 24));
         logoLabel.setForeground(Color.BLACK);
         

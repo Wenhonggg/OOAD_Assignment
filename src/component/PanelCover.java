@@ -79,7 +79,13 @@ public class PanelCover extends javax.swing.JPanel {
     @Override
     protected void paintComponent(Graphics grphcs){
         Graphics2D g2=(Graphics2D)grphcs;
-        GradientPaint gra = new GradientPaint(0, 0, new Color(35,166, 97), 0, getHeight(), new Color(22, 116, 66));
+        GradientPaint gra;
+        if (isLogin) {
+            gra = new GradientPaint(0, 0, new Color(11,36,71), 0, getHeight(), new Color(87,108,188));
+        } else {
+            gra = new GradientPaint(0, 0, new Color(75, 22, 76), 0, getHeight(), new Color(221, 136, 207));
+        }
+        
         g2.setPaint(gra);
         g2.fillRect(0, 0, getWidth(), getHeight());
         
@@ -125,10 +131,10 @@ public class PanelCover extends javax.swing.JPanel {
     private void login(boolean login){
         if(this.isLogin != login){
             if(login){
-                title.setText("New to Here?");
-                description.setText("Register an account and");
-                description1.setText("start journey with us now!");
-                button.setText("SIGN UP");
+                title.setText("Welcome!");
+                description.setText("Learn about our mission and");
+                description1.setText("future opportunities!");
+                button.setText("LEARN MORE");
             }else{
                 title.setText("Welcome Back!");
                 description.setText("To keep connected with us please");

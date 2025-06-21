@@ -34,6 +34,10 @@ public class MainPageOrganizer extends MainPage {
         gridPanel.setBackground(pageBackground);
         gridPanel.setBorder(BorderFactory.createEmptyBorder(9, 0, 0, 0));
         
+        // Add the special "Create Event" card as the first card
+        JPanel createEventCard = createCreateEventCard();
+        gridPanel.add(createEventCard);
+        
         // Add mock event cards
         String[] eventIDs = {"C#10 TO 2010", "C#09 TO 2010", "C#20 TO 2010", "C#30 TO 2010", "C#50 TO 2010"};
         String[] eventNames = {"CMA6134-COMPUTATIONAL METHODS", "COP6214-ALGORITHM DESIGN AND ANALYSIS", 
@@ -42,7 +46,8 @@ public class MainPageOrganizer extends MainPage {
                           "icon/olympia.png", "icon/singing.png", "icon/soccer.png", "icon/valentine.png", 
                           "icon/volunteer.png"};
         
-        for (int i = 0; i < 10; i++) {
+        // Start from index 0 but add 9 cards (since we already added the create card)
+        for (int i = 0; i < 9; i++) {
             gridPanel.add(createEventCard(eventIDs[i % 5], eventNames[i % 5], images[i % 9]));
         }
         
@@ -301,5 +306,89 @@ public class MainPageOrganizer extends MainPage {
         optionsMenu.add(deleteItem);
         
         optionsMenu.show(eventCard, eventCard.getWidth() - 110, 200);
+    }
+
+    // New method to create the special Create Event card
+    private JPanel createCreateEventCard() {
+        final int hoverRise = 10;
+        
+        // Create card with rounded corners and hover effect
+        JPanel card = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                
+                g2.setColor(getClientProperty("hovered") != null ? Color.BLACK : Color.LIGHT_GRAY);
+                g2.setStroke(new BasicStroke(getClientProperty("hovered") != null ? 2f : 1f));
+                g2.drawRoundRect(2, 2, getWidth()-4, getHeight()-4, 30, 30);
+                
+                g2.dispose();
+            }
+        };
+        
+        // Center panel to hold icon and text
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.setOpaque(false);
+        
+        // Icon
+        JLabel iconLabel = new JLabel();
+        iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        try {
+            ImageIcon createIcon = new ImageIcon(getClass().getClassLoader().getResource("icon/create.png"));
+            Image img = createIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+            iconLabel.setIcon(new ImageIcon(img));
+        } catch (Exception e) {
+            System.err.println("Could not load create icon: " + e.getMessage());
+        }
+        centerPanel.add(Box.createVerticalGlue());
+        centerPanel.add(iconLabel);
+        centerPanel.add(Box.createVerticalStrut(20));
+        
+        // Text
+        JLabel textLabel = new JLabel("Create New Event");
+        textLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        textLabel.setForeground(Color.BLACK);
+        textLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        centerPanel.add(textLabel);
+        centerPanel.add(Box.createVerticalGlue());
+        
+        card.add(centerPanel, BorderLayout.CENTER);
+        
+        // Add hover and click effects
+        card.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                card.setLocation(card.getX(), card.getY() - hoverRise);
+                card.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                card.putClientProperty("hovered", Boolean.TRUE);
+                card.repaint();
+            }
+            
+            public void mouseExited(MouseEvent e) {
+                card.setLocation(card.getX(), card.getY() + hoverRise);
+                card.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                card.putClientProperty("hovered", null);
+                card.repaint();
+            }
+            
+            public void mouseClicked(MouseEvent e) {
+                // Forward to create event page
+                openCreateEventPage();
+            }
+        });
+        
+        card.setOpaque(false);
+        card.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+        card.setPreferredSize(new Dimension(180, 250));
+        
+        return card;
+    }
+
+    private void openCreateEventPage() {
+        return ;
     }
 }
