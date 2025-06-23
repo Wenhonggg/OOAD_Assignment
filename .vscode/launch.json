@@ -6,6 +6,13 @@
             "name": "LoginPage",
             "request": "launch",
             "mainClass": "main.LoginPage",
+            "projectName": "OOAD_Assignment_9819feee"
+        },
+        {
+            "type": "java",
+            "name": "LoginPage",
+            "request": "launch",
+            "mainClass": "main.LoginPage",
             "projectName": "OOAD_Assignment_Real_a301692f"
         },
         {
