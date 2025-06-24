@@ -1,8 +1,10 @@
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
+import java.io.*;
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
+import javax.swing.border.TitledBorder;
+
 
 public class ViewInfoPage extends JFrame {
 
@@ -18,8 +20,28 @@ public class ViewInfoPage extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        Font headerFont = new Font("SansSerif", Font.BOLD, 20);
-        Font textFont = new Font("SansSerif", Font.PLAIN, 14);
+        Font headerFont = new Font("Serif", Font.BOLD, 25);
+
+        // need to replace with code from main page
+        String eventCode = JOptionPane.showInputDialog(this, "Enter Event Code (e.g., B001):");
+        if (eventCode == null || eventCode.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Event code is required.");
+            System.exit(0);
+        }
+
+        String[] data = loadEventRow(eventCode.trim().toUpperCase());
+        if (data == null || data.length < 6) {
+            JOptionPane.showMessageDialog(this, "Event not found or incomplete.");
+            System.exit(0);
+        }
+
+        // Extract values from CSV row
+        String eventName = data[1];
+        String date = data[2];
+        String time = data[3];
+        String venue = data[4];
+        String fee = data[7];
+        String details = data[8];
 
         // Header
         JPanel headerPanel = new JPanel(new BorderLayout());
@@ -34,126 +56,102 @@ public class ViewInfoPage extends JFrame {
         JButton registerButton = new JButton("Register Now");
         registerButton.setBackground(ACCENT);
         registerButton.setForeground(Color.WHITE);
-        registerButton.setFont(new Font("SansSerif", Font.BOLD, 14));
+        registerButton.setFont(new Font("Serif", Font.BOLD, 14));
         registerButton.setFocusPainted(false);
         registerButton.setBorder(new RoundedBorder(15, 2, ACCENT));
         registerButton.addActionListener(e -> new InputRegisterDetailsPage());
 
-        headerPanel.add(registerButton, BorderLayout.EAST);
-        add(headerPanel, BorderLayout.NORTH);
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        bottomPanel.setBackground(PINK_BG);
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        bottomPanel.add(registerButton);
+        add(bottomPanel, BorderLayout.SOUTH);
 
-        // Scrollable Event Details
-        JTextArea eventInfo = new JTextArea(generateEventText());
-        eventInfo.setWrapStyleWord(true);
-        eventInfo.setLineWrap(true);
-        eventInfo.setEditable(false);
-        eventInfo.setFont(textFont);
-        eventInfo.setBackground(PINK_BG);
-        eventInfo.setForeground(DEEP_PURPLE);
-        eventInfo.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        add(headerPanel, BorderLayout.NORTH); // just title now
+        //add(scrollPane, BorderLayout.CENTER); // event info
+        add(bottomPanel, BorderLayout.SOUTH); // register button
 
-        JScrollPane scrollPane = new JScrollPane(eventInfo);
+
+        // Info panel with labels
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.setBackground(PINK_BG);
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+
+        // Styled labels
+        infoPanel.add(makeLabel(eventName, new Font("Serif", Font.BOLD, 40)));
+        infoPanel.add(Box.createVerticalStrut(10));
+
+        String dateTime = date + " | " + time;
+        infoPanel.add(makeLabel(dateTime, new Font("Serif", Font.PLAIN, 25)));
+        infoPanel.add(makeLabel(venue, new Font("Serif", Font.PLAIN, 25)));
+
+        infoPanel.add(Box.createVerticalStrut(15));
+
+        String formattedDetails = "<html><body style='width: 300px;'>" +
+                details.replaceAll("\n", "<br>") + "</body></html>";
+
+        JLabel detailsLabel = new JLabel(formattedDetails);
+        detailsLabel.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        detailsLabel.setForeground(DEEP_PURPLE);
+        detailsLabel.setBackground(PINK_BG);
+        detailsLabel.setOpaque(false);
+
+        JPanel detailsPanel = new JPanel(new BorderLayout());
+        detailsPanel.setBackground(PINK_BG);
+        detailsPanel.setBorder(BorderFactory.createCompoundBorder(
+                new TitledBorder(BorderFactory.createEmptyBorder(), "Event Details",
+                        TitledBorder.LEFT, TitledBorder.TOP,
+                        new Font("Serif", Font.BOLD, 14), DEEP_PURPLE),
+                new RoundedBorder(20, 2, ACCENT)
+        ));
+        detailsPanel.add(detailsLabel, BorderLayout.CENTER);
+        detailsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        infoPanel.add(detailsPanel);
+
+        infoPanel.add(Box.createVerticalStrut(15));
+
+        infoPanel.add(makeLabel("Registration fee: " + fee, new Font("Serif", Font.PLAIN, 16)));
+        
+
+        JScrollPane scrollPane = new JScrollPane(infoPanel);
         scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane, BorderLayout.CENTER);
-
-        // Terms and Conditions Link
-        JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        footerPanel.setBackground(LIGHT_GRAY);
-        footerPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
-
-        JLabel termsLabel = new JLabel("<HTML><U>Terms and Conditions</U></HTML>");
-        termsLabel.setForeground(DEEP_PURPLE);
-        termsLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        termsLabel.setFont(new Font("SansSerif", Font.PLAIN, 13));
-
-        termsLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                showStyledDialog("Terms and Conditions:\n\n1. No refunds after registration.\n2. Respect event timing.\n3. ID must be shown at entry.");
-            }
-        });
-
-        footerPanel.add(termsLabel);
-        add(footerPanel, BorderLayout.SOUTH);
 
         getContentPane().setBackground(LIGHT_GRAY);
         setVisible(true);
     }
 
-    private void showStyledDialog(String message) {
-        JDialog dialog = new JDialog(this, "Terms and Conditions", true);
-        dialog.setSize(400, 200);
-        dialog.setLocationRelativeTo(this);
-        dialog.setLayout(new BorderLayout());
-        dialog.getContentPane().setBackground(PINK_BG);
-        dialog.setUndecorated(true);
-
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(PINK_BG);
-        mainPanel.setBorder(new RoundedBorder(20, 2, ACCENT));
-
-        JTextArea msg = new JTextArea(message);
-        msg.setWrapStyleWord(true);
-        msg.setLineWrap(true);
-        msg.setEditable(false);
-        msg.setFocusable(false);
-        msg.setOpaque(false);
-        msg.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        msg.setForeground(DEEP_PURPLE);
-        msg.setBorder(BorderFactory.createEmptyBorder(15, 20, 10, 20));
-
-        JButton okButton = new JButton("OK");
-        okButton.setBackground(ACCENT);
-        okButton.setForeground(Color.WHITE);
-        okButton.setFocusPainted(false);
-        okButton.setFont(new Font("SansSerif", Font.BOLD, 13));
-        okButton.setBorder(new RoundedBorder(15, 2, ACCENT));
-        okButton.setPreferredSize(new Dimension(80, 30));
-        okButton.addActionListener(e -> dialog.dispose());
-
-        JPanel btnPanel = new JPanel();
-        btnPanel.setBackground(PINK_BG);
-        btnPanel.add(okButton);
-
-        mainPanel.add(msg, BorderLayout.CENTER);
-        mainPanel.add(btnPanel, BorderLayout.SOUTH);
-        dialog.add(mainPanel);
-        dialog.setVisible(true);
+    private JLabel makeLabel(String text, Font font) {
+        JLabel label = new JLabel(text);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setForeground(DEEP_PURPLE);
+        label.setFont(font);
+        return label;
     }
 
-    private String generateEventText() {
-        return """
-                🎉 Welcome to the 2025 Campus Innovation Expo! 🎉
-
-                Join us for a full-day celebration of creativity, technology, and ideas from across the university.
-
-                📅 Date: July 15, 2025
-                🕒 Time: 9:00 AM – 6:00 PM
-                📍 Venue: Main Auditorium & Exhibition Hall
-
-                🔍 Highlights:
-                - Over 100 student projects across AI, HealthTech, Business, and Sustainability.
-                - Panel discussions with industry leaders.
-                - Interactive workshops (limited seats, registration required).
-                - Food trucks, photo booths, and giveaways!
-
-                📝 Registration:
-                - Free for all students and staff.
-                - Optional services: catering, transportation.
-                - Group registration available.
-
-                📧 Contact: events@university.edu.my
-
-                We look forward to seeing you there!
-                """;
+    private String[] loadEventRow(String code) {
+        try (BufferedReader br = new BufferedReader(new FileReader("events.csv"))) {
+            br.readLine(); // skip header
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",", -1);
+                if (data.length > 0 && data[0].trim().equalsIgnoreCase(code)) {
+                    return data;
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error reading CSV: " + e.getMessage());
+        }
+        return null;
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(ViewInfoPage::new);
     }
 
-    // Reusable RoundedBorder class
+    // RoundedBorder class
     static class RoundedBorder extends AbstractBorder {
         private final int radius;
         private final int thickness;
