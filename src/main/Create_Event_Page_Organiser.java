@@ -780,83 +780,37 @@ public String toString() {
 
 private void saveAllEventsToCSV() {
     try {
-        List<String[]> allRows = new ArrayList<>();
-        
-        // Add header
-        allRows.add(CSV_HEADER);
-        
-        // Add all events from the list model
-        for (int i = 0; i < listModel.getSize(); i++) {
-            Event event = listModel.getElementAt(i);
-            String[] row = {
-                event.getEventCode(),
-                event.getName(),  
-                event.getDate(),
-                event.getTime(),
-                event.getVenue(),
-                event.getType(),
-                String.valueOf(event.getCapacity()),
-                String.format("RM%.2f", event.getRegistrationFee()),
-                event.getDetails().replace("\n", " "),
-                event.getRole(),
-                event.getGroupPrice() > 0 ? String.valueOf(event.getGroupPrice()) : "N/A",
-                event.getGroupDiscount() > 0 ? String.format("%.1f%%", event.getGroupDiscount()) : "N/A",
-                event.getEarlyBirdDiscount() > 0 ? String.format("%.1f%%", event.getEarlyBirdDiscount()) : "N/A",
-                event.getEarlyBirdDate() != null ? event.getEarlyBirdDate() : "N/A"
-            };
-            allRows.add(row);
-        }
-        
-        // Calculate column widths
-        int[] colWidths = new int[CSV_HEADER.length];
-        for (String[] row : allRows) {
-            for (int i = 0; i < row.length && i < colWidths.length; i++) {
-                colWidths[i] = Math.max(colWidths[i], row[i].length());
-            }
-        }
-        
-        // Write to file with formatted table
         try (PrintWriter pw = new PrintWriter(new FileWriter(CSV_FILE_PATH))) {
-            // Write separator line
-            pw.println(createSeparatorLine(colWidths));
-            
             // Write header
-            pw.println(formatTableRow(CSV_HEADER, colWidths));
-            pw.println(createSeparatorLine(colWidths));
+            pw.println(String.join(",", CSV_HEADER));
             
             // Write data rows
-            for (int i = 1; i < allRows.size(); i++) {
-                pw.println(formatTableRow(allRows.get(i), colWidths));
+            for (int i = 0; i < listModel.getSize(); i++) {
+                Event event = listModel.getElementAt(i);
+                String[] row = {
+                    event.getEventCode(),
+                    event.getName(),  
+                    event.getDate(),
+                    event.getTime(),
+                    event.getVenue(),
+                    event.getType(),
+                    String.valueOf(event.getCapacity()),
+                    String.format("RM%.2f", event.getRegistrationFee()),
+                    "\"" + event.getDetails().replace("\"", "\"\"").replace("\n", " ") + "\"", // Escape quotes and wrap in quotes
+                    event.getRole(),
+                    event.getGroupPrice() > 0 ? String.valueOf(event.getGroupPrice()) : "N/A",
+                    event.getGroupDiscount() > 0 ? String.format("%.1f%%", event.getGroupDiscount()) : "N/A",
+                    event.getEarlyBirdDiscount() > 0 ? String.format("%.1f%%", event.getEarlyBirdDiscount()) : "N/A",
+                    event.getEarlyBirdDate() != null ? event.getEarlyBirdDate() : "N/A"
+                };
+                pw.println(String.join(",", row));
             }
-            
-            // Write bottom separator
-            pw.println(createSeparatorLine(colWidths));
         }
         
         updateStatus("All events saved to " + CSV_FILE_PATH);
     } catch (IOException e) {
         showModernDialog("File Error", "Failed to save events: " + e.getMessage(), DANGER_RED);
     }
-}
-
-// Helper method to format a table row
-private String formatTableRow(String[] row, int[] colWidths) {
-    StringBuilder sb = new StringBuilder("| ");
-    for (int i = 0; i < row.length && i < colWidths.length; i++) {
-        sb.append(String.format("%-" + colWidths[i] + "s", row[i]));
-        sb.append(" | ");
-    }
-    return sb.toString();
-}
-
-// Helper method to create separator line
-private String createSeparatorLine(int[] colWidths) {
-    StringBuilder sb = new StringBuilder("+");
-    for (int width : colWidths) {
-        sb.append("-".repeat(width + 2));
-        sb.append("+");
-    }
-    return sb.toString();
 }
 
 private void clearForm() {
