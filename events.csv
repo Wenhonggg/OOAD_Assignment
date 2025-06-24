@@ -1,3 +1,2 @@
-| Event Name   | Date       | Time | Venue | Event Type | Capacity | Registration Fee | Event Details                   | Role     | Group Pax | Group Discount | Early Bird Discount | Early Bird Date |
-+--------------+------------+------+-------+------------+----------+------------------+---------------------------------+----------+-----------+----------------+---------------------+-----------------+
-| OOAD webinar | 22.10.2025 | 10AM | MPH   |  Seminars  | 300      | RM2.00           | learn how to do ooad assignment | students | N/A       | N/A            | 10.00%              | 10.7.2025       |
+Event Code,Event Name,Date,Time,Venue,Event Type,Capacity,Registration Fee,Event Details,Role,Group Pax,Group Discount,Early Bird Discount,Early Bird Date
+A001,Hi,20/8/2025,5pm,FCI, Seminars,20,RM50.00,"CSCDCD",STUDENT,50.0,5.0%,5.0%,23/9/2025
