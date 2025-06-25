@@ -1,5 +1,4 @@
 package main;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -10,9 +9,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
 import java.nio.file.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.toedter.calendar.JDateChooser;
 
 import javax.swing.Timer;
 
@@ -35,14 +36,17 @@ private static final String CSV_FILE_PATH = "events.csv";
 private static final String[] CSV_HEADER = {
     "Event Code", "Event Name", "Date", "Time", "Venue", "Event Type", 
     "Capacity", "Registration Fee", "Event Details", "Role", 
-    "Group Pax", "Group Discount", "Early Bird Discount", "Early Bird Date"
+    "Group Pax", "Group Discount", "Early Bird Discount", "Early Bird Date",
+    "Transportation", "Catering"
 };
 
 
-    private JTextField nameField, dateField, timeField, menuField, capacityField;
-    private JTextField registrationFeeField, groupPaxField;
+    private JTextField nameField, timeField, menuField, capacityField;
+    private JTextField registrationFeeField, groupPaxField, transportationField, cateringField;
+    private JDateChooser dateChooser;
     private JComboBox<String> roleComboBox;
-    private JTextField groupDiscountField, earlyBirdDiscountField, earlyDateField;
+    private JTextField groupDiscountField, earlyBirdDiscountField;
+    private JDateChooser earlyBirdDateChooser;
     private JComboBox<String> typeComboBox;
     private JTextArea detailsArea;
     private JList<Event> eventList;
@@ -66,7 +70,6 @@ private static final String[] CSV_HEADER = {
 
         
         nameField = createModernTextField();
-        dateField = createModernTextField();
         timeField = createModernTextField();
         menuField = createModernTextField();
         capacityField = createModernTextField();
@@ -74,7 +77,24 @@ private static final String[] CSV_HEADER = {
         groupPaxField = createModernTextField();
         groupDiscountField = createModernTextField();
         earlyBirdDiscountField = createModernTextField();
-        earlyDateField = createModernTextField();
+        earlyBirdDateChooser = new JDateChooser();
+        earlyBirdDateChooser.setDateFormatString("dd/MM/yyyy");
+        earlyBirdDateChooser.getCalendarButton().setText("");  // Optional: Remove icon
+        earlyBirdDateChooser.setBackground(Color.WHITE);
+        earlyBirdDateChooser.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        earlyBirdDateChooser.setBorder(BorderFactory.createCompoundBorder(
+            new LineBorder(BORDER_LIGHT, 1, true),
+            new EmptyBorder(8, 12, 8, 12)));
+        transportationField = createModernTextField();
+        cateringField = createModernTextField();
+        dateChooser = new JDateChooser();
+        dateChooser.setDateFormatString("dd/MM/yyyy");
+        dateChooser.getCalendarButton().setText("");
+        dateChooser.setBackground(Color.WHITE);
+        dateChooser.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        dateChooser.setBorder(BorderFactory.createCompoundBorder(
+        new LineBorder(BORDER_LIGHT, 1, true),
+        new EmptyBorder(8, 12, 8, 12)));
 
        
         String[] eventTypes = {"🎓 Seminars", "🔧 Workshops", "🎭 Cultural Events", "⚽ Sports Events"};
@@ -294,7 +314,7 @@ private static final String[] CSV_HEADER = {
 
         // Add form fields with modern labels
         addModernFormField(formPanel, gbc, "Event Name", nameField, 0);
-        addModernFormField(formPanel, gbc, "Event Date", dateField, 1);
+        addModernFormField(formPanel, gbc, "Event Date", dateChooser, 1);
         addModernFormField(formPanel, gbc, "Event Time", timeField, 2);
         addModernFormField(formPanel, gbc, "Event Venue", menuField, 3);
         addModernFormField(formPanel, gbc, "Event Type", typeComboBox, 4);
@@ -304,16 +324,18 @@ private static final String[] CSV_HEADER = {
         addModernFormField(formPanel, gbc, "Group Pax", groupPaxField, 8);
         addModernFormField(formPanel, gbc, "Group Discount", groupDiscountField, 9);
         addModernFormField(formPanel, gbc, "Early Bird Discount", earlyBirdDiscountField, 10);
-        addModernFormField(formPanel, gbc, "Early Bird Date", earlyDateField, 11);
+        addModernFormField(formPanel, gbc, "Early Bird Date", earlyBirdDateChooser, 11);
+        addModernFormField(formPanel, gbc, "Transportation", transportationField, 12);
+        addModernFormField(formPanel, gbc, "Catering", cateringField, 13);
 
         // Details area
-        gbc.gridx = 0; gbc.gridy = 12; gbc.gridwidth = 1;
+        gbc.gridx = 0; gbc.gridy = 14; gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0; gbc.weighty = 0;
         JLabel detailsLabel = createModernLabel("Event Details");
         formPanel.add(detailsLabel, gbc);
 
-        gbc.gridx = 1; gbc.gridy = 12; gbc.gridwidth = 1;
+        gbc.gridx = 1; gbc.gridy = 14; gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0; gbc.weighty = 1.0;
         JScrollPane scrollPane = new JScrollPane(detailsArea);
@@ -460,21 +482,24 @@ private void createEvent(ActionEvent e) {
             String role = ((String) roleComboBox.getSelectedItem()).substring(1).trim().toUpperCase();
             String eventCode = generateEventCode(role);
 
-            Event event = new Event(
-            eventCode,
-            nameField.getText(),
-            dateField.getText(),
-            timeField.getText(),
-            menuField.getText(),
-            ((String) typeComboBox.getSelectedItem()).substring(2),
-            Integer.parseInt(capacityField.getText()),
-            Double.parseDouble(registrationFeeField.getText()),
-            detailsArea.getText(),
-            role,
-            groupPaxField.getText().isEmpty() ? 0 : Double.parseDouble(groupPaxField.getText()),
-            groupDiscountField.getText().isEmpty() ? 0 : Double.parseDouble(groupDiscountField.getText()),
-            earlyBirdDiscountField.getText().isEmpty() ? 0 : Double.parseDouble(earlyBirdDiscountField.getText()),
-            earlyDateField.getText().isEmpty() ? null : earlyDateField.getText()
+    Event event = new Event(
+    eventCode,
+    nameField.getText(),
+    new SimpleDateFormat("dd/MM/yyyy").format(dateChooser.getDate()),
+    timeField.getText(),
+    menuField.getText(),
+    ((String) typeComboBox.getSelectedItem()).substring(2),
+    Integer.parseInt(capacityField.getText()),
+    Double.parseDouble(registrationFeeField.getText()),
+    detailsArea.getText(),
+    role,
+    groupPaxField.getText().isEmpty() ? 0 : Double.parseDouble(groupPaxField.getText()),
+    groupDiscountField.getText().isEmpty() ? 0 : Double.parseDouble(groupDiscountField.getText()),
+    earlyBirdDiscountField.getText().isEmpty() ? 0 : Double.parseDouble(earlyBirdDiscountField.getText()),
+    earlyBirdDateChooser.getDate() != null ? 
+    new SimpleDateFormat("dd/MM/yyyy").format(earlyBirdDateChooser.getDate()) : null ,
+    transportationField.getText().isEmpty() ? 0 : Double.parseDouble(transportationField.getText()),
+    cateringField.getText().isEmpty() ? 0 : Double.parseDouble(cateringField.getText())
 );
             
             listModel.addElement(event);
@@ -504,7 +529,7 @@ private void updateEvent(ActionEvent e) {
                 
                 // Update the selected event object
                 selectedEvent.setName(nameField.getText());
-                selectedEvent.setDate(dateField.getText());
+                selectedEvent.setDate(new SimpleDateFormat("dd/MM/yyyy").format(dateChooser.getDate()));
                 selectedEvent.setTime(timeField.getText());
                 selectedEvent.setVenue(menuField.getText());
                 selectedEvent.setType(((String) typeComboBox.getSelectedItem()).substring(2));
@@ -515,7 +540,7 @@ private void updateEvent(ActionEvent e) {
                 selectedEvent.setGroupPrice(groupPaxField.getText().isEmpty() ? 0 : Double.parseDouble(groupPaxField.getText()));
                 selectedEvent.setGroupDiscount(groupDiscountField.getText().isEmpty() ? 0 : Double.parseDouble(groupDiscountField.getText()));
                 selectedEvent.setEarlyBirdDiscount(earlyBirdDiscountField.getText().isEmpty() ? 0 : Double.parseDouble(earlyBirdDiscountField.getText()));
-                selectedEvent.setEarlyBirdDate(earlyDateField.getText().isEmpty() ? null : earlyDateField.getText());
+                selectedEvent.setDate(new SimpleDateFormat("dd/MM/yyyy").format(dateChooser.getDate()));
                 
                 // Update the list display
                 eventList.repaint();
@@ -559,7 +584,8 @@ private void updateEvent(ActionEvent e) {
 
     private boolean validateForm() {
         if (nameField.getText().trim().isEmpty() ||
-            dateField.getText().trim().isEmpty() ||
+            dateChooser.getDate() == null ||
+            earlyBirdDateChooser.getDate() == null ||
             timeField.getText().trim().isEmpty() ||
             menuField.getText().trim().isEmpty() ||
             capacityField.getText().trim().isEmpty() ||
@@ -579,9 +605,24 @@ private void updateEvent(ActionEvent e) {
 
 private void populateForm(Event event) {
     nameField.setText(event.getName());
-    dateField.setText(event.getDate());
     timeField.setText(event.getTime());
     menuField.setText(event.getVenue());
+    transportationField.setText(event.getTransportation() > 0 ? String.valueOf(event.getTransportation()) : "");
+    cateringField.setText(event.getCatering() > 0 ? String.valueOf(event.getCatering()) : "");
+    try {
+    Date earlyDate = new SimpleDateFormat("dd/MM/yyyy").parse(event.getEarlyBirdDate());
+    earlyBirdDateChooser.setDate(earlyDate);
+} catch (Exception ex) {
+    earlyBirdDateChooser.setDate(null);
+}
+    try {
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    Date date = sdf.parse(event.getDate());
+    dateChooser.setDate(date);
+} catch (Exception ex) {
+    dateChooser.setDate(null);
+}
+    
     
     // Set event type combo box
     String eventType = event.getType();
@@ -638,74 +679,84 @@ private void loadEvents() {
         if (Files.exists(Paths.get(CSV_FILE_PATH))) {
             List<String> lines = Files.readAllLines(Paths.get(CSV_FILE_PATH));
             
-            for (String line : lines) {
-                // Skip separator lines (lines starting with +) and empty lines
-                if (line.trim().isEmpty() || line.trim().startsWith("+")) {
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i).trim();
+                
+                // Skip empty lines
+                if (line.isEmpty()) {
                     continue;
                 }
                 
-                // Skip header line (contains "Event Code")
-                if (line.contains("Event Code")) {
+                // Skip header line (first line or contains "Event Code")
+                if (i == 0 || line.contains("Event Code")) {
                     continue;
                 }
                 
-                // Parse table row format: | data | data | data |
-                if (line.trim().startsWith("|") && line.trim().endsWith("|")) {
-                    // Remove first and last | and split by |
-                    String cleanLine = line.trim().substring(1, line.trim().length() - 1);
-                    String[] parts = cleanLine.split("\\|");
-                    
-                    // Trim whitespace from each part
-                    for (int i = 0; i < parts.length; i++) {
-                        parts[i] = parts[i].trim();
-                    }
-                    
-                    if (parts.length >= 14) {
-                        try {
-                            String eventCode = parts[0];
-                            String name = parts[1];
-                            String date = parts[2];
-                            String time = parts[3];
-                            String venue = parts[4];
-                            String type = parts[5];
-                            int capacity = Integer.parseInt(parts[6]);
-                            
-                            // Parse fee (remove RM prefix)
-                            String feeStr = parts[7].replace("RM", "");
-                            double fee = Double.parseDouble(feeStr);
-                            
-                            String details = parts[8];
-                            String role = parts[9];
-                            
-                            // Parse group price
-                            double groupPrice = 0;
-                            if (!parts[10].equals("N/A")) {
-                                groupPrice = Double.parseDouble(parts[10]);
-                            }
-                            
-                            // Parse group discount
-                            double groupDiscount = 0;
-                            if (!parts[11].equals("N/A")) {
-                                groupDiscount = Double.parseDouble(parts[11].replace("%", ""));
-                            }
-                            
-                            // Parse early bird discount
-                            double earlyDiscount = 0;
-                            if (!parts[12].equals("N/A")) {
-                                earlyDiscount = Double.parseDouble(parts[12].replace("%", ""));
-                            }
-                            
-                            // Parse early bird date
-                            String earlyBirdDate = null;
-                            if (!parts[13].equals("N/A")) {
-                                earlyBirdDate = parts[13];
-                            }
-                            
-                            Event event = new Event(eventCode, name, date, time, venue, type, capacity, fee, details, role, groupPrice, groupDiscount, earlyDiscount, earlyBirdDate);
-                            listModel.addElement(event);
-                        } catch (NumberFormatException e) {
-                            System.err.println("Error parsing line: " + line);
+                // Parse CSV format: comma-separated values
+                String[] parts = line.split(",");
+                
+                // Handle quoted fields (for event details that might contain commas)
+                parts = parseCSVLine(line);
+                
+                if (parts.length >= 14) {
+                    try {
+                        String eventCode = parts[0].trim();
+                        String name = parts[1].trim();
+                        String date = parts[2].trim();
+                        String time = parts[3].trim();
+                        String venue = parts[4].trim();
+                        String type = parts[5].trim();
+                        int capacity = Integer.parseInt(parts[6].trim());
+                        
+                        // Parse fee (now without RM prefix)
+                        double fee = Double.parseDouble(parts[7].trim());
+                        
+                        // Remove quotes from details if present
+                        String details = parts[8].trim();
+                        if (details.startsWith("\"") && details.endsWith("\"")) {
+                            details = details.substring(1, details.length() - 1);
+                            details = details.replace("\"\"", "\""); // Unescape quotes
                         }
+                        
+                        String role = parts[9].trim();
+                        
+                        // Parse group price
+                        double groupPrice = 0;
+                        if (!parts[10].trim().equals("N/A")) {
+                            groupPrice = Double.parseDouble(parts[10].trim());
+                        }
+                        
+                        // Parse group discount (now without % symbol)
+                        double groupDiscount = 0;
+                        if (!parts[11].trim().equals("N/A")) {
+                            groupDiscount = Double.parseDouble(parts[11].trim());
+                        }
+                        
+                        // Parse early bird discount (now without % symbol)
+                        double earlyDiscount = 0;
+                        if (!parts[12].trim().equals("N/A")) {
+                            earlyDiscount = Double.parseDouble(parts[12].trim());
+                        }
+                        
+                        // Parse early bird date
+                        String earlyBirdDate = null;
+                        if (!parts[13].trim().equals("N/A")) {
+                            earlyBirdDate = parts[13].trim();
+                        }
+                        
+                        // Parse transportation and catering if available
+                        double transportation = 0;
+                        double catering = 0;
+                        if (parts.length >= 16) {
+                            transportation = Double.parseDouble(parts[14].trim());
+                            catering = Double.parseDouble(parts[15].trim());
+                        }
+                        
+                        Event event = new Event(eventCode, name, date, time, venue, type, capacity, fee, details, role, groupPrice, groupDiscount, earlyDiscount, earlyBirdDate, transportation, catering);
+                        listModel.addElement(event);
+                    } catch (NumberFormatException e) {
+                        System.err.println("Error parsing line: " + line);
+                        e.printStackTrace();
                     }
                 }
             }
@@ -716,16 +767,49 @@ private void loadEvents() {
     }
 }
 
-
+// Helper method to properly parse CSV lines with quoted fields
+private String[] parseCSVLine(String line) {
+    List<String> result = new ArrayList<>();
+    boolean inQuotes = false;
+    StringBuilder currentField = new StringBuilder();
+    
+    for (int i = 0; i < line.length(); i++) {
+        char c = line.charAt(i);
+        
+        if (c == '"') {
+            if (inQuotes && i + 1 < line.length() && line.charAt(i + 1) == '"') {
+                // Escaped quote
+                currentField.append('"');
+                i++; // Skip next quote
+            } else {
+                // Toggle quote state
+                inQuotes = !inQuotes;
+            }
+        } else if (c == ',' && !inQuotes) {
+            // Field separator
+            result.add(currentField.toString());
+            currentField = new StringBuilder();
+        } else {
+            currentField.append(c);
+        }
+    }
+    
+    // Add the last field
+    result.add(currentField.toString());
+    
+    return result.toArray(new String[0]);
+}
     // Simple Event class for demonstration
     static class Event {
-        private String eventCode, name, date, time, venue, type, details, role, earlyBirdDate;
-        private int capacity;
-        private double registrationFee, groupPrice, groupDiscount, earlyBirdDiscount;
+    private String eventCode, name, date, time, venue, type, details, role, earlyBirdDate;
+    private int capacity;
+    private double registrationFee, groupPrice, groupDiscount, earlyBirdDiscount;
+    private double transportation, catering;
 
         public Event(String eventCode, String name, String date, String time, String venue, String type, 
             int capacity, double registrationFee, String details, String role,
-            double groupPrice, double groupDiscount, double earlyBirdDiscount, String earlyBirdDate) {
+            double groupPrice, double groupDiscount, double earlyBirdDiscount, String earlyBirdDate,
+            double transportation, double catering) {
             this.eventCode = eventCode;
             this.name = name;
             this.date = date;
@@ -740,6 +824,8 @@ private void loadEvents() {
             this.groupDiscount = groupDiscount;
             this.earlyBirdDiscount = earlyBirdDiscount;
             this.earlyBirdDate = earlyBirdDate;
+            this.transportation= transportation;
+            this.catering = catering;
         }
 
         // Getters and setters
@@ -771,6 +857,10 @@ private void loadEvents() {
         public void setGroupDiscount(double groupDiscount) { this.groupDiscount = groupDiscount; }
         public double getEarlyBirdDiscount() { return earlyBirdDiscount; }
         public void setEarlyBirdDiscount(double earlyBirdDiscount) { this.earlyBirdDiscount = earlyBirdDiscount; }
+        public double getTransportation() { return transportation; }
+        public void setTransportation(double transportation) { this.transportation = transportation; }
+        public double getCatering() { return catering; }
+        public void setCatering(double catering) { this.catering = catering; }
 
 @Override
 public String toString() {
@@ -795,13 +885,15 @@ private void saveAllEventsToCSV() {
                     event.getVenue(),
                     event.getType(),
                     String.valueOf(event.getCapacity()),
-                    String.format("RM%.2f", event.getRegistrationFee()),
-                    "\"" + event.getDetails().replace("\"", "\"\"").replace("\n", " ") + "\"", // Escape quotes and wrap in quotes
+                    String.format("%.2f", event.getRegistrationFee()), // Removed "RM"
+                    "\"" + event.getDetails().replace("\"", "\"\"").replace("\n", " ") + "\"",
                     event.getRole(),
                     event.getGroupPrice() > 0 ? String.valueOf(event.getGroupPrice()) : "N/A",
-                    event.getGroupDiscount() > 0 ? String.format("%.1f%%", event.getGroupDiscount()) : "N/A",
-                    event.getEarlyBirdDiscount() > 0 ? String.format("%.1f%%", event.getEarlyBirdDiscount()) : "N/A",
-                    event.getEarlyBirdDate() != null ? event.getEarlyBirdDate() : "N/A"
+                    event.getGroupDiscount() > 0 ? String.format("%.1f", event.getGroupDiscount()) : "N/A", // Removed "%"
+                    event.getEarlyBirdDiscount() > 0 ? String.format("%.1f", event.getEarlyBirdDiscount()) : "N/A", // Removed "%"
+                    event.getEarlyBirdDate() != null ? event.getEarlyBirdDate() : "N/A",
+                    String.valueOf(event.getTransportation()),
+                    String.valueOf(event.getCatering())
                 };
                 pw.println(String.join(",", row));
             }
@@ -815,7 +907,7 @@ private void saveAllEventsToCSV() {
 
 private void clearForm() {
     nameField.setText("");
-    dateField.setText("");
+    dateChooser.setDate(null);
     timeField.setText("");
     menuField.setText("");
     typeComboBox.setSelectedIndex(0);
@@ -826,7 +918,9 @@ private void clearForm() {
     groupPaxField.setText("");
     groupDiscountField.setText("");
     earlyBirdDiscountField.setText("");
-    earlyDateField.setText("");
+    earlyBirdDateChooser.setDate(null);
+    transportationField.setText("");
+    cateringField.setText("");
     selectedEvent = null;
     eventList.clearSelection();
     updateStatus("Form cleared and ready for new event");
