@@ -1,4 +1,5 @@
 package main;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -77,7 +78,7 @@ public class PaymentPage extends JPanel {
                     showErrorMsg();
                 else {
                     showThankYouDialog();
-                    Ticket ticket = new Ticket(1,1, "WORKSHOP", "OOAD Workshop", "12 June 2025", "13:00-14:00",
+                    Ticket ticket = new Ticket(1, 1, "WORKSHOP", "OOAD Workshop", "12 June 2025", "13:00-14:00",
                             "FCI Study Space", null, "Ali bin Ahmad", "0123456789", 2);
                     List<String> fields = new ArrayList<>();
                     fields.add(String.valueOf(ticket.getTicketID()));

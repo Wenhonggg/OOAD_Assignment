@@ -917,15 +917,14 @@ private void clearForm() {
 
         saveAllEventsToCSV();
     }
-
-    // public static void main(String[] args) {
-    //     SwingUtilities.invokeLater(() -> {
-    //         try {
-    //             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    //         } catch (Exception e) {
-    //             e.printStackTrace();
-    //         }
-    //         new Create_Event_Page_Organiser();
-    //     });
-    // }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            new Create_Event_Page_Organiser();
+        });
+    }
 }
