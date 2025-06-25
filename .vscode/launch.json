@@ -3,6 +3,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "InputRegisterDetailsPage",
+            "request": "launch",
+            "mainClass": "main.InputRegisterDetailsPage",
+            "projectName": "OOAD_Assignment_Real_a301692f"
+        },
+        {
+            "type": "java",
+            "name": "ViewInfoPage",
+            "request": "launch",
+            "mainClass": "main.ViewInfoPage",
+            "projectName": "OOAD_Assignment_Real_a301692f"
+        },
+        {
+            "type": "java",
             "name": "Create_Event_Page_Organiser",
             "request": "launch",
             "mainClass": "main.Create_Event_Page_Organiser",
