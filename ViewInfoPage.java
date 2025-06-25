@@ -80,7 +80,7 @@ public class ViewInfoPage extends JFrame {
 
         // Styled labels
         infoPanel.add(makeLabel(eventName, new Font("Serif", Font.BOLD, 40)));
-        infoPanel.add(Box.createVerticalStrut(10));
+        infoPanel.add(Box.createVerticalStrut(15));
 
         String dateTime = date + " | " + time;
         infoPanel.add(makeLabel(dateTime, new Font("Serif", Font.PLAIN, 25)));
