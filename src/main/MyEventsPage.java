@@ -1,3 +1,4 @@
+package main;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -26,7 +27,7 @@ public class MyEventsPage extends JPanel {
 		ticketPanel.setLayout(new GridBagLayout());
 		List<List<String>> data = new ArrayList<>();
 		try {
-			data = SwingUtils.readFromCsv("data/tickets_0123456789.csv");
+			data = SwingUtils.readFromCsv("database/tickets_0123456789.csv");
 		} catch (Exception e) {
 			System.err.println("Failed to fetch ticket data: " + e.getMessage());
 			e.printStackTrace();

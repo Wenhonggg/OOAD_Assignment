@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "main.App",
+            "projectName": "OOAD_Assignment_1faccfea"
+        },
+        {
+            "type": "java",
             "name": "MainFrame",
             "request": "launch",
             "mainClass": "MainFrame",

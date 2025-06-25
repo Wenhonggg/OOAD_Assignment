@@ -1,3 +1,4 @@
+package main;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import javax.swing.*;
@@ -222,7 +223,7 @@ public class InputRegisterDetailsPage extends JFrame {
         }
     }
     
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(InputRegisterDetailsPage::new);
-    }
+    // public static void main(String[] args) {
+    //     SwingUtilities.invokeLater(InputRegisterDetailsPage::new);
+    // }
 }

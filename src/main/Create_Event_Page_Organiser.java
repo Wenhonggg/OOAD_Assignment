@@ -17,27 +17,26 @@ import java.util.stream.Collectors;
 import javax.swing.Timer;
 
 public class Create_Event_Page_Organiser extends JFrame {
-  // Modern color palette
-private static final Color PRIMARY_DARK = new Color(30, 41, 59);      
-private static final Color PRIMARY_MEDIUM = new Color(51, 65, 85);    
-private static final Color PRIMARY_LIGHT = new Color(71, 85, 105);   
-private static final Color ACCENT_BLUE = new Color(59, 130, 246);     
-private static final Color ACCENT_HOVER = new Color(37, 99, 235);     
-private static final Color SUCCESS_GREEN = new Color(34, 197, 94);    
-private static final Color WARNING_ORANGE = new Color(251, 146, 60);  
-private static final Color DANGER_RED = new Color(239, 68, 68);       
-private static final Color SURFACE_WHITE = new Color(248, 250, 252);  
-private static final Color TEXT_DARK = new Color(15, 23, 42);         
-private static final Color TEXT_LIGHT = new Color(100, 116, 139);     
-private static final Color BORDER_LIGHT = new Color(226, 232, 240);   
+    // Modern color palette
+    private static final Color PRIMARY_DARK = new Color(30, 41, 59);
+    private static final Color PRIMARY_MEDIUM = new Color(51, 65, 85);
+    private static final Color PRIMARY_LIGHT = new Color(71, 85, 105);
+    private static final Color ACCENT_BLUE = new Color(59, 130, 246);
+    private static final Color ACCENT_HOVER = new Color(37, 99, 235);
+    private static final Color SUCCESS_GREEN = new Color(34, 197, 94);
+    private static final Color WARNING_ORANGE = new Color(251, 146, 60);
+    private static final Color DANGER_RED = new Color(239, 68, 68);
+    private static final Color SURFACE_WHITE = new Color(248, 250, 252);
+    private static final Color TEXT_DARK = new Color(15, 23, 42);
+    private static final Color TEXT_LIGHT = new Color(100, 116, 139);
+    private static final Color BORDER_LIGHT = new Color(226, 232, 240);
 
-private static final String CSV_FILE_PATH = "events.csv";
-private static final String[] CSV_HEADER = {
-    "Event Code", "Event Name", "Date", "Time", "Venue", "Event Type", 
-    "Capacity", "Registration Fee", "Event Details", "Role", 
-    "Group Pax", "Group Discount", "Early Bird Discount", "Early Bird Date"
-};
-
+    private static final String CSV_FILE_PATH = "events.csv";
+    private static final String[] CSV_HEADER = {
+            "Event Code", "Event Name", "Date", "Time", "Venue", "Event Type",
+            "Capacity", "Registration Fee", "Event Details", "Role",
+            "Group Pax", "Group Discount", "Early Bird Discount", "Early Bird Date"
+    };
 
     private JTextField nameField, dateField, timeField, menuField, capacityField;
     private JTextField registrationFeeField, groupPaxField;
@@ -64,7 +63,6 @@ private static final String[] CSV_HEADER = {
         setLocationRelativeTo(null);
         getContentPane().setBackground(SURFACE_WHITE);
 
-        
         nameField = createModernTextField();
         dateField = createModernTextField();
         timeField = createModernTextField();
@@ -76,25 +74,21 @@ private static final String[] CSV_HEADER = {
         earlyBirdDiscountField = createModernTextField();
         earlyDateField = createModernTextField();
 
-       
-        String[] eventTypes = {"🎓 Seminars", "🔧 Workshops", "🎭 Cultural Events", "⚽ Sports Events"};
+        String[] eventTypes = { "🎓 Seminars", "🔧 Workshops", "🎭 Cultural Events", "⚽ Sports Events" };
         typeComboBox = new JComboBox<>(eventTypes);
         styleComboBox(typeComboBox);
 
-        String[] roles = {" Student", " Staff"};
+        String[] roles = { " Student", " Staff" };
         roleComboBox = new JComboBox<>(roles);
         styleComboBox(roleComboBox);
 
-        
         detailsArea = new JTextArea(4, 20);
         styleTextArea(detailsArea);
 
-        
         listModel = new DefaultListModel<>();
         eventList = new JList<>(listModel);
         styleEventList(eventList);
 
-        
         statusLabel = new JLabel("Ready to create events");
         statusLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         statusLabel.setForeground(TEXT_LIGHT);
@@ -105,27 +99,24 @@ private static final String[] CSV_HEADER = {
         field.setBackground(Color.WHITE);
         field.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         field.setBorder(BorderFactory.createCompoundBorder(
-            new LineBorder(BORDER_LIGHT, 1, true),
-            new EmptyBorder(12, 16, 12, 16)
-        ));
+                new LineBorder(BORDER_LIGHT, 1, true),
+                new EmptyBorder(12, 16, 12, 16)));
         field.setForeground(TEXT_DARK);
-        
-        
+
         field.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 field.setBorder(BorderFactory.createCompoundBorder(
-                    new LineBorder(ACCENT_BLUE, 2, true),
-                    new EmptyBorder(11, 15, 11, 15)
-                ));
+                        new LineBorder(ACCENT_BLUE, 2, true),
+                        new EmptyBorder(11, 15, 11, 15)));
             }
+
             public void focusLost(java.awt.event.FocusEvent evt) {
                 field.setBorder(BorderFactory.createCompoundBorder(
-                    new LineBorder(BORDER_LIGHT, 1, true),
-                    new EmptyBorder(12, 16, 12, 16)
-                ));
+                        new LineBorder(BORDER_LIGHT, 1, true),
+                        new EmptyBorder(12, 16, 12, 16)));
             }
         });
-        
+
         return field;
     }
 
@@ -133,9 +124,8 @@ private static final String[] CSV_HEADER = {
         comboBox.setBackground(Color.WHITE);
         comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         comboBox.setBorder(BorderFactory.createCompoundBorder(
-            new LineBorder(BORDER_LIGHT, 1, true),
-            new EmptyBorder(8, 12, 8, 12)
-        ));
+                new LineBorder(BORDER_LIGHT, 1, true),
+                new EmptyBorder(8, 12, 8, 12)));
         comboBox.setForeground(TEXT_DARK);
     }
 
@@ -156,8 +146,7 @@ private static final String[] CSV_HEADER = {
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setBorder(new EmptyBorder(8, 8, 8, 8));
         list.setForeground(TEXT_DARK);
-        
-        
+
         list.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index,
@@ -170,7 +159,7 @@ private static final String[] CSV_HEADER = {
                 return this;
             }
         });
-        
+
         list.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 selectedEvent = list.getSelectedValue();
@@ -185,15 +174,12 @@ private static final String[] CSV_HEADER = {
     private void setupLayout() {
         setLayout(new BorderLayout());
 
-    
         JPanel headerPanel = createHeaderPanel();
         add(headerPanel, BorderLayout.NORTH);
 
-       
         JPanel mainPanel = createMainPanel();
         add(mainPanel, BorderLayout.CENTER);
 
-        
         JPanel footerPanel = createFooterPanel();
         add(footerPanel, BorderLayout.SOUTH);
     }
@@ -203,24 +189,23 @@ private static final String[] CSV_HEADER = {
         headerPanel.setBackground(PRIMARY_DARK);
         headerPanel.setBorder(new EmptyBorder(24, 32, 24, 32));
 
-        
         JPanel titleSection = new JPanel(new FlowLayout(FlowLayout.LEFT));
         titleSection.setBackground(PRIMARY_DARK);
-        
+
         JLabel titleLabel = new JLabel("🎪 Event Management Dashboard");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
         titleLabel.setForeground(Color.WHITE);
-        
+
         JLabel subtitleLabel = new JLabel("Create, manage, and organize your events efficiently");
         subtitleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         subtitleLabel.setForeground(TEXT_LIGHT);
-        
+
         JPanel titleContainer = new JPanel(new BorderLayout());
         titleContainer.setBackground(PRIMARY_DARK);
         titleContainer.add(titleLabel, BorderLayout.NORTH);
         titleContainer.add(Box.createVerticalStrut(4), BorderLayout.CENTER);
         titleContainer.add(subtitleLabel, BorderLayout.SOUTH);
-        
+
         titleSection.add(titleContainer);
         headerPanel.add(titleSection, BorderLayout.WEST);
 
@@ -232,11 +217,9 @@ private static final String[] CSV_HEADER = {
         mainPanel.setBackground(SURFACE_WHITE);
         mainPanel.setBorder(new EmptyBorder(24, 24, 24, 24));
 
-       
         JPanel formCard = createFormCard();
         JPanel listCard = createListCard();
 
-        
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, formCard, listCard);
         splitPane.setDividerLocation(650);
         splitPane.setDividerSize(8);
@@ -251,9 +234,8 @@ private static final String[] CSV_HEADER = {
         JPanel card = new JPanel(new BorderLayout());
         card.setBackground(Color.WHITE);
         card.setBorder(BorderFactory.createCompoundBorder(
-            new LineBorder(BORDER_LIGHT, 1, true),
-            new EmptyBorder(16, 16, 16, 16)
-        ));
+                new LineBorder(BORDER_LIGHT, 1, true),
+                new EmptyBorder(16, 16, 16, 16)));
 
         // Card header
         JPanel cardHeader = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -272,7 +254,7 @@ private static final String[] CSV_HEADER = {
         formScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         formScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         formScrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        
+
         // Action buttons
         JPanel actionPanel = createActionButtons();
 
@@ -307,15 +289,21 @@ private static final String[] CSV_HEADER = {
         addModernFormField(formPanel, gbc, "Early Bird Date", earlyDateField, 11);
 
         // Details area
-        gbc.gridx = 0; gbc.gridy = 12; gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 12;
+        gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0; gbc.weighty = 0;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
         JLabel detailsLabel = createModernLabel("Event Details");
         formPanel.add(detailsLabel, gbc);
 
-        gbc.gridx = 1; gbc.gridy = 12; gbc.gridwidth = 1;
+        gbc.gridx = 1;
+        gbc.gridy = 12;
+        gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0; gbc.weighty = 1.0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
         JScrollPane scrollPane = new JScrollPane(detailsArea);
         scrollPane.setBorder(new LineBorder(BORDER_LIGHT, 1, true));
         scrollPane.setPreferredSize(new Dimension(300, 100));
@@ -325,14 +313,18 @@ private static final String[] CSV_HEADER = {
     }
 
     private void addModernFormField(JPanel panel, GridBagConstraints gbc, String labelText, JComponent field, int row) {
-        gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0; gbc.weighty = 0;
-        
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+
         JLabel label = createModernLabel(labelText);
         panel.add(label, gbc);
 
-        gbc.gridx = 1; gbc.gridy = row;
+        gbc.gridx = 1;
+        gbc.gridy = row;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         field.setPreferredSize(new Dimension(350, 40));
@@ -369,21 +361,20 @@ private static final String[] CSV_HEADER = {
         JPanel card = new JPanel(new BorderLayout());
         card.setBackground(Color.WHITE);
         card.setBorder(BorderFactory.createCompoundBorder(
-            new LineBorder(BORDER_LIGHT, 1, true),
-            new EmptyBorder(16, 16, 16, 16)
-        ));
+                new LineBorder(BORDER_LIGHT, 1, true),
+                new EmptyBorder(16, 16, 16, 16)));
 
         // Card header
         JPanel cardHeader = new JPanel(new BorderLayout());
         cardHeader.setBackground(Color.WHITE);
-        
+
         JLabel cardTitle = new JLabel("Event List");
         cardTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
         cardTitle.setForeground(TEXT_DARK);
-        
+
         JButton deleteBtn = createModernButton(" Delete", Color.WHITE, Color.BLACK);
         deleteBtn.addActionListener(this::deleteEvent);
-        
+
         cardHeader.add(cardTitle, BorderLayout.WEST);
         cardHeader.add(deleteBtn, BorderLayout.EAST);
 
@@ -423,12 +414,11 @@ private static final String[] CSV_HEADER = {
         button.setBackground(background);
         button.setForeground(foreground);
         button.setBorder(BorderFactory.createCompoundBorder(
-            new LineBorder(BORDER_LIGHT, 1, true),
-            new EmptyBorder(12, 24, 12, 24)
-        ));
+                new LineBorder(BORDER_LIGHT, 1, true),
+                new EmptyBorder(12, 24, 12, 24)));
         button.setFocusPainted(false);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
+
         // Hover effects
         Color originalBg = background;
         button.addMouseListener(new MouseAdapter() {
@@ -436,13 +426,13 @@ private static final String[] CSV_HEADER = {
             public void mouseEntered(MouseEvent e) {
                 button.setBackground(SURFACE_WHITE);
             }
-            
+
             @Override
             public void mouseExited(MouseEvent e) {
                 button.setBackground(originalBg);
             }
         });
-        
+
         return button;
     }
 
@@ -453,118 +443,121 @@ private static final String[] CSV_HEADER = {
         timer.start();
     }
 
-
-private void createEvent(ActionEvent e) {
-    try {
-        if (validateForm()) {
-            String role = ((String) roleComboBox.getSelectedItem()).substring(1).trim().toUpperCase();
-            String eventCode = generateEventCode(role);
-
-            Event event = new Event(
-            eventCode,
-            nameField.getText(),
-            dateField.getText(),
-            timeField.getText(),
-            menuField.getText(),
-            ((String) typeComboBox.getSelectedItem()).substring(2),
-            Integer.parseInt(capacityField.getText()),
-            Double.parseDouble(registrationFeeField.getText()),
-            detailsArea.getText(),
-            role,
-            groupPaxField.getText().isEmpty() ? 0 : Double.parseDouble(groupPaxField.getText()),
-            groupDiscountField.getText().isEmpty() ? 0 : Double.parseDouble(groupDiscountField.getText()),
-            earlyBirdDiscountField.getText().isEmpty() ? 0 : Double.parseDouble(earlyBirdDiscountField.getText()),
-            earlyDateField.getText().isEmpty() ? null : earlyDateField.getText()
-);
-            
-            listModel.addElement(event);
-            saveEventToCSV(event); // Save to CSV
-            clearForm();
-            updateStatus("✅ Event created with code: " + eventCode);
-            showModernDialog("Success", "Event created successfully with code: " + eventCode, SUCCESS_GREEN);
-        }
-    } catch (NumberFormatException ex) {
-        showModernDialog("Input Error", "Please enter valid numbers for capacity, fees, and discounts.", DANGER_RED);
-    }
-}
-
-private void updateEvent(ActionEvent e) {
-    if (selectedEvent != null) {
+    private void createEvent(ActionEvent e) {
         try {
             if (validateForm()) {
-                String newRole = ((String) roleComboBox.getSelectedItem()).substring(1).trim().toUpperCase();
-                String oldRole = selectedEvent.getRole();
-                
-                // If role changed, generate new event code
-                if (!newRole.equals(oldRole)) {
-                    String newEventCode = generateEventCode(newRole);
-                    selectedEvent.setEventCode(newEventCode);
-                    updateStatus("✅ Event code updated to: " + newEventCode);
-                }
-                
-                // Update the selected event object
-                selectedEvent.setName(nameField.getText());
-                selectedEvent.setDate(dateField.getText());
-                selectedEvent.setTime(timeField.getText());
-                selectedEvent.setVenue(menuField.getText());
-                selectedEvent.setType(((String) typeComboBox.getSelectedItem()).substring(2));
-                selectedEvent.setCapacity(Integer.parseInt(capacityField.getText()));
-                selectedEvent.setRegistrationFee(Double.parseDouble(registrationFeeField.getText()));
-                selectedEvent.setDetails(detailsArea.getText());
-                selectedEvent.setRole(newRole);
-                selectedEvent.setGroupPrice(groupPaxField.getText().isEmpty() ? 0 : Double.parseDouble(groupPaxField.getText()));
-                selectedEvent.setGroupDiscount(groupDiscountField.getText().isEmpty() ? 0 : Double.parseDouble(groupDiscountField.getText()));
-                selectedEvent.setEarlyBirdDiscount(earlyBirdDiscountField.getText().isEmpty() ? 0 : Double.parseDouble(earlyBirdDiscountField.getText()));
-                selectedEvent.setEarlyBirdDate(earlyDateField.getText().isEmpty() ? null : earlyDateField.getText());
-                
-                // Update the list display
-                eventList.repaint();
-                
-                // Save all events back to CSV
-                saveAllEventsToCSV();
-                
-                updateStatus("✅ Event updated successfully!");
-                showModernDialog("Success", "Event updated successfully!", SUCCESS_GREEN);
+                String role = ((String) roleComboBox.getSelectedItem()).substring(1).trim().toUpperCase();
+                String eventCode = generateEventCode(role);
+
+                Event event = new Event(
+                        eventCode,
+                        nameField.getText(),
+                        dateField.getText(),
+                        timeField.getText(),
+                        menuField.getText(),
+                        ((String) typeComboBox.getSelectedItem()).substring(2),
+                        Integer.parseInt(capacityField.getText()),
+                        Double.parseDouble(registrationFeeField.getText()),
+                        detailsArea.getText(),
+                        role,
+                        groupPaxField.getText().isEmpty() ? 0 : Double.parseDouble(groupPaxField.getText()),
+                        groupDiscountField.getText().isEmpty() ? 0 : Double.parseDouble(groupDiscountField.getText()),
+                        earlyBirdDiscountField.getText().isEmpty() ? 0
+                                : Double.parseDouble(earlyBirdDiscountField.getText()),
+                        earlyDateField.getText().isEmpty() ? null : earlyDateField.getText());
+
+                listModel.addElement(event);
+                saveEventToCSV(event); // Save to CSV
+                clearForm();
+                updateStatus("✅ Event created with code: " + eventCode);
+                showModernDialog("Success", "Event created successfully with code: " + eventCode, SUCCESS_GREEN);
             }
-        } catch (Exception ex) {
-            showModernDialog("Error", "Error updating event: " + ex.getMessage(), DANGER_RED);
+        } catch (NumberFormatException ex) {
+            showModernDialog("Input Error", "Please enter valid numbers for capacity, fees, and discounts.",
+                    DANGER_RED);
         }
-    } else {
-        showModernDialog("No Selection", "Please select an event to update.", WARNING_ORANGE);
     }
-}
+
+    private void updateEvent(ActionEvent e) {
+        if (selectedEvent != null) {
+            try {
+                if (validateForm()) {
+                    String newRole = ((String) roleComboBox.getSelectedItem()).substring(1).trim().toUpperCase();
+                    String oldRole = selectedEvent.getRole();
+
+                    // If role changed, generate new event code
+                    if (!newRole.equals(oldRole)) {
+                        String newEventCode = generateEventCode(newRole);
+                        selectedEvent.setEventCode(newEventCode);
+                        updateStatus("✅ Event code updated to: " + newEventCode);
+                    }
+
+                    // Update the selected event object
+                    selectedEvent.setName(nameField.getText());
+                    selectedEvent.setDate(dateField.getText());
+                    selectedEvent.setTime(timeField.getText());
+                    selectedEvent.setVenue(menuField.getText());
+                    selectedEvent.setType(((String) typeComboBox.getSelectedItem()).substring(2));
+                    selectedEvent.setCapacity(Integer.parseInt(capacityField.getText()));
+                    selectedEvent.setRegistrationFee(Double.parseDouble(registrationFeeField.getText()));
+                    selectedEvent.setDetails(detailsArea.getText());
+                    selectedEvent.setRole(newRole);
+                    selectedEvent.setGroupPrice(
+                            groupPaxField.getText().isEmpty() ? 0 : Double.parseDouble(groupPaxField.getText()));
+                    selectedEvent.setGroupDiscount(groupDiscountField.getText().isEmpty() ? 0
+                            : Double.parseDouble(groupDiscountField.getText()));
+                    selectedEvent.setEarlyBirdDiscount(earlyBirdDiscountField.getText().isEmpty() ? 0
+                            : Double.parseDouble(earlyBirdDiscountField.getText()));
+                    selectedEvent
+                            .setEarlyBirdDate(earlyDateField.getText().isEmpty() ? null : earlyDateField.getText());
+
+                    // Update the list display
+                    eventList.repaint();
+
+                    // Save all events back to CSV
+                    saveAllEventsToCSV();
+
+                    updateStatus("✅ Event updated successfully!");
+                    showModernDialog("Success", "Event updated successfully!", SUCCESS_GREEN);
+                }
+            } catch (Exception ex) {
+                showModernDialog("Error", "Error updating event: " + ex.getMessage(), DANGER_RED);
+            }
+        } else {
+            showModernDialog("No Selection", "Please select an event to update.", WARNING_ORANGE);
+        }
+    }
 
     private void deleteEvent(ActionEvent e) {
-    if (eventList.getSelectedValue() != null) {
-        int confirm = JOptionPane.showConfirmDialog(
-            this, 
-            "Are you sure you want to delete this event?", 
-            "Confirm Delete", 
-            JOptionPane.YES_NO_OPTION
-        );
-        if (confirm == JOptionPane.YES_OPTION) {
-            listModel.removeElement(eventList.getSelectedValue());
-            clearForm();
-            
-            // Save updated list back to CSV
-            saveAllEventsToCSV();
-            
-            updateStatus("🗑️ Event deleted successfully!");
-            showModernDialog("Success", "Event deleted successfully!", SUCCESS_GREEN);
+        if (eventList.getSelectedValue() != null) {
+            int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Are you sure you want to delete this event?",
+                    "Confirm Delete",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                listModel.removeElement(eventList.getSelectedValue());
+                clearForm();
+
+                // Save updated list back to CSV
+                saveAllEventsToCSV();
+
+                updateStatus("🗑️ Event deleted successfully!");
+                showModernDialog("Success", "Event deleted successfully!", SUCCESS_GREEN);
+            }
+        } else {
+            showModernDialog("No Selection", "Please select an event to delete.", WARNING_ORANGE);
         }
-    } else {
-        showModernDialog("No Selection", "Please select an event to delete.", WARNING_ORANGE);
     }
-}
 
     private boolean validateForm() {
         if (nameField.getText().trim().isEmpty() ||
-            dateField.getText().trim().isEmpty() ||
-            timeField.getText().trim().isEmpty() ||
-            menuField.getText().trim().isEmpty() ||
-            capacityField.getText().trim().isEmpty() ||
-            registrationFeeField.getText().trim().isEmpty()) {
-            
+                dateField.getText().trim().isEmpty() ||
+                timeField.getText().trim().isEmpty() ||
+                menuField.getText().trim().isEmpty() ||
+                capacityField.getText().trim().isEmpty() ||
+                registrationFeeField.getText().trim().isEmpty()) {
+
             showModernDialog("Validation Error", "Please fill in all required fields.", DANGER_RED);
             return false;
         }
@@ -572,150 +565,151 @@ private void updateEvent(ActionEvent e) {
     }
 
     private void showModernDialog(String title, String message, Color color) {
-    JOptionPane optionPane = new JOptionPane(message, JOptionPane.INFORMATION_MESSAGE);
-    JDialog dialog = optionPane.createDialog(title);
-    dialog.setVisible(true);
-}
-
-private void populateForm(Event event) {
-    nameField.setText(event.getName());
-    dateField.setText(event.getDate());
-    timeField.setText(event.getTime());
-    menuField.setText(event.getVenue());
-    
-    // Set event type combo box
-    String eventType = event.getType();
-    for (int i = 0; i < typeComboBox.getItemCount(); i++) {
-        if (typeComboBox.getItemAt(i).contains(eventType)) {
-            typeComboBox.setSelectedIndex(i);
-            break;
-        }
+        JOptionPane optionPane = new JOptionPane(message, JOptionPane.INFORMATION_MESSAGE);
+        JDialog dialog = optionPane.createDialog(title);
+        dialog.setVisible(true);
     }
-    
-    capacityField.setText(String.valueOf(event.getCapacity()));
-    registrationFeeField.setText(String.valueOf(event.getRegistrationFee()));
-    detailsArea.setText(event.getDetails());
-    
-    // Set role combo box
-    String role = event.getRole();
-    roleComboBox.setSelectedIndex(role.equals("STUDENT") ? 0 : 1);
-    
-    groupPaxField.setText(event.getGroupPrice() > 0 ? String.valueOf(event.getGroupPrice()) : "");
-    groupDiscountField.setText(event.getGroupDiscount() > 0 ? String.valueOf(event.getGroupDiscount()) : "");
-    earlyBirdDiscountField.setText(event.getEarlyBirdDiscount() > 0 ? String.valueOf(event.getEarlyBirdDiscount()) : "");
-    
-    updateStatus("Form populated with event: " + event.getName());
-}
 
-    private String generateEventCode(String role) {
-    String prefix = role.toUpperCase().equals("STUDENT") ? "A" : "B";
-    int nextNumber = getNextEventNumber(prefix);
-    return prefix + String.format("%03d", nextNumber);
-}
+    private void populateForm(Event event) {
+        nameField.setText(event.getName());
+        dateField.setText(event.getDate());
+        timeField.setText(event.getTime());
+        menuField.setText(event.getVenue());
 
-private int getNextEventNumber(String prefix) {
-    int maxNumber = 0;
-    
-    // Check existing events in the list model
-    for (int i = 0; i < listModel.getSize(); i++) {
-        Event event = listModel.getElementAt(i);
-        String eventCode = event.getEventCode();
-        if (eventCode.startsWith(prefix) && eventCode.length() >= 4) {
-            try {
-                int number = Integer.parseInt(eventCode.substring(1));
-                maxNumber = Math.max(maxNumber, number);
-            } catch (NumberFormatException e) {
-                // Skip invalid codes
+        // Set event type combo box
+        String eventType = event.getType();
+        for (int i = 0; i < typeComboBox.getItemCount(); i++) {
+            if (typeComboBox.getItemAt(i).contains(eventType)) {
+                typeComboBox.setSelectedIndex(i);
+                break;
             }
         }
-    }
-    
-    return maxNumber + 1;
-}
 
-private void loadEvents() {
-    try {
-        if (Files.exists(Paths.get(CSV_FILE_PATH))) {
-            List<String> lines = Files.readAllLines(Paths.get(CSV_FILE_PATH));
-            
-            for (String line : lines) {
-                // Skip separator lines (lines starting with +) and empty lines
-                if (line.trim().isEmpty() || line.trim().startsWith("+")) {
-                    continue;
+        capacityField.setText(String.valueOf(event.getCapacity()));
+        registrationFeeField.setText(String.valueOf(event.getRegistrationFee()));
+        detailsArea.setText(event.getDetails());
+
+        // Set role combo box
+        String role = event.getRole();
+        roleComboBox.setSelectedIndex(role.equals("STUDENT") ? 0 : 1);
+
+        groupPaxField.setText(event.getGroupPrice() > 0 ? String.valueOf(event.getGroupPrice()) : "");
+        groupDiscountField.setText(event.getGroupDiscount() > 0 ? String.valueOf(event.getGroupDiscount()) : "");
+        earlyBirdDiscountField
+                .setText(event.getEarlyBirdDiscount() > 0 ? String.valueOf(event.getEarlyBirdDiscount()) : "");
+
+        updateStatus("Form populated with event: " + event.getName());
+    }
+
+    private String generateEventCode(String role) {
+        String prefix = role.toUpperCase().equals("STUDENT") ? "A" : "B";
+        int nextNumber = getNextEventNumber(prefix);
+        return prefix + String.format("%03d", nextNumber);
+    }
+
+    private int getNextEventNumber(String prefix) {
+        int maxNumber = 0;
+
+        // Check existing events in the list model
+        for (int i = 0; i < listModel.getSize(); i++) {
+            Event event = listModel.getElementAt(i);
+            String eventCode = event.getEventCode();
+            if (eventCode.startsWith(prefix) && eventCode.length() >= 4) {
+                try {
+                    int number = Integer.parseInt(eventCode.substring(1));
+                    maxNumber = Math.max(maxNumber, number);
+                } catch (NumberFormatException e) {
+                    // Skip invalid codes
                 }
-                
-                // Skip header line (contains "Event Code")
-                if (line.contains("Event Code")) {
-                    continue;
-                }
-                
-                // Parse table row format: | data | data | data |
-                if (line.trim().startsWith("|") && line.trim().endsWith("|")) {
-                    // Remove first and last | and split by |
-                    String cleanLine = line.trim().substring(1, line.trim().length() - 1);
-                    String[] parts = cleanLine.split("\\|");
-                    
-                    // Trim whitespace from each part
-                    for (int i = 0; i < parts.length; i++) {
-                        parts[i] = parts[i].trim();
+            }
+        }
+
+        return maxNumber + 1;
+    }
+
+    private void loadEvents() {
+        try {
+            if (Files.exists(Paths.get(CSV_FILE_PATH))) {
+                List<String> lines = Files.readAllLines(Paths.get(CSV_FILE_PATH));
+
+                for (String line : lines) {
+                    // Skip separator lines (lines starting with +) and empty lines
+                    if (line.trim().isEmpty() || line.trim().startsWith("+")) {
+                        continue;
                     }
-                    
-                    if (parts.length >= 14) {
-                        try {
-                            String eventCode = parts[0];
-                            String name = parts[1];
-                            String date = parts[2];
-                            String time = parts[3];
-                            String venue = parts[4];
-                            String type = parts[5];
-                            int capacity = Integer.parseInt(parts[6]);
-                            
-                            // Parse fee (remove RM prefix)
-                            String feeStr = parts[7].replace("RM", "");
-                            double fee = Double.parseDouble(feeStr);
-                            
-                            String details = parts[8];
-                            String role = parts[9];
-                            
-                            // Parse group price
-                            double groupPrice = 0;
-                            if (!parts[10].equals("N/A")) {
-                                groupPrice = Double.parseDouble(parts[10]);
+
+                    // Skip header line (contains "Event Code")
+                    if (line.contains("Event Code")) {
+                        continue;
+                    }
+
+                    // Parse table row format: | data | data | data |
+                    if (line.trim().startsWith("|") && line.trim().endsWith("|")) {
+                        // Remove first and last | and split by |
+                        String cleanLine = line.trim().substring(1, line.trim().length() - 1);
+                        String[] parts = cleanLine.split("\\|");
+
+                        // Trim whitespace from each part
+                        for (int i = 0; i < parts.length; i++) {
+                            parts[i] = parts[i].trim();
+                        }
+
+                        if (parts.length >= 14) {
+                            try {
+                                String eventCode = parts[0];
+                                String name = parts[1];
+                                String date = parts[2];
+                                String time = parts[3];
+                                String venue = parts[4];
+                                String type = parts[5];
+                                int capacity = Integer.parseInt(parts[6]);
+
+                                // Parse fee (remove RM prefix)
+                                String feeStr = parts[7].replace("RM", "");
+                                double fee = Double.parseDouble(feeStr);
+
+                                String details = parts[8];
+                                String role = parts[9];
+
+                                // Parse group price
+                                double groupPrice = 0;
+                                if (!parts[10].equals("N/A")) {
+                                    groupPrice = Double.parseDouble(parts[10]);
+                                }
+
+                                // Parse group discount
+                                double groupDiscount = 0;
+                                if (!parts[11].equals("N/A")) {
+                                    groupDiscount = Double.parseDouble(parts[11].replace("%", ""));
+                                }
+
+                                // Parse early bird discount
+                                double earlyDiscount = 0;
+                                if (!parts[12].equals("N/A")) {
+                                    earlyDiscount = Double.parseDouble(parts[12].replace("%", ""));
+                                }
+
+                                // Parse early bird date
+                                String earlyBirdDate = null;
+                                if (!parts[13].equals("N/A")) {
+                                    earlyBirdDate = parts[13];
+                                }
+
+                                Event event = new Event(eventCode, name, date, time, venue, type, capacity, fee,
+                                        details, role, groupPrice, groupDiscount, earlyDiscount, earlyBirdDate);
+                                listModel.addElement(event);
+                            } catch (NumberFormatException e) {
+                                System.err.println("Error parsing line: " + line);
                             }
-                            
-                            // Parse group discount
-                            double groupDiscount = 0;
-                            if (!parts[11].equals("N/A")) {
-                                groupDiscount = Double.parseDouble(parts[11].replace("%", ""));
-                            }
-                            
-                            // Parse early bird discount
-                            double earlyDiscount = 0;
-                            if (!parts[12].equals("N/A")) {
-                                earlyDiscount = Double.parseDouble(parts[12].replace("%", ""));
-                            }
-                            
-                            // Parse early bird date
-                            String earlyBirdDate = null;
-                            if (!parts[13].equals("N/A")) {
-                                earlyBirdDate = parts[13];
-                            }
-                            
-                            Event event = new Event(eventCode, name, date, time, venue, type, capacity, fee, details, role, groupPrice, groupDiscount, earlyDiscount, earlyBirdDate);
-                            listModel.addElement(event);
-                        } catch (NumberFormatException e) {
-                            System.err.println("Error parsing line: " + line);
                         }
                     }
                 }
+                updateStatus("Loaded " + listModel.getSize() + " events from CSV");
             }
-            updateStatus("Loaded " + listModel.getSize() + " events from CSV");
+        } catch (IOException e) {
+            updateStatus("No existing events file found - starting fresh");
         }
-    } catch (IOException e) {
-        updateStatus("No existing events file found - starting fresh");
     }
-}
-
 
     // Simple Event class for demonstration
     static class Event {
@@ -723,9 +717,9 @@ private void loadEvents() {
         private int capacity;
         private double registrationFee, groupPrice, groupDiscount, earlyBirdDiscount;
 
-        public Event(String eventCode, String name, String date, String time, String venue, String type, 
-            int capacity, double registrationFee, String details, String role,
-            double groupPrice, double groupDiscount, double earlyBirdDiscount, String earlyBirdDate) {
+        public Event(String eventCode, String name, String date, String time, String venue, String type,
+                int capacity, double registrationFee, String details, String role,
+                double groupPrice, double groupDiscount, double earlyBirdDiscount, String earlyBirdDate) {
             this.eventCode = eventCode;
             this.name = name;
             this.date = date;
@@ -743,155 +737,238 @@ private void loadEvents() {
         }
 
         // Getters and setters
-        public String getEarlyBirdDate() { return earlyBirdDate; }
-        public void setEarlyBirdDate(String earlyBirdDate) { this.earlyBirdDate = earlyBirdDate; }
-        public String getEventCode() { return eventCode; }
-        public void setEventCode(String eventCode) { this.eventCode = eventCode; }
-        public String getName() { return name; }
-        public void setName(String name) { this.name = name; }
-        public String getDate() { return date; }
-        public void setDate(String date) { this.date = date; }
-        public String getTime() { return time; }
-        public void setTime(String time) { this.time = time; }
-        public String getVenue() { return venue; }
-        public void setVenue(String venue) { this.venue = venue; }
-        public String getType() { return type; }
-        public void setType(String type) { this.type = type; }
-        public String getDetails() { return details; }
-        public void setDetails(String details) { this.details = details; }
-        public String getRole() { return role; }
-        public void setRole(String role) { this.role = role; }
-        public int getCapacity() { return capacity; }
-        public void setCapacity(int capacity) { this.capacity = capacity; }
-        public double getRegistrationFee() { return registrationFee; }
-        public void setRegistrationFee(double registrationFee) { this.registrationFee = registrationFee; }
-        public double getGroupPrice() { return groupPrice; }
-        public void setGroupPrice(double groupPrice) { this.groupPrice = groupPrice; }
-        public double getGroupDiscount() { return groupDiscount; }
-        public void setGroupDiscount(double groupDiscount) { this.groupDiscount = groupDiscount; }
-        public double getEarlyBirdDiscount() { return earlyBirdDiscount; }
-        public void setEarlyBirdDiscount(double earlyBirdDiscount) { this.earlyBirdDiscount = earlyBirdDiscount; }
-
-@Override
-public String toString() {
-    return eventCode + " - " + name + " - " + date + " at " + time;
-}
-    }
-
-private void saveAllEventsToCSV() {
-    try {
-        List<String[]> allRows = new ArrayList<>();
-        
-        // Add header
-        allRows.add(CSV_HEADER);
-        
-        // Add all events from the list model
-        for (int i = 0; i < listModel.getSize(); i++) {
-            Event event = listModel.getElementAt(i);
-            String[] row = {
-                event.getEventCode(),
-                event.getName(),  
-                event.getDate(),
-                event.getTime(),
-                event.getVenue(),
-                event.getType(),
-                String.valueOf(event.getCapacity()),
-                String.format("RM%.2f", event.getRegistrationFee()),
-                event.getDetails().replace("\n", " "),
-                event.getRole(),
-                event.getGroupPrice() > 0 ? String.valueOf(event.getGroupPrice()) : "N/A",
-                event.getGroupDiscount() > 0 ? String.format("%.1f%%", event.getGroupDiscount()) : "N/A",
-                event.getEarlyBirdDiscount() > 0 ? String.format("%.1f%%", event.getEarlyBirdDiscount()) : "N/A",
-                event.getEarlyBirdDate() != null ? event.getEarlyBirdDate() : "N/A"
-            };
-            allRows.add(row);
+        public String getEarlyBirdDate() {
+            return earlyBirdDate;
         }
-        
-        // Calculate column widths
-        int[] colWidths = new int[CSV_HEADER.length];
-        for (String[] row : allRows) {
-            for (int i = 0; i < row.length && i < colWidths.length; i++) {
-                colWidths[i] = Math.max(colWidths[i], row[i].length());
-            }
+
+        public void setEarlyBirdDate(String earlyBirdDate) {
+            this.earlyBirdDate = earlyBirdDate;
         }
-        
-        // Write to file with formatted table
-        try (PrintWriter pw = new PrintWriter(new FileWriter(CSV_FILE_PATH))) {
-            // Write separator line
-            pw.println(createSeparatorLine(colWidths));
-            
-            // Write header
-            pw.println(formatTableRow(CSV_HEADER, colWidths));
-            pw.println(createSeparatorLine(colWidths));
-            
-            // Write data rows
-            for (int i = 1; i < allRows.size(); i++) {
-                pw.println(formatTableRow(allRows.get(i), colWidths));
-            }
-            
-            // Write bottom separator
-            pw.println(createSeparatorLine(colWidths));
+
+        public String getEventCode() {
+            return eventCode;
         }
-        
-        updateStatus("All events saved to " + CSV_FILE_PATH);
-    } catch (IOException e) {
-        showModernDialog("File Error", "Failed to save events: " + e.getMessage(), DANGER_RED);
+
+        public void setEventCode(String eventCode) {
+            this.eventCode = eventCode;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getDate() {
+            return date;
+        }
+
+        public void setDate(String date) {
+            this.date = date;
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+
+        public String getVenue() {
+            return venue;
+        }
+
+        public void setVenue(String venue) {
+            this.venue = venue;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getDetails() {
+            return details;
+        }
+
+        public void setDetails(String details) {
+            this.details = details;
+        }
+
+        public String getRole() {
+            return role;
+        }
+
+        public void setRole(String role) {
+            this.role = role;
+        }
+
+        public int getCapacity() {
+            return capacity;
+        }
+
+        public void setCapacity(int capacity) {
+            this.capacity = capacity;
+        }
+
+        public double getRegistrationFee() {
+            return registrationFee;
+        }
+
+        public void setRegistrationFee(double registrationFee) {
+            this.registrationFee = registrationFee;
+        }
+
+        public double getGroupPrice() {
+            return groupPrice;
+        }
+
+        public void setGroupPrice(double groupPrice) {
+            this.groupPrice = groupPrice;
+        }
+
+        public double getGroupDiscount() {
+            return groupDiscount;
+        }
+
+        public void setGroupDiscount(double groupDiscount) {
+            this.groupDiscount = groupDiscount;
+        }
+
+        public double getEarlyBirdDiscount() {
+            return earlyBirdDiscount;
+        }
+
+        public void setEarlyBirdDiscount(double earlyBirdDiscount) {
+            this.earlyBirdDiscount = earlyBirdDiscount;
+        }
+
+        @Override
+        public String toString() {
+            return eventCode + " - " + name + " - " + date + " at " + time;
+        }
     }
-}
 
-// Helper method to format a table row
-private String formatTableRow(String[] row, int[] colWidths) {
-    StringBuilder sb = new StringBuilder("| ");
-    for (int i = 0; i < row.length && i < colWidths.length; i++) {
-        sb.append(String.format("%-" + colWidths[i] + "s", row[i]));
-        sb.append(" | ");
-    }
-    return sb.toString();
-}
+    private void saveAllEventsToCSV() {
+        try {
+            List<String[]> allRows = new ArrayList<>();
 
-// Helper method to create separator line
-private String createSeparatorLine(int[] colWidths) {
-    StringBuilder sb = new StringBuilder("+");
-    for (int width : colWidths) {
-        sb.append("-".repeat(width + 2));
-        sb.append("+");
-    }
-    return sb.toString();
-}
+            // Add header
+            allRows.add(CSV_HEADER);
 
-private void clearForm() {
-    nameField.setText("");
-    dateField.setText("");
-    timeField.setText("");
-    menuField.setText("");
-    typeComboBox.setSelectedIndex(0);
-    capacityField.setText("");
-    registrationFeeField.setText("");
-    detailsArea.setText("");
-    roleComboBox.setSelectedIndex(0);
-    groupPaxField.setText("");
-    groupDiscountField.setText("");
-    earlyBirdDiscountField.setText("");
-    earlyDateField.setText("");
-    selectedEvent = null;
-    eventList.clearSelection();
-    updateStatus("Form cleared and ready for new event");
-}
-
-
-private void saveEventToCSV(Event event) {
-
-    saveAllEventsToCSV();
-}
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception e) {
-                e.printStackTrace();
+            // Add all events from the list model
+            for (int i = 0; i < listModel.getSize(); i++) {
+                Event event = listModel.getElementAt(i);
+                String[] row = {
+                        event.getEventCode(),
+                        event.getName(),
+                        event.getDate(),
+                        event.getTime(),
+                        event.getVenue(),
+                        event.getType(),
+                        String.valueOf(event.getCapacity()),
+                        String.format("RM%.2f", event.getRegistrationFee()),
+                        event.getDetails().replace("\n", " "),
+                        event.getRole(),
+                        event.getGroupPrice() > 0 ? String.valueOf(event.getGroupPrice()) : "N/A",
+                        event.getGroupDiscount() > 0 ? String.format("%.1f%%", event.getGroupDiscount()) : "N/A",
+                        event.getEarlyBirdDiscount() > 0 ? String.format("%.1f%%", event.getEarlyBirdDiscount())
+                                : "N/A",
+                        event.getEarlyBirdDate() != null ? event.getEarlyBirdDate() : "N/A"
+                };
+                allRows.add(row);
             }
-            new Create_Event_Page_Organiser();
-        });
+
+            // Calculate column widths
+            int[] colWidths = new int[CSV_HEADER.length];
+            for (String[] row : allRows) {
+                for (int i = 0; i < row.length && i < colWidths.length; i++) {
+                    colWidths[i] = Math.max(colWidths[i], row[i].length());
+                }
+            }
+
+            // Write to file with formatted table
+            try (PrintWriter pw = new PrintWriter(new FileWriter(CSV_FILE_PATH))) {
+                // Write separator line
+                pw.println(createSeparatorLine(colWidths));
+
+                // Write header
+                pw.println(formatTableRow(CSV_HEADER, colWidths));
+                pw.println(createSeparatorLine(colWidths));
+
+                // Write data rows
+                for (int i = 1; i < allRows.size(); i++) {
+                    pw.println(formatTableRow(allRows.get(i), colWidths));
+                }
+
+                // Write bottom separator
+                pw.println(createSeparatorLine(colWidths));
+            }
+
+            updateStatus("All events saved to " + CSV_FILE_PATH);
+        } catch (IOException e) {
+            showModernDialog("File Error", "Failed to save events: " + e.getMessage(), DANGER_RED);
+        }
     }
+
+    // Helper method to format a table row
+    private String formatTableRow(String[] row, int[] colWidths) {
+        StringBuilder sb = new StringBuilder("| ");
+        for (int i = 0; i < row.length && i < colWidths.length; i++) {
+            sb.append(String.format("%-" + colWidths[i] + "s", row[i]));
+            sb.append(" | ");
+        }
+        return sb.toString();
+    }
+
+    // Helper method to create separator line
+    private String createSeparatorLine(int[] colWidths) {
+        StringBuilder sb = new StringBuilder("+");
+        for (int width : colWidths) {
+            sb.append("-".repeat(width + 2));
+            sb.append("+");
+        }
+        return sb.toString();
+    }
+
+    private void clearForm() {
+        nameField.setText("");
+        dateField.setText("");
+        timeField.setText("");
+        menuField.setText("");
+        typeComboBox.setSelectedIndex(0);
+        capacityField.setText("");
+        registrationFeeField.setText("");
+        detailsArea.setText("");
+        roleComboBox.setSelectedIndex(0);
+        groupPaxField.setText("");
+        groupDiscountField.setText("");
+        earlyBirdDiscountField.setText("");
+        earlyDateField.setText("");
+        selectedEvent = null;
+        eventList.clearSelection();
+        updateStatus("Form cleared and ready for new event");
+    }
+
+    private void saveEventToCSV(Event event) {
+
+        saveAllEventsToCSV();
+    }
+
+    // public static void main(String[] args) {
+    //     SwingUtilities.invokeLater(() -> {
+    //         try {
+    //             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    //         } catch (Exception e) {
+    //             e.printStackTrace();
+    //         }
+    //         new Create_Event_Page_Organiser();
+    //     });
+    // }
 }
