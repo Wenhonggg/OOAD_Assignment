@@ -1,6 +1,4 @@
-+------------+-------------+-----------+---------+---------+---------------+----------+------------------+---------------+---------+-----------+----------------+---------------------+-----------------+
-| Event Code | Event Name  | Date      | Time    | Venue   | Event Type    | Capacity | Registration Fee | Event Details | Role    | Group Pax | Group Discount | Early Bird Discount | Early Bird Date | 
-+------------+-------------+-----------+---------+---------+---------------+----------+------------------+---------------+---------+-----------+----------------+---------------------+-----------------+
-| B001       | JomRun!     | 12/4/2020 | 6:00AM  | stadium | Sports Events | 300      | RM40.00          | JomRun!       | STAFF   | 4.0       | 10.0%          | 15.0%               | N/A             | 
-| A002       | BoomMinar ! | 3/4/2020  | 10:00AM | MPH     |  Seminars     | 300      | RM40.00          | Lets BOOM !   | STUDENT | 4.0       | 10.0%          | 15.0%               | N/A             | 
-+------------+-------------+-----------+---------+---------+---------------+----------+------------------+---------------+---------+-----------+----------------+---------------------+-----------------+
+Event Code,Event Name,Date,Time,Venue,Event Type,Capacity,Registration Fee,Event Details,Role,Group Pax,Group Discount,Early Bird Discount,Early Bird Date,Transportation,Catering
+B001,EVENT 2,31/07/2025,9PM - 12PM,FCI,Seminars,50,49.00,"EVENT 2 IS GOOD",STAFF,7.0,20.0,10.0,29/06/2025,20.0,20.0
+A001,EVENT 3,27/06/2025,8PM - 12 AM,FCI OFFICE,Sports Events,50,20.00,"GOOD MORNING",STUDENT,4.0,5.0,5.0,26/06/2025,50.0,50.0
+A002,EVENT 4,06/06/2025,5PM,FOM, Seminars,80,20.00,"FRREREFRREER",STUDENT,20.0,20.0,5.0,28/06/2025,50.0,100.0

@@ -32,7 +32,7 @@ public class Create_Event_Page_Organiser extends JFrame {
     private static final Color TEXT_LIGHT = new Color(100, 116, 139);
     private static final Color BORDER_LIGHT = new Color(226, 232, 240);
 
-private static final String CSV_FILE_PATH = "events.csv";
+private static final String CSV_FILE_PATH = "database/events.csv";
 private static final String[] CSV_HEADER = {
     "Event Code", "Event Name", "Date", "Time", "Venue", "Event Type", 
     "Capacity", "Registration Fee", "Event Details", "Role", 
