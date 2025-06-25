@@ -3,10 +3,10 @@
     "configurations": [
         {
             "type": "java",
-            "name": "App",
+            "name": "Create_Event_Page_Organiser",
             "request": "launch",
-            "mainClass": "main.App",
-            "projectName": "OOAD_Assignment_1faccfea"
+            "mainClass": "main.Create_Event_Page_Organiser",
+            "projectName": "OOAD_Assignment_Real_a301692f"
         },
         {
             "type": "java",
