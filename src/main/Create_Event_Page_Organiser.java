@@ -679,74 +679,84 @@ private void loadEvents() {
         if (Files.exists(Paths.get(CSV_FILE_PATH))) {
             List<String> lines = Files.readAllLines(Paths.get(CSV_FILE_PATH));
             
-            for (String line : lines) {
-                // Skip separator lines (lines starting with +) and empty lines
-                if (line.trim().isEmpty() || line.trim().startsWith("+")) {
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i).trim();
+                
+                // Skip empty lines
+                if (line.isEmpty()) {
                     continue;
                 }
                 
-                // Skip header line (contains "Event Code")
-                if (line.contains("Event Code")) {
+                // Skip header line (first line or contains "Event Code")
+                if (i == 0 || line.contains("Event Code")) {
                     continue;
                 }
                 
-                // Parse table row format: | data | data | data |
-                if (line.trim().startsWith("|") && line.trim().endsWith("|")) {
-                    // Remove first and last | and split by |
-                    String cleanLine = line.trim().substring(1, line.trim().length() - 1);
-                    String[] parts = cleanLine.split("\\|");
-                    
-                    // Trim whitespace from each part
-                    for (int i = 0; i < parts.length; i++) {
-                        parts[i] = parts[i].trim();
-                    }
-                    
-                    if (parts.length >= 14) {
-                        try {
-                            String eventCode = parts[0];
-                            String name = parts[1];
-                            String date = parts[2];
-                            String time = parts[3];
-                            String venue = parts[4];
-                            String type = parts[5];
-                            int capacity = Integer.parseInt(parts[6]);
-                            
-                            // Parse fee (remove RM prefix)
-                            String feeStr = parts[7];
-                            double fee = Double.parseDouble(feeStr);
-                            
-                            String details = parts[8];
-                            String role = parts[9];
-                            
-                            // Parse group price
-                            double groupPrice = 0;
-                            if (!parts[10].equals("N/A")) {
-                                groupPrice = Double.parseDouble(parts[10]);
-                            }
-                            
-                            // Parse group discount
-                            double groupDiscount = 0;
-                            if (!parts[11].equals("N/A")) {
-                                groupDiscount = Double.parseDouble(parts[11]);
-                            }
-                            
-                            // Parse early bird discount
-                            double earlyDiscount = 0;
-                            if (!parts[12].equals("N/A")) {
-                                earlyDiscount = Double.parseDouble(parts[12]);
-                            }
-                            
-                            // Parse early bird date
-                            String earlyBirdDate = null;
-                            if (!parts[13].equals("N/A")) {
-                                earlyBirdDate = parts[13];
-                            }
-                            
-                            Event event = new Event(eventCode, name, date, time, venue, type, capacity, fee, details, role, groupPrice, groupDiscount, earlyDiscount, earlyBirdDate, 0, 0);
-                            listModel.addElement(event);
-                        } catch (NumberFormatException e) {
-                            System.err.println("Error parsing line: " + line);
+                // Parse CSV format: comma-separated values
+                String[] parts = line.split(",");
+                
+                // Handle quoted fields (for event details that might contain commas)
+                parts = parseCSVLine(line);
+                
+                if (parts.length >= 14) {
+                    try {
+                        String eventCode = parts[0].trim();
+                        String name = parts[1].trim();
+                        String date = parts[2].trim();
+                        String time = parts[3].trim();
+                        String venue = parts[4].trim();
+                        String type = parts[5].trim();
+                        int capacity = Integer.parseInt(parts[6].trim());
+                        
+                        // Parse fee (now without RM prefix)
+                        double fee = Double.parseDouble(parts[7].trim());
+                        
+                        // Remove quotes from details if present
+                        String details = parts[8].trim();
+                        if (details.startsWith("\"") && details.endsWith("\"")) {
+                            details = details.substring(1, details.length() - 1);
+                            details = details.replace("\"\"", "\""); // Unescape quotes
                         }
+                        
+                        String role = parts[9].trim();
+                        
+                        // Parse group price
+                        double groupPrice = 0;
+                        if (!parts[10].trim().equals("N/A")) {
+                            groupPrice = Double.parseDouble(parts[10].trim());
+                        }
+                        
+                        // Parse group discount (now without % symbol)
+                        double groupDiscount = 0;
+                        if (!parts[11].trim().equals("N/A")) {
+                            groupDiscount = Double.parseDouble(parts[11].trim());
+                        }
+                        
+                        // Parse early bird discount (now without % symbol)
+                        double earlyDiscount = 0;
+                        if (!parts[12].trim().equals("N/A")) {
+                            earlyDiscount = Double.parseDouble(parts[12].trim());
+                        }
+                        
+                        // Parse early bird date
+                        String earlyBirdDate = null;
+                        if (!parts[13].trim().equals("N/A")) {
+                            earlyBirdDate = parts[13].trim();
+                        }
+                        
+                        // Parse transportation and catering if available
+                        double transportation = 0;
+                        double catering = 0;
+                        if (parts.length >= 16) {
+                            transportation = Double.parseDouble(parts[14].trim());
+                            catering = Double.parseDouble(parts[15].trim());
+                        }
+                        
+                        Event event = new Event(eventCode, name, date, time, venue, type, capacity, fee, details, role, groupPrice, groupDiscount, earlyDiscount, earlyBirdDate, transportation, catering);
+                        listModel.addElement(event);
+                    } catch (NumberFormatException e) {
+                        System.err.println("Error parsing line: " + line);
+                        e.printStackTrace();
                     }
                 }
             }
@@ -757,7 +767,38 @@ private void loadEvents() {
     }
 }
 
-
+// Helper method to properly parse CSV lines with quoted fields
+private String[] parseCSVLine(String line) {
+    List<String> result = new ArrayList<>();
+    boolean inQuotes = false;
+    StringBuilder currentField = new StringBuilder();
+    
+    for (int i = 0; i < line.length(); i++) {
+        char c = line.charAt(i);
+        
+        if (c == '"') {
+            if (inQuotes && i + 1 < line.length() && line.charAt(i + 1) == '"') {
+                // Escaped quote
+                currentField.append('"');
+                i++; // Skip next quote
+            } else {
+                // Toggle quote state
+                inQuotes = !inQuotes;
+            }
+        } else if (c == ',' && !inQuotes) {
+            // Field separator
+            result.add(currentField.toString());
+            currentField = new StringBuilder();
+        } else {
+            currentField.append(c);
+        }
+    }
+    
+    // Add the last field
+    result.add(currentField.toString());
+    
+    return result.toArray(new String[0]);
+}
     // Simple Event class for demonstration
     static class Event {
     private String eventCode, name, date, time, venue, type, details, role, earlyBirdDate;
