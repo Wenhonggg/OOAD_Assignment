@@ -915,8 +915,21 @@ private void clearForm() {
 
     private void saveEventToCSV(Event event) {
 
-        saveAllEventsToCSV();
+    saveAllEventsToCSV();
+}
+
+public Create_Event_Page_Organiser(String eventID) {
+    this();
+    // Find event by ID and populate form
+    for (int i = 0; i < listModel.size(); i++) {
+        Event event = listModel.getElementAt(i);
+        if (event.getEventCode().equals(eventID)) {
+            eventList.setSelectedIndex(i);
+            break;
+        }
     }
+}
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {

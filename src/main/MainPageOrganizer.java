@@ -4,79 +4,89 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List; 
+import main.Create_Event_Page_Organiser;
+
 
 public class MainPageOrganizer extends MainPage {
     public MainPageOrganizer() {
         super("Event Organizer");
     }
     
+    
     @Override
     protected JComponent createCategoryButton() {
         return null;
     }
 
-    @Override
-    protected JComponent createContent() {
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setBackground(pageBackground);
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+    private static final Color[] CARD_COLORS = {
+    new Color(0xA5D7E8),
+    new Color(0xB8E0FF),
+    new Color(0xC9E4FF)
+};
 
-        // Filter panel with button
-        JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 50, 15));
-        filterPanel.setBackground(pageBackground);
-        filterPanel.add(createFilterButton());
-        contentPanel.add(filterPanel);
-        contentPanel.add(Box.createVerticalStrut(15));
 
-        // Event cards grid
-        JPanel gridPanel = new JPanel(new GridLayout(0, 3, 55, 55));
-        gridPanel.setBackground(pageBackground);
-        gridPanel.setBorder(BorderFactory.createEmptyBorder(9, 0, 0, 0));
-        
-        // Add the special "Create Event" card as the first card
-        JPanel createEventCard = createCreateEventCard();
-        gridPanel.add(createEventCard);
-        
-        // Add mock event cards
-        String[] eventIDs = {"C#10 TO 2010", "C#09 TO 2010", "C#20 TO 2010", "C#30 TO 2010", "C#50 TO 2010"};
-        String[] eventNames = {"CMA6134-COMPUTATIONAL METHODS", "COP6214-ALGORITHM DESIGN AND ANALYSIS", 
-                              "COP6224-0040", "CSN6224-COMPUTER NETWORKS", "CCS6214-CYBERSECURITY FUNDAMENTALS"};
-        String[] images = {"icon/celebration.png", "icon/cyber.png", "icon/earth-day.png", "icon/glass.png", 
-                          "icon/olympia.png", "icon/singing.png", "icon/soccer.png", "icon/valentine.png", 
-                          "icon/volunteer.png"};
-        
-        // Start from index 0 but add 9 cards (since we already added the create card)
-        for (int i = 0; i < 9; i++) {
-            gridPanel.add(createEventCard(eventIDs[i % 5], eventNames[i % 5], images[i % 9]));
-        }
-        
-        // Wrap grid panel in a container with margins
-        JPanel gridWrapper = new JPanel(new BorderLayout());
-        gridWrapper.setBackground(pageBackground);
-        gridWrapper.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 50));
-        gridWrapper.add(gridPanel, BorderLayout.CENTER);
-        contentPanel.add(gridWrapper);
-        
-        // Show more label
-        JPanel showMorePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        showMorePanel.setBackground(pageBackground);
-        showMorePanel.add(new JLabel("Show 12") {{
-            setFont(new Font("Arial", Font.PLAIN, 12));
-            setForeground(Color.GRAY);
-        }});
-        contentPanel.add(Box.createVerticalStrut(15));
-        contentPanel.add(showMorePanel);
 
-        // Scrollable panel
-        JScrollPane scrollPane = new JScrollPane(contentPanel);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.getVerticalScrollBar().setUI(new ModernScrollBarUI());
-        scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, Integer.MAX_VALUE));
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        
-        return scrollPane; 
+private JPanel gridPanel; 
+protected JComponent createContent() {
+    gridPanel = new JPanel(new GridLayout(0, 3, 55, 55));
+    gridPanel.setBackground(pageBackground);
+    JPanel contentPanel = new JPanel();
+    contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+    contentPanel.setBackground(pageBackground);
+    contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+    // Filter panel with button
+    JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 50, 15));
+    filterPanel.setBackground(pageBackground);
+    filterPanel.add(createFilterButton());
+    contentPanel.add(filterPanel);
+    contentPanel.add(Box.createVerticalStrut(15));
+
+    // Event cards grid
+    JPanel gridPanel = new JPanel(new GridLayout(0, 3, 55, 55));
+    gridPanel.setBackground(pageBackground);
+    gridPanel.setBorder(BorderFactory.createEmptyBorder(9, 0, 0, 0));
+    
+    JPanel createEventCard = createCreateEventCard(); // "Create New Event" card is white
+    gridPanel.add(createEventCard);
+
+    List<Event> events = Event.readEventsFromCSV("database/events.csv");
+
+    int colorIdx = 0; // Start from the first color for event cards
+    for (Event event : events) {
+        Color cardColor = CARD_COLORS[colorIdx % CARD_COLORS.length];
+        gridPanel.add(createEventCard(event.getEventID(), event.getEventName(), event.getImagePath(), cardColor));
+        colorIdx++;
     }
+    
+
+    // Wrap grid panel in a container with margins
+    JPanel gridWrapper = new JPanel(new BorderLayout());
+    gridWrapper.setBackground(pageBackground);
+    gridWrapper.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 50));
+    gridWrapper.add(gridPanel, BorderLayout.CENTER);
+    contentPanel.add(gridWrapper);
+
+    // Show more label
+    JPanel showMorePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    showMorePanel.setBackground(pageBackground);
+    showMorePanel.add(new JLabel("Show 12") {{
+        setFont(new Font("Arial", Font.PLAIN, 12));
+        setForeground(Color.GRAY);
+    }});
+    contentPanel.add(Box.createVerticalStrut(15));
+    contentPanel.add(showMorePanel);
+
+    // Scrollable panel
+    JScrollPane scrollPane = new JScrollPane(contentPanel);
+    scrollPane.setBorder(BorderFactory.createEmptyBorder());
+    scrollPane.getVerticalScrollBar().setUI(new ModernScrollBarUI());
+    scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, Integer.MAX_VALUE));
+    scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+    
+    return scrollPane; 
+}
     
     // Simplified modern scrollbar UI
     private class ModernScrollBarUI extends BasicScrollBarUI {
@@ -184,31 +194,43 @@ public class MainPageOrganizer extends MainPage {
         revalidate();
     }
 
-    @Override
-    protected JPanel createEventCard(String eventID, String eventName, String imagePath) {
+
+    protected JPanel createEventCard(String eventID, String eventName, String imagePath, Color cardColor) {
         JPanel card = super.createEventCard(eventID, eventName, imagePath);
+        card.putClientProperty("eventID", eventID);
+
+        setPanelBackgrounds(card, cardColor);
         
-        // Find the info panel at the bottom of the card
-        for (Component c : card.getComponents()) {
-            if (c instanceof JPanel && card.getLayout() instanceof BorderLayout && 
-                ((BorderLayout)card.getLayout()).getConstraints(c) == BorderLayout.SOUTH) {
+    // Find the info panel at the bottom of the card
+    for (Component c : card.getComponents()) {
+        if (c instanceof JPanel && card.getLayout() instanceof BorderLayout && 
+            ((BorderLayout)card.getLayout()).getConstraints(c) == BorderLayout.SOUTH) {
+            
+            JPanel infoPanel = (JPanel)c;
+            card.remove(infoPanel);
                 
-                JPanel infoPanel = (JPanel)c;
-                card.remove(infoPanel);
-                
-                // Create bottom panel with info panel and circle button
-                JPanel bottomPanel = new JPanel(new BorderLayout());
-                bottomPanel.setOpaque(false);
-                bottomPanel.add(infoPanel, BorderLayout.CENTER);
-                bottomPanel.add(createCircleButton(), BorderLayout.EAST);
-                
-                card.add(bottomPanel, BorderLayout.SOUTH);
-                break;
-            }
+            // Create bottom panel with info panel and circle button
+            JPanel bottomPanel = new JPanel(new BorderLayout());
+            bottomPanel.setOpaque(false);
+            bottomPanel.add(infoPanel, BorderLayout.CENTER);
+            bottomPanel.add(createCircleButton(), BorderLayout.EAST);
+
+            card.add(bottomPanel, BorderLayout.SOUTH);
+            break;
         }
-        
-        return card;
     }
+    return card;
+}
+
+    private void setPanelBackgrounds(Component comp, Color color) {
+    if (comp instanceof JPanel) {
+        comp.setBackground(color);
+        ((JPanel) comp).setOpaque(true);
+        for (Component child : ((JPanel) comp).getComponents()) {
+            setPanelBackgrounds(child, color);
+        }
+    }
+}
 
     private JLabel createCircleButton() {
         final boolean[] isHovered = {false};
@@ -292,21 +314,68 @@ public class MainPageOrganizer extends MainPage {
         return null;
     }
 
+
+    private void refreshEventGrid(JPanel gridPanel) {
+    gridPanel.removeAll();
+    JPanel createEventCard = createCreateEventCard();
+    gridPanel.add(createEventCard);
+
+    List<Event> events = Event.readEventsFromCSV("database/events.csv");
+    int colorIdx = 0;
+    for (Event event : events) {
+        Color cardColor = CARD_COLORS[colorIdx % CARD_COLORS.length];
+        gridPanel.add(createEventCard(event.getEventID(), event.getEventName(), event.getImagePath(), cardColor));
+        colorIdx++;
+    }
+    gridPanel.revalidate();
+    gridPanel.repaint();
+}
     private void showEventOptions(JPanel eventCard) {
         JPopupMenu optionsMenu = new JPopupMenu();
-        
+
         JMenuItem editItem = new JMenuItem("Edit");
-        editItem.addActionListener(e -> {});
-        
+        editItem.addActionListener(e -> {
+            String eventID = (String) eventCard.getClientProperty("eventID");
+            new Create_Event_Page_Organiser(eventID);
+        });
+
         JMenuItem deleteItem = new JMenuItem("Delete");
-        deleteItem.addActionListener(e -> {});
-        
-        optionsMenu.add(editItem);
-        optionsMenu.addSeparator();
-        optionsMenu.add(deleteItem);
-        
-        optionsMenu.show(eventCard, eventCard.getWidth() - 110, 200);
+         deleteItem.addActionListener(e -> {
+            String eventID = (String) eventCard.getClientProperty("eventID");
+            int confirm = JOptionPane.showConfirmDialog(
+                eventCard,
+                "Are you sure you want to delete this event?",
+                "Confirm Delete",
+                JOptionPane.YES_NO_OPTION
+            );
+            if (confirm == JOptionPane.YES_OPTION && eventID != null) {
+                try {
+                    java.nio.file.Path path = java.nio.file.Paths.get("database/events.csv");
+                    java.util.List<String> lines = java.nio.file.Files.readAllLines(path);
+                    java.util.List<String> updated = new java.util.ArrayList<>();
+                    updated.add(lines.get(0)); // keep header
+                    for (int i = 1; i < lines.size(); i++) {
+                        String[] parts = lines.get(i).split(",");
+                        if (!parts[0].trim().equals(eventID)) {
+                            updated.add(lines.get(i));
+                        }
+                    }
+                    java.nio.file.Files.write(path, updated);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(eventCard, "Failed to delete event from CSV.");
+                }
+                // Refresh the grid panel from the CSV
+                refreshEventGrid(gridPanel);
     }
+});
+
+    optionsMenu.add(editItem);
+    optionsMenu.addSeparator();
+    optionsMenu.add(deleteItem);
+
+    optionsMenu.show(eventCard, eventCard.getWidth() - 110, 200);
+}
 
     // New method to create the special Create Event card
     private JPanel createCreateEventCard() {
@@ -388,7 +457,18 @@ public class MainPageOrganizer extends MainPage {
         return card;
     }
 
-    private void openCreateEventPage() {
-        return ;
-    }
+private void openCreateEventPage() {
+    new Create_Event_Page_Organiser();
+}
+
+    public static void main(String[] args) {
+    SwingUtilities.invokeLater(() -> {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        new MainPageOrganizer();
+    });
+}
 }

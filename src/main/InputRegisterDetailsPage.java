@@ -18,12 +18,10 @@ public class InputRegisterDetailsPage extends JFrame {
 
     public InputRegisterDetailsPage() {
         setTitle("Event Registration");
-        // setSize(650, 600);
+        setSize(650, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        // setLocationRelativeTo(null);
+        setLocationRelativeTo(null);
         setLayout(new BorderLayout());
-        setResizable(false);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         Font headerFont = new Font("Serif", Font.BOLD, 25);
         Font labelFont = new Font("Monospaced", Font.PLAIN, 14);
@@ -53,7 +51,7 @@ public class InputRegisterDetailsPage extends JFrame {
         idField = new JTextField();
         emailField = new JTextField();
 
-        for (JTextField tf : new JTextField[] { nameField, idField, emailField }) {
+        for (JTextField tf : new JTextField[]{nameField, idField, emailField}) {
             tf.setFont(labelFont);
             tf.setBackground(Color.WHITE);
             tf.setBorder(new RoundedBorder(15, 2, ACCENT));
@@ -133,9 +131,7 @@ public class InputRegisterDetailsPage extends JFrame {
             return;
         }
 
-        Participant participant = new Participant(name, id, email);
-
-        // new PaymentPage(name, id, email, qty, catering, transport);
+        //new PaymentPage(name, id, email, qty, catering, transport);
     }
 
     private void showStyledDialog(String message) {
@@ -210,7 +206,8 @@ public class InputRegisterDetailsPage extends JFrame {
                     width - thickness,
                     height - thickness,
                     radius,
-                    radius);
+                    radius
+            );
             g2.draw(rounded);
             g2.dispose();
         }
@@ -226,8 +223,8 @@ public class InputRegisterDetailsPage extends JFrame {
             return insets;
         }
     }
-
+    
     public static void main(String[] args) {
-    SwingUtilities.invokeLater(InputRegisterDetailsPage::new);
+        SwingUtilities.invokeLater(InputRegisterDetailsPage::new);
     }
 }
