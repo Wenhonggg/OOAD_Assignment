@@ -193,14 +193,12 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
                     } else if (userRole.equalsIgnoreCase("STUDENT")) {
                         // Open participant page for students
                         SwingUtilities.invokeLater(() -> {
-                            MainPageParticipant participantPage = new MainPageParticipant();
-                            participantPage.setUserType("STUDENT"); // To be implemented in MainPageParticipant
+                            new MainPageParticipant("STUDENT");
                         });
                     } else if (userRole.equalsIgnoreCase("STAFF")) {
                         // Open participant page for staff
                         SwingUtilities.invokeLater(() -> {
-                            MainPageParticipant participantPage = new MainPageParticipant();
-                            participantPage.setUserType("STAFF"); // To be implemented in MainPageParticipant
+                            new MainPageParticipant("STAFF");
                         });
                     } else {
                         // Fallback for unknown roles

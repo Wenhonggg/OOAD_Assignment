@@ -10,8 +10,13 @@ public class MainPageParticipant extends MainPage {
     private JLabel logoLabel; // Add this field to store reference
 
     public MainPageParticipant() {
-        this.userType = "STUDENT";
+        this("STUDENT"); // Default to STUDENT
+    }
+    
+    public MainPageParticipant(String userType) {
         super("Event Participant");
+        this.userType = userType;
+        updateLogo();
     }
     
     public void setUserType(String userType) {
@@ -137,13 +142,15 @@ public class MainPageParticipant extends MainPage {
 
     @Override
     protected JLabel createLogo() {
-        if (userType.equals("STUDENT")) {
-            logoLabel = new JLabel("STUDENT EVENT PORTAL");
-        } else if (userType.equals("STAFF")) {
-            logoLabel = new JLabel("STAFF EVENT PORTAL");
-        } else {
-            logoLabel = new JLabel("EVENT PORTAL");
+        // Use safer string comparison and provide default
+        String displayText = "EVENT PORTAL"; // Default
+        if ("STUDENT".equals(userType)) {
+            displayText = "STUDENT EVENT PORTAL";
+        } else if ("STAFF".equals(userType)) {
+            displayText = "STAFF EVENT PORTAL";
         }
+        
+        logoLabel = new JLabel(displayText);
         
         logoLabel.setFont(new Font("Arial", Font.BOLD, 24));
         logoLabel.setForeground(Color.BLACK);
@@ -158,5 +165,17 @@ public class MainPageParticipant extends MainPage {
         }
         
         return logoLabel;
+    }
+    
+    private void updateLogo() {
+        if (logoLabel != null) {
+            if ("STUDENT".equals(userType)) {
+                logoLabel.setText("STUDENT EVENT PORTAL");
+            } else if ("STAFF".equals(userType)) {
+                logoLabel.setText("STAFF EVENT PORTAL");
+            } else {
+                logoLabel.setText("EVENT PORTAL");
+            }
+        }
     }
 }
