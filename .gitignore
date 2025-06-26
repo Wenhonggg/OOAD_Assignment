@@ -1,0 +1,4 @@
+*.class
+# bin/
+launch.json
+.vscode/

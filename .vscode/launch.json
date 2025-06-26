@@ -3,6 +3,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "LoginPage",
+            "request": "launch",
+            "mainClass": "main.LoginPage",
+            "projectName": "OOAD_Assignment_1fe984f1"
+        },
+        {
+            "type": "java",
+            "name": "InputRegisterDetailsPage",
+            "request": "launch",
+            "mainClass": "main.InputRegisterDetailsPage",
+            "projectName": "OOAD_Assignment_1fe984f1"
+        },
+        {
+            "type": "java",
             "name": "InputRegisterDetailsPage",
             "request": "launch",
             "mainClass": "main.InputRegisterDetailsPage",
