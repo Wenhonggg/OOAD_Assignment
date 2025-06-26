@@ -18,10 +18,12 @@ public class InputRegisterDetailsPage extends JFrame {
 
     public InputRegisterDetailsPage() {
         setTitle("Event Registration");
-        setSize(650, 600);
+        // setSize(650, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
+        // setLocationRelativeTo(null);
         setLayout(new BorderLayout());
+        setResizable(false);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         Font headerFont = new Font("Serif", Font.BOLD, 25);
         Font labelFont = new Font("Monospaced", Font.PLAIN, 14);
@@ -225,7 +227,7 @@ public class InputRegisterDetailsPage extends JFrame {
         }
     }
 
-    // public static void main(String[] args) {
-    // SwingUtilities.invokeLater(InputRegisterDetailsPage::new);
-    // }
+    public static void main(String[] args) {
+    SwingUtilities.invokeLater(InputRegisterDetailsPage::new);
+    }
 }

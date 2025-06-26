@@ -5,7 +5,8 @@ public class App extends JFrame {
     public App() {
         super();
         // add(new PaymentPage(this));
-        add(new MyEventsPage(this));
+        Participant p = new Participant("Ali", "0123456789", "alsd");
+        add(new MyEventsPage(this, p));
         setResizable(false);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         // setSize(new Dimension(600,800));

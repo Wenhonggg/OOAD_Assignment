@@ -1,6 +1,9 @@
 package main;
 
 import javax.swing.*;
+
+import util.SwingUtils;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,18 +12,19 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PaymentPage extends JPanel {
-    private JFrame frame;
+public class PaymentPage extends JFrame {
     private boolean paymentMethodSelected = false;
     private final int defaultFontSize = 20;
     private final Font defaultFont = new Font("Arial", Font.PLAIN, defaultFontSize);
     private final int paymentMethodCount = 5;
 
-    public PaymentPage(JFrame f) {
+    public PaymentPage() {
         super();
-        frame = f;
-        setLayout(new GridBagLayout());
-        setBackground(new Color(216, 219, 215));
+        setResizable(false);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(new Color(216, 219, 215));
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setPreferredSize(new Dimension(1200, 500));
         contentPanel.setOpaque(false);
@@ -114,10 +118,12 @@ public class PaymentPage extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
-        add(backBtnPanel, gbc);
+        panel.add(backBtnPanel, gbc);
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.CENTER;
-        add(contentPanel, gbc);
+        panel.add(contentPanel, gbc);
+        add(panel);
+        setVisible(true);
     }
 
     private void populateSummary(JPanel panel) {
@@ -230,13 +236,13 @@ public class PaymentPage extends JPanel {
     }
 
     private void showThankYouDialog() {
-        JWindow overlayWindow = new JWindow(frame);
+        JWindow overlayWindow = new JWindow(this);
         overlayWindow.setBackground(new Color(0, 0, 0, 150));
-        overlayWindow.setSize(frame.getSize());
-        overlayWindow.setLocation(frame.getLocation());
+        overlayWindow.setSize(getSize());
+        overlayWindow.setLocation(getLocation());
         overlayWindow.setLayout(null);
         overlayWindow.setVisible(true);
-        JDialog tqDialog = new JDialog(frame);
+        JDialog tqDialog = new JDialog(this);
         tqDialog.setUndecorated(true);
         tqDialog.setSize(500, 280);
         tqDialog.setBackground(new Color(0, 0, 0, 0));
@@ -298,7 +304,7 @@ public class PaymentPage extends JPanel {
         dialogPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         dialogPanel.add(btnPanel);
         tqDialog.add(dialogPanel, BorderLayout.CENTER);
-        tqDialog.setLocationRelativeTo(frame);
+        tqDialog.setLocationRelativeTo(this);
         tqDialog.setVisible(true);
     }
 
@@ -323,8 +329,12 @@ public class PaymentPage extends JPanel {
         errMsgPopup.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         errMsgPopup.add(errIcon);
         errMsgPopup.add(msg);
-        int frameWidth = frame.getWidth();
+        int frameWidth = getWidth();
         int popupWidth = errMsgPopup.getPreferredSize().width;
-        errMsgPopup.show(frame, (frameWidth - popupWidth) / 2, 70);
+        errMsgPopup.show(this, (frameWidth - popupWidth) / 2, 70);
+    }
+
+    public static void main(String[] args) {
+        new PaymentPage();
     }
 }

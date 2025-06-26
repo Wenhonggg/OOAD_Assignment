@@ -1,4 +1,5 @@
 package main;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -13,10 +14,12 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
+import util.SwingUtils;
+
 public class MyEventsPage extends JPanel {
 	private JPanel selectedPanel;
 
-	public MyEventsPage(JFrame frame) {
+	public MyEventsPage(JFrame frame, Participant p) {
 		super();
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		JPanel leftPanel = new JPanel();
@@ -25,21 +28,18 @@ public class MyEventsPage extends JPanel {
 		JPanel ticketPanel = new JPanel();
 		ticketPanel.setBackground(new Color(227, 225, 227));
 		ticketPanel.setLayout(new GridBagLayout());
-		List<List<String>> data = new ArrayList<>();
-		try {
-			data = SwingUtils.readFromCsv("database/tickets_0123456789.csv");
-		} catch (Exception e) {
-			System.err.println("Failed to fetch ticket data: " + e.getMessage());
-			e.printStackTrace();
-		}
-		int TICKET_COUNT = data.size();
-		Ticket[] tickets = new Ticket[TICKET_COUNT];
-		JPanel[] ticketListPanels = new JPanel[TICKET_COUNT];
-		for (int i = 0; i < TICKET_COUNT; i++) {
-			List<String> row = data.get(i);
-			tickets[i] = new Ticket(Integer.parseInt(row.get(0)), Integer.parseInt(row.get(1)), row.get(2), row.get(3),
-					row.get(4), row.get(5), row.get(6), row.get(7), row.get(8), row.get(9),
-					Integer.parseInt(row.get(10)));
+		// List<List<String>> data = new ArrayList<>();
+		// try {
+		// data = SwingUtils.readFromCsv("database/tickets_0123456789.csv");
+		// } catch (Exception e) {
+		// System.err.println("Failed to fetch ticket data: " + e.getMessage());
+		// e.printStackTrace();
+		// }
+		// int TICKET_COUNT = data.size();
+		// Ticket[] tickets = new Ticket[TICKET_COUNT];
+		Ticket[] tickets = p.getTickets();
+		JPanel[] ticketListPanels = new JPanel[tickets.length];
+		for (int i = 0; i < tickets.length; i++) {
 			ticketListPanels[i] = tickets[i].ticketListItem(this, ticketPanel);
 			leftPanel.add(ticketListPanels[i]);
 			JPanel sep = new JPanel();

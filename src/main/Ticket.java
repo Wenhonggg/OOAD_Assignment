@@ -5,6 +5,8 @@ import java.awt.event.MouseListener;
 import java.util.Random;
 import javax.swing.*;
 
+import util.SwingUtils;
+
 public class Ticket extends JPanel {
     private int ticketID;
     private int orderID;
