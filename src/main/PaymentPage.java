@@ -80,7 +80,7 @@ public class PaymentPage extends JPanel {
                 else {
                     showThankYouDialog();
                     Ticket ticket = new Ticket(1, 1, "WORKSHOP", "OOAD Workshop", "12 June 2025", "13:00-14:00",
-                            "FCI Study Space", null, "Ali bin Ahmad", "abc", 2);
+                            "FCI Study Space", null, "Abu bin Ahmad", "abc", 2);
                     List<String> fields = new ArrayList<>();
                     fields.add(String.valueOf(ticket.getTicketID()));
                     fields.add(String.valueOf(ticket.getOrderID()));
@@ -94,7 +94,7 @@ public class PaymentPage extends JPanel {
                     fields.add(ticket.getParticipantID());
                     fields.add(String.valueOf(ticket.getPax()));
                     try {
-                        SwingUtils.writeToCsv("data/tickets_" + ticket.getParticipantID() + ".csv", fields);
+                        SwingUtils.writeToCsv("database/tickets_" + ticket.getParticipantID() + ".csv", fields);
                     } catch (Exception e1) {
                         System.err.println("Failed to write row to csv file: " + e1.getMessage());
                         e1.printStackTrace();
