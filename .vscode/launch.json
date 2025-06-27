@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "PaymentPage",
+            "request": "launch",
+            "mainClass": "main.PaymentPage",
+            "projectName": "OOAD_Assignment_7db74b7c"
+        },
+        {
+            "type": "java",
             "name": "LoginPage",
             "request": "launch",
             "mainClass": "main.LoginPage",

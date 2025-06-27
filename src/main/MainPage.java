@@ -8,6 +8,8 @@ import javax.swing.border.EmptyBorder;
 public abstract class MainPage extends JFrame {
     // Core properties
     protected String pageTitle;
+    protected JComponent contentPanel;
+    protected User user;
     
     // Color scheme
     protected Color headerBackground = Color.WHITE;
@@ -18,13 +20,15 @@ public abstract class MainPage extends JFrame {
     protected Color buttonColor = new Color(70, 130, 180); // Steel blue
     protected Color buttonHoverColor = new Color(100, 149, 237); // Cornflower blue
     
-    public MainPage(String title) {
+    public MainPage(String title, User u) {
         this.pageTitle = title;
+        this.user = u;
         setupPage();
     }
     
     // Abstract methods to be implemented by subclasses
     protected abstract JComponent createCategoryButton();
+    protected abstract JComponent createMainMenuBtn();
     protected abstract JComponent createContent();
     protected abstract JLabel createLogo();
     
@@ -36,7 +40,8 @@ public abstract class MainPage extends JFrame {
         setResizable(false);
         setLayout(new BorderLayout());
         add(createHeader(), BorderLayout.NORTH);
-        add(createContent(), BorderLayout.CENTER);
+        contentPanel = createContent();
+        add(contentPanel, BorderLayout.CENTER);
         setVisible(true);
     }
     
@@ -52,6 +57,11 @@ public abstract class MainPage extends JFrame {
         leftPanel.setBackground(headerBackground);
         leftPanel.add(createLogo());
         
+        JComponent mainMenuBtn = createMainMenuBtn();
+        if(mainMenuBtn != null) {
+            leftPanel.add(mainMenuBtn);
+        }
+
         JComponent categoryButton = createCategoryButton();
         if (categoryButton != null) {
             leftPanel.add(categoryButton);

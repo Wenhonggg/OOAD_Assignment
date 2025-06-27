@@ -1,0 +1,340 @@
+package main;
+
+import javax.swing.*;
+
+import util.SwingUtils;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PaymentPage extends JFrame {
+    private boolean paymentMethodSelected = false;
+    private final int defaultFontSize = 20;
+    private final Font defaultFont = new Font("Arial", Font.PLAIN, defaultFontSize);
+    private final int paymentMethodCount = 5;
+
+    public PaymentPage() {
+        super();
+        setResizable(false);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(new Color(216, 219, 215));
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setPreferredSize(new Dimension(1200, 500));
+        contentPanel.setOpaque(false);
+        JPanel backBtnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        backBtnPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+        backBtnPanel.setOpaque(false);
+        JButton backBtn = new JButton("<");
+        backBtn.setFont(new Font("Comic Sans MS", Font.PLAIN, 60));
+        backBtn.setPreferredSize(new Dimension(60, 60));
+        backBtn.setOpaque(false);
+        backBtn.setBorderPainted(false);
+        backBtn.setFocusPainted(false);
+        backBtn.setContentAreaFilled(false);
+        backBtnPanel.add(backBtn);
+        JPanel summaryPanel = new JPanel() {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, 650, 500, 50, 50);
+                g2.dispose();
+            }
+        };
+        summaryPanel.setPreferredSize(new Dimension(650, 500));
+        summaryPanel.setLayout(new BoxLayout(summaryPanel, BoxLayout.Y_AXIS));
+        summaryPanel.setOpaque(false);
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new BorderLayout());
+        rightPanel.setPreferredSize(new Dimension(500, 500));
+        rightPanel.setOpaque(false);
+        JPanel paymentMethodPanel = new JPanel() {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, 500, 400, 50, 50);
+                g2.dispose();
+            }
+        };
+        paymentMethodPanel.setPreferredSize(new Dimension(500, 400));
+        paymentMethodPanel.setLayout(new BoxLayout(paymentMethodPanel, BoxLayout.Y_AXIS));
+        paymentMethodPanel.setOpaque(false);
+        JButton payBtn = new JButton("Confirm payment");
+        payBtn.setPreferredSize(new Dimension(500, 50));
+        payBtn.setBackground(new Color(0, 192, 21));
+        payBtn.setForeground(Color.WHITE);
+        payBtn.setFont(new Font("Arial", Font.BOLD, 20));
+        payBtn.setFocusPainted(false);
+        payBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!paymentMethodSelected)
+                    showErrorMsg();
+                else {
+                    showThankYouDialog();
+                    Ticket ticket = new Ticket(1, 1, "WORKSHOP", "OOAD Workshop", "12 June 2025", "13:00-14:00",
+                            "FCI Study Space", null, "Ali bin Ahmad", "abc", 2);
+                    List<String> fields = new ArrayList<>();
+                    fields.add(String.valueOf(ticket.getTicketID()));
+                    fields.add(String.valueOf(ticket.getOrderID()));
+                    fields.add(ticket.getEventType());
+                    fields.add(ticket.getEventName());
+                    fields.add(ticket.getEventDate());
+                    fields.add(ticket.getEventTime());
+                    fields.add(ticket.getEventVenue());
+                    fields.add(ticket.getTicketCode());
+                    fields.add(ticket.getParticipantName());
+                    fields.add(ticket.getParticipantID());
+                    fields.add(String.valueOf(ticket.getPax()));
+                    try {
+                        SwingUtils.writeToCsv("database/tickets_" + ticket.getParticipantID() + ".csv", fields);
+                    } catch (Exception e1) {
+                        System.err.println("Failed to write row to csv file: " + e1.getMessage());
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        populateSummary(summaryPanel);
+        SwingUtils.applyFontToLabels(summaryPanel, defaultFont);
+        populatePaymentMethod(paymentMethodPanel);
+
+        rightPanel.add(paymentMethodPanel, BorderLayout.NORTH);
+        rightPanel.add(payBtn, BorderLayout.SOUTH);
+        contentPanel.add(summaryPanel, BorderLayout.WEST);
+        contentPanel.add(rightPanel, BorderLayout.EAST);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel.add(backBtnPanel, gbc);
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        panel.add(contentPanel, gbc);
+        add(panel);
+        setVisible(true);
+    }
+
+    private void populateSummary(JPanel panel) {
+        JLabel nettTotalLabel = new JLabel("Nett total");
+        nettTotalLabel.setFont(new Font("Arial", Font.BOLD, defaultFontSize));
+        double nettTotal = 100.00 - 10.00;
+        JLabel nettPriceLabel = new JLabel(String.format("%.2f", nettTotal));
+        nettPriceLabel.setFont(new Font("Arial", Font.BOLD, defaultFontSize));
+
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JLabel summaryTitle = new JLabel("Order Summary");
+        summaryTitle.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 34));
+        summaryTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JPanel totalCalculationGrid = new JPanel(new GridBagLayout());
+        totalCalculationGrid.setOpaque(false);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        totalCalculationGrid.add(new JLabel("Item"), gbc);
+
+        gbc.gridy = 1;
+        totalCalculationGrid.add(new JLabel("Java Swing Seminar ticket"), gbc);
+
+        gbc.gridy = 2;
+        totalCalculationGrid.add(new JLabel("Early bird discount"), gbc);
+
+        gbc.gridy = 3;
+        totalCalculationGrid.add(nettTotalLabel, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        totalCalculationGrid.add(new JLabel("Quantity"), gbc);
+
+        gbc.gridy = 1;
+        totalCalculationGrid.add(new JLabel("1"), gbc);
+
+        gbc.gridy = 2;
+        totalCalculationGrid.add(new JLabel("10%"), gbc);
+
+        gbc.weightx = 0;
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        totalCalculationGrid.add(new JLabel("Total (RM)"), gbc);
+
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        totalCalculationGrid.add(new JLabel("100.00"), gbc);
+
+        gbc.gridy = 2;
+        totalCalculationGrid.add(new JLabel("-10.00"), gbc);
+
+        gbc.gridy = 3;
+        totalCalculationGrid.add(nettPriceLabel, gbc);
+        panel.add(summaryTitle);
+        panel.add(totalCalculationGrid);
+    }
+
+    private void populatePaymentMethod(JPanel panel) {
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JLabel paymentMethodLabel = new JLabel("How would you like to pay?");
+        paymentMethodLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        paymentMethodLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JPanel paymentMethodGrid = new JPanel(new GridLayout(2, 3));
+        paymentMethodGrid.setOpaque(false);
+
+        JPanel[] paymentMethodPanels = new JPanel[paymentMethodCount];
+        String[] paymentMethodIconPaths = { "src/icon/paymentMethodIcons/grab.png", "src/icon/paymentMethodIcons/tng.png",
+                "src/icon/paymentMethodIcons/boost.png", "src/icon/paymentMethodIcons/visa_mastercard.png",
+                "src/icon/paymentMethodIcons/fpx.png" };
+        ImageIcon[] paymentMethodIcons = new ImageIcon[paymentMethodCount];
+        JButton[] paymentMethodBtns = new JButton[paymentMethodCount];
+
+        for (int i = 0; i < paymentMethodCount; i++)
+            paymentMethodIcons[i] = SwingUtils.loadImage(paymentMethodIconPaths[i], 130, 130);
+
+        for (int i = 0; i < paymentMethodCount; i++) {
+            paymentMethodBtns[i] = new JButton();
+            paymentMethodBtns[i].setOpaque(false);
+            paymentMethodBtns[i].setBorderPainted(false);
+            paymentMethodBtns[i].setContentAreaFilled(false);
+            paymentMethodBtns[i].setFocusPainted(false);
+            paymentMethodBtns[i].setIcon(paymentMethodIcons[i]);
+            paymentMethodBtns[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (paymentMethodSelected) {
+                        for (JButton otherBtn : paymentMethodBtns)
+                            otherBtn.setBorderPainted(false);
+                    }
+                    paymentMethodSelected = true;
+                    JButton btn = (JButton) e.getSource();
+                    btn.setBorderPainted(true);
+                    btn.setBorder(BorderFactory.createLineBorder(new Color(0, 192, 21), 5));
+                }
+            });
+        }
+
+        for (int i = 0; i < paymentMethodCount; i++) {
+            paymentMethodPanels[i] = new JPanel(new GridBagLayout());
+            paymentMethodPanels[i].setOpaque(false);
+            paymentMethodPanels[i].add(paymentMethodBtns[i]);
+            paymentMethodGrid.add(paymentMethodPanels[i]);
+        }
+        panel.add(paymentMethodLabel);
+        panel.add(paymentMethodGrid);
+    }
+
+    private void showThankYouDialog() {
+        JWindow overlayWindow = new JWindow(this);
+        overlayWindow.setBackground(new Color(0, 0, 0, 150));
+        overlayWindow.setSize(getSize());
+        overlayWindow.setLocation(getLocation());
+        overlayWindow.setLayout(null);
+        overlayWindow.setVisible(true);
+        JDialog tqDialog = new JDialog(this);
+        tqDialog.setUndecorated(true);
+        tqDialog.setSize(500, 280);
+        tqDialog.setBackground(new Color(0, 0, 0, 0));
+        JPanel dialogPanel = new JPanel() {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.dispose();
+            }
+        };
+        dialogPanel.setLayout(new BoxLayout(dialogPanel, BoxLayout.Y_AXIS));
+        dialogPanel.setOpaque(false);
+        JLabel tickIcon = new JLabel(SwingUtils.loadImage("src/icon/green_tick.png", 100, 100));
+        tickIcon.setAlignmentX(CENTER_ALIGNMENT);
+        JLabel label1 = new JLabel("Payment Successful");
+        label1.setFont(defaultFont);
+        label1.setAlignmentX(CENTER_ALIGNMENT);
+        JLabel label2 = new JLabel("You can view your ticket in the \"My Events\" page.");
+        label2.setFont(defaultFont);
+        label2.setAlignmentX(CENTER_ALIGNMENT);
+        JButton backBtn = new JButton("Back to Main Menu");
+        backBtn.setBackground(new Color(0, 192, 21));
+        backBtn.setForeground(Color.WHITE);
+        backBtn.setFont(new Font("Arial", Font.BOLD, 18));
+        backBtn.setPreferredSize(new Dimension(200, 40));
+        backBtn.setAlignmentX(CENTER_ALIGNMENT);
+        backBtn.setFocusPainted(false);
+        backBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                tqDialog.dispose();
+            };
+        });
+        JPanel btnPanel = new JPanel() {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.dispose();
+            }
+        };
+        btnPanel.setOpaque(false);
+        btnPanel.add(backBtn);
+        tqDialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                overlayWindow.setVisible(false);
+            }
+        });
+        dialogPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        dialogPanel.add(tickIcon);
+        dialogPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        dialogPanel.add(label1);
+        dialogPanel.add(label2);
+        dialogPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        dialogPanel.add(btnPanel);
+        tqDialog.add(dialogPanel, BorderLayout.CENTER);
+        tqDialog.setLocationRelativeTo(this);
+        tqDialog.setVisible(true);
+    }
+
+    private void showErrorMsg() {
+        JPopupMenu errMsgPopup = new JPopupMenu() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(247, 59, 94));
+                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 15, 15);
+                g2.dispose();
+            }
+        };
+        errMsgPopup.setLayout(new FlowLayout());
+        JLabel errIcon = new JLabel(SwingUtils.loadImage("src/icon/error.png", 26, 26));
+        errIcon.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 4));
+        JLabel msg = new JLabel("Please select a payment method!");
+        msg.setFont(new Font("Arial", Font.BOLD, defaultFontSize));
+        msg.setForeground(Color.WHITE);
+        errMsgPopup.setPreferredSize(new Dimension(380, 50));
+        errMsgPopup.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        errMsgPopup.add(errIcon);
+        errMsgPopup.add(msg);
+        int frameWidth = getWidth();
+        int popupWidth = errMsgPopup.getPreferredSize().width;
+        errMsgPopup.show(this, (frameWidth - popupWidth) / 2, 70);
+    }
+
+    public static void main(String[] args) {
+        new PaymentPage();
+    }
+}

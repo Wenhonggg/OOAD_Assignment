@@ -6,12 +6,17 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class MainPageOrganizer extends MainPage {
-    public MainPageOrganizer() {
-        super("Event Organizer");
+    public MainPageOrganizer(EventOrganizer eo) {
+        super("Event Organizer", eo);
     }
     
     @Override
     protected JComponent createCategoryButton() {
+        return null;
+    }
+
+    @Override
+    protected JComponent createMainMenuBtn() {
         return null;
     }
 
