@@ -1,9 +1,7 @@
 package main;
 
 import javax.swing.*;
-
 import util.SwingUtils;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,19 +10,18 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PaymentPage extends JFrame {
+public class PaymentPage extends JPanel {
+    private JFrame frame;
     private boolean paymentMethodSelected = false;
     private final int defaultFontSize = 20;
     private final Font defaultFont = new Font("Arial", Font.PLAIN, defaultFontSize);
     private final int paymentMethodCount = 5;
 
-    public PaymentPage() {
+    public PaymentPage(JFrame f) {
         super();
-        setResizable(false);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(new Color(216, 219, 215));
+        frame = f;
+        setLayout(new GridBagLayout());
+        setBackground(new Color(216, 219, 215));
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setPreferredSize(new Dimension(1200, 500));
         contentPanel.setOpaque(false);
@@ -97,7 +94,7 @@ public class PaymentPage extends JFrame {
                     fields.add(ticket.getParticipantID());
                     fields.add(String.valueOf(ticket.getPax()));
                     try {
-                        SwingUtils.writeToCsv("database/tickets_" + ticket.getParticipantID() + ".csv", fields);
+                        SwingUtils.writeToCsv("data/tickets_" + ticket.getParticipantID() + ".csv", fields);
                     } catch (Exception e1) {
                         System.err.println("Failed to write row to csv file: " + e1.getMessage());
                         e1.printStackTrace();
@@ -118,12 +115,10 @@ public class PaymentPage extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
-        panel.add(backBtnPanel, gbc);
+        add(backBtnPanel, gbc);
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(contentPanel, gbc);
-        add(panel);
-        setVisible(true);
+        add(contentPanel, gbc);
     }
 
     private void populateSummary(JPanel panel) {
@@ -236,13 +231,13 @@ public class PaymentPage extends JFrame {
     }
 
     private void showThankYouDialog() {
-        JWindow overlayWindow = new JWindow(this);
+        JWindow overlayWindow = new JWindow(frame);
         overlayWindow.setBackground(new Color(0, 0, 0, 150));
-        overlayWindow.setSize(getSize());
-        overlayWindow.setLocation(getLocation());
+        overlayWindow.setSize(frame.getSize());
+        overlayWindow.setLocation(frame.getLocation());
         overlayWindow.setLayout(null);
         overlayWindow.setVisible(true);
-        JDialog tqDialog = new JDialog(this);
+        JDialog tqDialog = new JDialog(frame);
         tqDialog.setUndecorated(true);
         tqDialog.setSize(500, 280);
         tqDialog.setBackground(new Color(0, 0, 0, 0));
@@ -304,7 +299,7 @@ public class PaymentPage extends JFrame {
         dialogPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         dialogPanel.add(btnPanel);
         tqDialog.add(dialogPanel, BorderLayout.CENTER);
-        tqDialog.setLocationRelativeTo(this);
+        tqDialog.setLocationRelativeTo(frame);
         tqDialog.setVisible(true);
     }
 
@@ -329,12 +324,8 @@ public class PaymentPage extends JFrame {
         errMsgPopup.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         errMsgPopup.add(errIcon);
         errMsgPopup.add(msg);
-        int frameWidth = getWidth();
+        int frameWidth = frame.getWidth();
         int popupWidth = errMsgPopup.getPreferredSize().width;
-        errMsgPopup.show(this, (frameWidth - popupWidth) / 2, 70);
-    }
-
-    public static void main(String[] args) {
-        new PaymentPage();
+        errMsgPopup.show(frame, (frameWidth - popupWidth) / 2, 70);
     }
 }
