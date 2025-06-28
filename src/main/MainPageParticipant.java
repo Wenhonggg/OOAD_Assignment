@@ -8,11 +8,6 @@ import java.awt.event.*;
 public class MainPageParticipant extends MainPage {
     private JLabel logoLabel; // Add this field to store reference
 
-    // public MainPageParticipant() {
-    // Participant p = new Participant(pageTitle, null)
-    // this("STUDENT", "abc"); // Default to STUDENT
-    // }
-
     public MainPageParticipant(Participant p) {
         super("Event Participant", p);
         updateLogo();

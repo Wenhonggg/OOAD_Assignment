@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Create_Event_Page_Organiser",
+            "request": "launch",
+            "mainClass": "main.Create_Event_Page_Organiser",
+            "projectName": "OOAD_Assignment_7db74b7c"
+        },
+        {
+            "type": "java",
             "name": "PaymentPage",
             "request": "launch",
             "mainClass": "main.PaymentPage",

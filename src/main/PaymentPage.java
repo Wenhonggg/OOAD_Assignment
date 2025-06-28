@@ -5,37 +5,40 @@ import util.SwingUtils;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PaymentPage extends JPanel {
-    private JFrame frame;
+    private MainPageParticipant frame;
+    private Event event;
+    private Participant participant;
+    private int qty;
+    private boolean cateringSelected;
+    private boolean transportationSelected;
     private boolean paymentMethodSelected = false;
     private final int defaultFontSize = 20;
     private final Font defaultFont = new Font("Arial", Font.PLAIN, defaultFontSize);
     private final int paymentMethodCount = 5;
 
-    public PaymentPage(JFrame f) {
+    public PaymentPage(JFrame f, Event ev, Participant p, int q, boolean c, boolean t) {
         super();
-        frame = f;
+        frame = (MainPageParticipant) f;
+        event = ev;
+        participant = p;
+        qty = q;
+        cateringSelected = c;
+        transportationSelected = t;
         setLayout(new GridBagLayout());
-        setBackground(new Color(216, 219, 215));
+        setBackground(Color.decode("#F8E7F6"));
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setPreferredSize(new Dimension(1200, 500));
         contentPanel.setOpaque(false);
-        JPanel backBtnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        backBtnPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
-        backBtnPanel.setOpaque(false);
-        JButton backBtn = new JButton("<");
-        backBtn.setFont(new Font("Comic Sans MS", Font.PLAIN, 60));
-        backBtn.setPreferredSize(new Dimension(60, 60));
-        backBtn.setOpaque(false);
-        backBtn.setBorderPainted(false);
-        backBtn.setFocusPainted(false);
-        backBtn.setContentAreaFilled(false);
-        backBtnPanel.add(backBtn);
         JPanel summaryPanel = new JPanel() {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -68,7 +71,7 @@ public class PaymentPage extends JPanel {
         paymentMethodPanel.setOpaque(false);
         JButton payBtn = new JButton("Confirm payment");
         payBtn.setPreferredSize(new Dimension(500, 50));
-        payBtn.setBackground(new Color(0, 192, 21));
+        payBtn.setBackground(Color.decode("#DD88CF"));
         payBtn.setForeground(Color.WHITE);
         payBtn.setFont(new Font("Arial", Font.BOLD, 20));
         payBtn.setFocusPainted(false);
@@ -113,18 +116,29 @@ public class PaymentPage extends JPanel {
         contentPanel.add(rightPanel, BorderLayout.EAST);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.WEST;
-        add(backBtnPanel, gbc);
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         add(contentPanel, gbc);
     }
 
     private void populateSummary(JPanel panel) {
+        double totalFee = event.getEventFee() * qty;
+        double extraCharge = 0;
+        if (transportationSelected)
+            extraCharge += (event.getEventTransportationFee() * qty);
+        if (cateringSelected)
+            extraCharge += (event.getEventCateringFee() * qty);
+
+        double totalDisc = 0;
+        if (event.getEventGrpDiscPercentage() > 0 && qty >= event.getEventGrpDiscReq())
+            totalDisc += event.getEventGrpDiscPercentage();
+        if (event.getEventEarlyBirdDiscPercentage() > 0
+                && LocalDate.now().isBefore(event.getEventEarlyBirdDiscDeadline()))
+            totalDisc += event.getEventEarlyBirdDiscPercentage();
+        double discAmt = totalDisc / 100 * (totalFee + extraCharge);
+        double nettTotal = totalFee + extraCharge - discAmt;
         JLabel nettTotalLabel = new JLabel("Nett total");
         nettTotalLabel.setFont(new Font("Arial", Font.BOLD, defaultFontSize));
-        double nettTotal = 100.00 - 10.00;
         JLabel nettPriceLabel = new JLabel(String.format("%.2f", nettTotal));
         nettPriceLabel.setFont(new Font("Arial", Font.BOLD, defaultFontSize));
 
@@ -143,12 +157,15 @@ public class PaymentPage extends JPanel {
         totalCalculationGrid.add(new JLabel("Item"), gbc);
 
         gbc.gridy = 1;
-        totalCalculationGrid.add(new JLabel("Java Swing Seminar ticket"), gbc);
+        totalCalculationGrid.add(new JLabel(event.getEventName() + " ticket"), gbc);
 
         gbc.gridy = 2;
-        totalCalculationGrid.add(new JLabel("Early bird discount"), gbc);
+        totalCalculationGrid.add(new JLabel("Additional services"), gbc);
 
         gbc.gridy = 3;
+        totalCalculationGrid.add(new JLabel("Discounts"), gbc);
+
+        gbc.gridy = 4;
         totalCalculationGrid.add(nettTotalLabel, gbc);
 
         gbc.gridx = 1;
@@ -157,10 +174,10 @@ public class PaymentPage extends JPanel {
         totalCalculationGrid.add(new JLabel("Quantity"), gbc);
 
         gbc.gridy = 1;
-        totalCalculationGrid.add(new JLabel("1"), gbc);
+        totalCalculationGrid.add(new JLabel(Integer.toString(qty)), gbc);
 
-        gbc.gridy = 2;
-        totalCalculationGrid.add(new JLabel("10%"), gbc);
+        gbc.gridy = 3;
+        totalCalculationGrid.add(new JLabel(Double.toString(totalDisc) + "%"), gbc);
 
         gbc.weightx = 0;
         gbc.gridx = 2;
@@ -169,12 +186,15 @@ public class PaymentPage extends JPanel {
 
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.EAST;
-        totalCalculationGrid.add(new JLabel("100.00"), gbc);
+        totalCalculationGrid.add(new JLabel(String.format("%.2f", totalFee)), gbc);
 
         gbc.gridy = 2;
-        totalCalculationGrid.add(new JLabel("-10.00"), gbc);
+        totalCalculationGrid.add(new JLabel(String.format("%.2f", extraCharge)), gbc);
 
         gbc.gridy = 3;
+        totalCalculationGrid.add(new JLabel("-" + String.format("%.2f", discAmt)), gbc);
+
+        gbc.gridy = 4;
         totalCalculationGrid.add(nettPriceLabel, gbc);
         panel.add(summaryTitle);
         panel.add(totalCalculationGrid);
@@ -189,7 +209,8 @@ public class PaymentPage extends JPanel {
         paymentMethodGrid.setOpaque(false);
 
         JPanel[] paymentMethodPanels = new JPanel[paymentMethodCount];
-        String[] paymentMethodIconPaths = { "src/icon/paymentMethodIcons/grab.png", "src/icon/paymentMethodIcons/tng.png",
+        String[] paymentMethodIconPaths = { "src/icon/paymentMethodIcons/grab.png",
+                "src/icon/paymentMethodIcons/tng.png",
                 "src/icon/paymentMethodIcons/boost.png", "src/icon/paymentMethodIcons/visa_mastercard.png",
                 "src/icon/paymentMethodIcons/fpx.png" };
         ImageIcon[] paymentMethodIcons = new ImageIcon[paymentMethodCount];
@@ -205,6 +226,7 @@ public class PaymentPage extends JPanel {
             paymentMethodBtns[i].setContentAreaFilled(false);
             paymentMethodBtns[i].setFocusPainted(false);
             paymentMethodBtns[i].setIcon(paymentMethodIcons[i]);
+            paymentMethodBtns[i].setCursor(new Cursor(Cursor.HAND_CURSOR));
             paymentMethodBtns[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -215,7 +237,7 @@ public class PaymentPage extends JPanel {
                     paymentMethodSelected = true;
                     JButton btn = (JButton) e.getSource();
                     btn.setBorderPainted(true);
-                    btn.setBorder(BorderFactory.createLineBorder(new Color(0, 192, 21), 5));
+                    btn.setBorder(BorderFactory.createLineBorder(Color.decode("#DD88CF"), 5));
                 }
             });
         }
@@ -253,7 +275,7 @@ public class PaymentPage extends JPanel {
         };
         dialogPanel.setLayout(new BoxLayout(dialogPanel, BoxLayout.Y_AXIS));
         dialogPanel.setOpaque(false);
-        JLabel tickIcon = new JLabel(SwingUtils.loadImage("src/icon/green_tick.png", 100, 100));
+        JLabel tickIcon = new JLabel(SwingUtils.loadImage("src/icon/tick.png", 100, 100));
         tickIcon.setAlignmentX(CENTER_ALIGNMENT);
         JLabel label1 = new JLabel("Payment Successful");
         label1.setFont(defaultFont);
@@ -262,7 +284,7 @@ public class PaymentPage extends JPanel {
         label2.setFont(defaultFont);
         label2.setAlignmentX(CENTER_ALIGNMENT);
         JButton backBtn = new JButton("Back to Main Menu");
-        backBtn.setBackground(new Color(0, 192, 21));
+        backBtn.setBackground(Color.decode("#FF6D97"));
         backBtn.setForeground(Color.WHITE);
         backBtn.setFont(new Font("Arial", Font.BOLD, 18));
         backBtn.setPreferredSize(new Dimension(200, 40));
@@ -271,6 +293,11 @@ public class PaymentPage extends JPanel {
         backBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 tqDialog.dispose();
+                frame.remove(frame.contentPanel);
+                frame.contentPanel = frame.createContent();
+                frame.add(frame.contentPanel);
+                frame.revalidate();
+                frame.repaint();
             };
         });
         JPanel btnPanel = new JPanel() {
@@ -326,6 +353,6 @@ public class PaymentPage extends JPanel {
         errMsgPopup.add(msg);
         int frameWidth = frame.getWidth();
         int popupWidth = errMsgPopup.getPreferredSize().width;
-        errMsgPopup.show(frame, (frameWidth - popupWidth) / 2, 70);
+        errMsgPopup.show(frame, (frameWidth - popupWidth) / 2, 124);
     }
 }

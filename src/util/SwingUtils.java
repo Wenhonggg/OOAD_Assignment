@@ -18,10 +18,6 @@ import javax.swing.UIManager;
 
 // utility class for reusable functionalities
 public final class SwingUtils {
-    public static final Color participant_whiteSmoke = new Color(245, 245, 245);
-    public static final Color participant_palePurple = new Color(248, 231, 246);
-    public static final Color participant_plum = new Color(221, 136, 207);
-    public static final Color participant_russianViolet = new Color(75, 22, 76);
     private SwingUtils() {
         throw new UnsupportedOperationException("Utility class cannot be instantiated");
     }

@@ -1,11 +1,13 @@
 package main;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 
-public class InputRegisterDetailsPage extends JFrame {
+public class InputRegisterDetailsPage extends JPanel {
 
     private final Color LIGHT_GRAY = Color.decode("#F5F5F5");
     private final Color PINK_BG = Color.decode("#F8E7F6");
@@ -15,13 +17,11 @@ public class InputRegisterDetailsPage extends JFrame {
     private JTextField nameField, idField, emailField;
     private JSpinner quantitySpinner;
     private JCheckBox cateringBox, transportBox;
+    private JFrame frame;
 
-    public InputRegisterDetailsPage() {
-        setTitle("Event Registration");
-        setSize(650, 600);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
+    public InputRegisterDetailsPage(JFrame f, Event event) {
         setLayout(new BorderLayout());
+        frame = f;
 
         Font headerFont = new Font("Serif", Font.BOLD, 25);
         Font labelFont = new Font("Monospaced", Font.PLAIN, 14);
@@ -51,7 +51,7 @@ public class InputRegisterDetailsPage extends JFrame {
         idField = new JTextField();
         emailField = new JTextField();
 
-        for (JTextField tf : new JTextField[]{nameField, idField, emailField}) {
+        for (JTextField tf : new JTextField[] { nameField, idField, emailField }) {
             tf.setFont(labelFont);
             tf.setBackground(Color.WHITE);
             tf.setBorder(new RoundedBorder(15, 2, ACCENT));
@@ -107,7 +107,7 @@ public class InputRegisterDetailsPage extends JFrame {
         payButton.setFocusPainted(false);
         payButton.setPreferredSize(new Dimension(120, 35));
         payButton.setBorder(new RoundedBorder(15, 2, ACCENT));
-        payButton.addActionListener(e -> openPaymentPage());
+        payButton.addActionListener(e -> openPaymentPage(event));
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         bottomPanel.setBackground(LIGHT_GRAY);
@@ -118,7 +118,7 @@ public class InputRegisterDetailsPage extends JFrame {
         setVisible(true);
     }
 
-    private void openPaymentPage() {
+    private void openPaymentPage(Event event) {
         String name = nameField.getText().trim();
         String id = idField.getText().trim();
         String email = emailField.getText().trim();
@@ -130,12 +130,16 @@ public class InputRegisterDetailsPage extends JFrame {
             showStyledDialog("Please fill in all personal information.");
             return;
         }
-
-        //new PaymentPage(name, id, email, qty, catering, transport);
+        Participant p = new Participant(name, id, email);
+        frame.remove(((MainPage) frame).contentPanel);
+        ((MainPage) frame).contentPanel = new PaymentPage(frame, event, p, qty, catering, transport);
+        frame.add(((MainPage) frame).contentPanel);
+        frame.revalidate();
+        frame.repaint();
     }
 
     private void showStyledDialog(String message) {
-        JDialog dialog = new JDialog(this, "Alert", true);
+        JDialog dialog = new JDialog(frame, "Alert", true);
         dialog.setSize(350, 150);
         dialog.setLocationRelativeTo(this);
         dialog.setLayout(new BorderLayout());
@@ -206,8 +210,7 @@ public class InputRegisterDetailsPage extends JFrame {
                     width - thickness,
                     height - thickness,
                     radius,
-                    radius
-            );
+                    radius);
             g2.draw(rounded);
             g2.dispose();
         }
@@ -223,8 +226,8 @@ public class InputRegisterDetailsPage extends JFrame {
             return insets;
         }
     }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(InputRegisterDetailsPage::new);
-    }
+
+    // public static void main(String[] args) {
+    // SwingUtilities.invokeLater(InputRegisterDetailsPage::new);
+    // }
 }

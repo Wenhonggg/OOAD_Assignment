@@ -305,6 +305,17 @@ public abstract class MainPage extends JFrame {
         infoPanel.add(leftPanel, BorderLayout.CENTER);
         card.add(infoPanel, BorderLayout.SOUTH);
 
+        card.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                MainPage.this.remove(contentPanel);
+                MainPage.this.contentPanel = new ViewInfoPage(MainPage.this, new Event("1", "seminar","Sad Event", "02/07/2025", "18:00", "MPH", 100, 5.00, "This is an event", "student", 4, 2.5, "30/06/2025", 10, 10.00, 8.00, "src/icon/valentine"));
+                MainPage.this.add(contentPanel);
+                MainPage.this.revalidate();
+                MainPage.this.repaint();
+            }
+        });
+
         return card;
     }
 }
