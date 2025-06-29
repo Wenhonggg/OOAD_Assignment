@@ -57,7 +57,15 @@ public class Event implements Subject {
     }
 
     public void setEventType(String eventType) {
-        switch (eventType.toUpperCase()) {
+        if (eventType == null) {
+            this.eventType = null;
+            return;
+        }
+        
+        // Clean the event type string - remove emojis and extra spaces
+        String cleanEventType = eventType.replaceAll("[^\\w\\s]", "").trim().toUpperCase();
+        
+        switch (cleanEventType) {
             case "SEMINAR":
                 this.eventType = EventType.SEMINAR;
                 break;
@@ -71,6 +79,19 @@ public class Event implements Subject {
                 this.eventType = EventType.CULTURAL_EVENT;
                 break;
             default:
+                // Try partial matching for cases where substring was used incorrectly
+                if (cleanEventType.contains("SEMINAR")) {
+                    this.eventType = EventType.SEMINAR;
+                } else if (cleanEventType.contains("WORKSHOP")) {
+                    this.eventType = EventType.WORKSHOP;
+                } else if (cleanEventType.contains("CULTURAL")) {
+                    this.eventType = EventType.CULTURAL_EVENT;
+                } else if (cleanEventType.contains("SPORTS")) {
+                    this.eventType = EventType.SPORTS_EVENT;
+                } else {
+                    System.err.println("Unknown event type: " + eventType + " (cleaned: " + cleanEventType + ")");
+                    this.eventType = EventType.SEMINAR; // Default fallback
+                }
                 break;
         }
     }
@@ -254,8 +275,8 @@ public class Event implements Subject {
                 String role = parts[9].trim();
                 int grpDiscReq = Integer.parseInt(parts[10].trim());
                 double grpDiscPercent = Double.parseDouble(parts[11].trim());
-                double earlyBirdPercent = Double.parseDouble(parts[12].trim());
-                String earlyBirdDate = parts[13].trim();
+                double earlyBirdPercent = parts[12].trim().equals("N/A") ? 0.0 : Double.parseDouble(parts[12].trim());
+                String earlyBirdDate = parts[13].trim().equals("N/A") ? null : parts[13].trim();
                 double transportation = Double.parseDouble(parts[14].trim());
                 double catering = Double.parseDouble(parts[15].trim());
                 // You can set a default image or logic for imagePath
