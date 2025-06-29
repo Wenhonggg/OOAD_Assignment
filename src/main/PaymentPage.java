@@ -5,11 +5,9 @@ import util.SwingUtils;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +15,6 @@ import java.util.List;
 public class PaymentPage extends JPanel {
     private MainPageParticipant frame;
     private Event event;
-    private Participant participant;
     private int qty;
     private boolean cateringSelected;
     private boolean transportationSelected;
@@ -30,7 +27,6 @@ public class PaymentPage extends JPanel {
         super();
         frame = (MainPageParticipant) f;
         event = ev;
-        participant = p;
         qty = q;
         cateringSelected = c;
         transportationSelected = t;
@@ -96,8 +92,20 @@ public class PaymentPage extends JPanel {
                     fields.add(ticket.getParticipantEmail());
                     fields.add(String.valueOf(ticket.getPax()));
                     fields.add(String.valueOf(ticket.getEventIsCancelled()));
+                    String filePath = "database/tickets_" + ticket.getParticipantID() + ".csv";
+                    if (!new File(filePath).exists()) {
+                        List<String> header = List.of("Ticket ID", "Event Type", "Event Name", "Event Date",
+                                "Event Time", "Event Venue", "Ticket Code", "Participant Name", "Participant ID",
+                                "Participant Email", "Pax", "Event Is Cancelled?");
+                        try {
+                            SwingUtils.writeToCsv(filePath, header);
+                        } catch (Exception e1) {
+                            System.err.println("Failed to write header to csv file: " + e1.getMessage());
+                            e1.printStackTrace();
+                        }
+                    }
                     try {
-                        SwingUtils.writeToCsv("database/tickets_" + ticket.getParticipantID() + ".csv", fields);
+                        SwingUtils.writeToCsv(filePath, fields);
                     } catch (Exception e1) {
                         System.err.println("Failed to write row to csv file: " + e1.getMessage());
                         e1.printStackTrace();

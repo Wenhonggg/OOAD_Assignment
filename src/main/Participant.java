@@ -38,16 +38,17 @@ public class Participant extends User {
         try {
             data = SwingUtils.readFromCsv(ticketFilePath);
         } catch (Exception e) {
-            System.err.println("Failed to fetch ticket data: " + e.getMessage());
-            e.printStackTrace();
         }
-        int TICKET_COUNT = data.size();
+        int TICKET_COUNT = data.size() - 1;
+        if(TICKET_COUNT < 1) {
+            return null;
+        }
         Ticket[] tickets = new Ticket[TICKET_COUNT];
-        for (int i = 0; i < tickets.length; i++) {
+        for (int i = 1; i < data.size(); i++) {
             List<String> row = data.get(i);
             Event e = new Event(row.get(1), row.get(2), row.get(3), row.get(4), row.get(5));
             Participant p = new Participant(row.get(7), row.get(8), row.get(9));
-            tickets[i] = new Ticket(Integer.parseInt(row.get(0)), e, row.get(6), p,
+            tickets[i - 1] = new Ticket(Integer.parseInt(row.get(0)), e, row.get(6), p,
                     Integer.parseInt(row.get(10)), Boolean.parseBoolean(row.get(11)));
         }
         return tickets;

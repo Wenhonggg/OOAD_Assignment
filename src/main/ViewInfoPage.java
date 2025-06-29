@@ -124,8 +124,14 @@ public class ViewInfoPage extends JPanel {
 
         infoPanel.add(Box.createVerticalStrut(15));
 
-        infoPanel.add(makeLabel("Registration fee: RM" + String.format("%.2f", event.getEventFee()),
-                new Font("Serif", Font.PLAIN, 16)));
+        String combinedFees = String.format(
+            "Registration fee: RM%.2f  |  Catering: RM%.2f  |  Transport: RM%.2f",
+            event.getEventFee(),
+            event.getEventCateringFee(),
+            event.getEventTransportationFee()
+        );
+
+        infoPanel.add(makeLabel(combinedFees, new Font("Serif", Font.PLAIN, 16)));
 
         JScrollPane scrollPane = new JScrollPane(infoPanel);
         scrollPane.setBorder(null);
