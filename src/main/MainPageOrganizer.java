@@ -17,7 +17,17 @@ public class MainPageOrganizer extends MainPage {
 
     @Override
     protected JComponent createMainMenuBtn() {
-        return null;
+        JPanel mainMenuBtn = createStandardCategoryButton("MAIN MENU", true);
+        mainMenuBtn.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                remove(MainPageOrganizer.this.contentPanel);
+                contentPanel = createContent();
+                MainPageOrganizer.this.add(contentPanel);
+                revalidate();
+                repaint();
+            };
+        });
+        return mainMenuBtn;
     }
 
     @Override
@@ -301,7 +311,9 @@ public class MainPageOrganizer extends MainPage {
         JPopupMenu optionsMenu = new JPopupMenu();
         
         JMenuItem editItem = new JMenuItem("Edit");
-        editItem.addActionListener(e -> {});
+        editItem.addActionListener(e -> {
+            openCreateEventPage();
+        });
         
         JMenuItem deleteItem = new JMenuItem("Delete");
         deleteItem.addActionListener(e -> {});
@@ -394,6 +406,10 @@ public class MainPageOrganizer extends MainPage {
     }
 
     private void openCreateEventPage() {
-        return ;
+        remove(MainPageOrganizer.this.contentPanel);
+        contentPanel = new Create_Event_Page_Organiser();
+        MainPageOrganizer.this.add(contentPanel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
     }
 }

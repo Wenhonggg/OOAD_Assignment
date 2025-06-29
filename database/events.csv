@@ -1,3 +1,4 @@
 Event Code,Event Name,Date,Time,Venue,Event Type,Capacity,Registration Fee,Event Details,Role,Group Pax,Group Discount,Early Bird Discount,Early Bird Date,Transportation,Catering,Is Cancelled
 A003,TEST,14/07/2025,12:12AM,FCI,Seminar,100,10.00,"PLS WORK ",STUDENT,4,2.5,N/A,14/07/2025,1.0,0.0,false
 A004,HAPPY EVENT :D,29/06/2025,12:32AM,MMU,Cultural Event,50,0.00,"IT FINALLY WORKS ASHBDGAISFHOUAHFOE",STUDENT,4,1.0,N/A,N/A,0.0,0.0,false
+A005,OOAD FYP,07/06/2025,7pm-10pm,FCM BUILDING CNMX1005,Workshop,80,15.00,"This is a demo ooad event",STUDENT,5,20.0,10.0,05/06/2025,20.0,20.0,false

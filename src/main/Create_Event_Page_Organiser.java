@@ -17,13 +17,10 @@ import util.SwingUtils;
 
 import javax.swing.Timer;
 
-public class Create_Event_Page_Organiser extends JFrame {
+public class Create_Event_Page_Organiser extends JPanel {
     // Modern color palette
     private static final Color PRIMARY_DARK = new Color(30, 41, 59);
-    private static final Color PRIMARY_MEDIUM = new Color(51, 65, 85);
-    private static final Color PRIMARY_LIGHT = new Color(71, 85, 105);
-    private static final Color ACCENT_BLUE = new Color(59, 130, 246);
-    private static final Color ACCENT_HOVER = new Color(37, 99, 235);
+    private static final Color ACCENT_BLUE = new Color(59, 130, 246);   
     private static final Color SUCCESS_GREEN = new Color(34, 197, 94);
     private static final Color WARNING_ORANGE = new Color(251, 146, 60);
     private static final Color DANGER_RED = new Color(239, 68, 68);
@@ -59,15 +56,10 @@ public class Create_Event_Page_Organiser extends JFrame {
         initializeComponents();
         setupLayout();
         loadEvents();
-        setVisible(true);
     }
 
     private void initializeComponents() {
-        setTitle("Event Management Dashboard");
-        setSize(1200, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        getContentPane().setBackground(SURFACE_WHITE);
+        setBackground(SURFACE_WHITE);
 
         nameField = createModernTextField();
         timeField = createModernTextField();
@@ -201,9 +193,6 @@ public class Create_Event_Page_Organiser extends JFrame {
 
         JPanel mainPanel = createMainPanel();
         add(mainPanel, BorderLayout.CENTER);
-
-        JPanel footerPanel = createFooterPanel();
-        add(footerPanel, BorderLayout.SOUTH);
     }
 
     private JPanel createHeaderPanel() {
@@ -367,7 +356,7 @@ public class Create_Event_Page_Organiser extends JFrame {
 
         createBtn.addActionListener(this::createEvent);
         updateBtn.addActionListener(this::updateEvent);
-        clearBtn.addActionListener(e -> clearForm());
+        clearBtn.addActionListener(event -> clearForm());
 
         buttonPanel.add(createBtn);
         buttonPanel.add(updateBtn);
@@ -408,33 +397,6 @@ public class Create_Event_Page_Organiser extends JFrame {
         return card;
     }
 
-    private JPanel createFooterPanel() {
-        JPanel footerPanel = new JPanel(new BorderLayout());
-        footerPanel.setBackground(PRIMARY_DARK);
-        footerPanel.setBorder(new EmptyBorder(16, 32, 16, 32));
-
-        statusLabel.setForeground(Color.WHITE);
-        footerPanel.add(statusLabel, BorderLayout.WEST);
-
-        JButton backBtn = createModernButton("← Back to Main", ACCENT_BLUE, Color.WHITE);
-        backBtn.addActionListener(e -> {
-            dispose();
-        });
-        backBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                backBtn.setBackground(ACCENT_HOVER);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                backBtn.setBackground(ACCENT_BLUE);
-            }
-        });
-        footerPanel.add(backBtn, BorderLayout.EAST);
-
-        return footerPanel;
-    }
 
     private JButton createModernButton(String text, Color background, Color foreground) {
         JButton button = new JButton(text);
@@ -467,7 +429,7 @@ public class Create_Event_Page_Organiser extends JFrame {
 
     private void updateStatus(String message) {
         statusLabel.setText(message);
-        Timer timer = new Timer(3000, e -> statusLabel.setText("Ready"));
+        Timer timer = new Timer(3000, event -> statusLabel.setText("Ready"));
         timer.setRepeats(false);
         timer.start();
     }
@@ -883,7 +845,16 @@ public class Create_Event_Page_Organiser extends JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            new Create_Event_Page_Organiser();
+            
+            // Create a test frame to hold the panel
+            JFrame testFrame = new JFrame("Event Management Dashboard");
+            testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            testFrame.setSize(1200, 800);
+            testFrame.setLocationRelativeTo(null);
+            
+            Create_Event_Page_Organiser panel = new Create_Event_Page_Organiser();
+            testFrame.add(panel);
+            testFrame.setVisible(true);
         });
     }
 }
