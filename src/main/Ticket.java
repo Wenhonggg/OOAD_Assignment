@@ -1,48 +1,44 @@
 package main;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.time.LocalDate;
 import java.util.Random;
 import javax.swing.*;
 
 import util.SwingUtils;
 
-public class Ticket extends JPanel {
+public class Ticket implements Observer {
     private int ticketID;
-    private int orderID;
-    private String eventType;
-    private String eventName;
-    private String eventDate;
-    private String eventTime;
-    private String eventVenue;
-    private String participantName;
-    private String participantID;
+    private Event event;
+    private Participant participant;
     private String registrationType;
     private int pax;
     private String ticketCode;
+    private boolean eventIsCancelled;
     private Font defaultFont = new Font("Segoe UI", Font.PLAIN, 20);
     private Font defaultBoldFont = new Font("Segoe UI", Font.BOLD, 20);
     private Color codePanelColour;
 
-    public Ticket(int ticID, int ordID, String eType, String eName, String eDate, String eTime, String venue,
-            String ticCode, String pName, String pID, int qty) {
+    public Ticket(int ticID, Event ev, String ticCode, Participant p, int qty, boolean cancel) {
         super();
         ticketID = ticID;
-        orderID = ordID;
-        eventType = eType.toUpperCase();
-        eventName = eName;
-        eventDate = eDate;
-        eventTime = eTime;
-        eventVenue = venue;
-        participantName = pName;
-        participantID = pID;
+        event = ev;
+        participant = p;
         pax = qty;
+        eventIsCancelled = cancel;
         if (pax > 1)
             registrationType = "Group";
         else
             registrationType = "Individual";
 
-        switch (eventType) {
+        if (ticCode == null)
+            ticketCode = generateTicketCode();
+        else
+            ticketCode = ticCode;
+
+        switch (event.getEventType().toString().toUpperCase()) {
             case "SEMINAR":
                 codePanelColour = new Color(208, 189, 252);
                 break;
@@ -59,46 +55,46 @@ public class Ticket extends JPanel {
                 codePanelColour = new Color(230, 227, 227);
                 break;
         }
-        if (ticCode == null)
-            ticketCode = generateTicketCode();
-        else
-            ticketCode = ticCode;
     }
 
     public int getTicketID() {
         return ticketID;
     }
 
-    public int getOrderID() {
-        return orderID;
+    public Event getEvent() {
+        return event;
     }
 
     public String getEventType() {
-        return eventType;
+        return event.getEventType().toString();
     }
 
     public String getEventName() {
-        return eventName;
+        return event.getEventName();
     }
 
-    public String getEventDate() {
-        return eventDate;
+    public LocalDate getEventDate() {
+        return event.getEventDate();
     }
 
     public String getEventTime() {
-        return eventTime;
+        return event.getEventTime();
     }
 
     public String getEventVenue() {
-        return eventVenue;
+        return event.getEventVenue();
     }
 
     public String getParticipantName() {
-        return participantName;
+        return participant.getName();
     }
 
     public String getParticipantID() {
-        return participantID;
+        return participant.getID();
+    }
+
+    public String getParticipantEmail() {
+        return participant.getEmail();
     }
 
     public String getRegistrationType() {
@@ -113,6 +109,10 @@ public class Ticket extends JPanel {
         return ticketCode;
     }
 
+    public boolean getEventIsCancelled() {
+        return eventIsCancelled;
+    }
+
     private String generateTicketCode() {
         String chr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder result = new StringBuilder();
@@ -122,7 +122,14 @@ public class Ticket extends JPanel {
         return result.toString();
     }
 
-    public JPanel display() {
+    public JComponent display() {
+        if (eventIsCancelled) {
+            JLabel notice = new JLabel(
+                    "<html><div style='text-align:center;'>Unfortunately, this event has been CANCELLED.<br>The amount paid has been refunded to your account.</div></html>");
+            notice.setFont(new Font("Calibri", Font.BOLD, 20));
+            notice.setForeground(Color.RED);
+            return notice;
+        }
         JPanel ticket = new JPanel(new BorderLayout());
         ticket.setPreferredSize(new Dimension(600, 600));
         ticket.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -142,15 +149,16 @@ public class Ticket extends JPanel {
             }
         };
         eventTypePanel.setLayout(new BoxLayout(eventTypePanel, BoxLayout.Y_AXIS));
-        JLabel eventTypeLabel = new JLabel(eventType);
+        JLabel eventTypeLabel = new JLabel(getEventType().toUpperCase());
         eventTypeLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         eventTypeLabel.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
         eventTypePanel.add(eventTypeLabel);
-        JLabel eventNameLabel = new JLabel("<html>" + eventName + "</html>");
+        JLabel eventNameLabel = new JLabel("<html>" + getEventName() + "</html>");
         eventNameLabel.setFont(new Font("Cooper Black", Font.PLAIN, 40));
-        JLabel eventDateTimeLabel = new JLabel(eventDate + " \u00B7 " + eventTime + " ");
+        JLabel eventDateTimeLabel = new JLabel(
+                getEventDate().format(event.getFormatter()) + " \u00B7 " + getEventTime() + " ");
         eventDateTimeLabel.setFont(new Font("Arial Narrow", Font.ITALIC, 20));
-        JLabel eventVenueLabel = new JLabel(eventVenue);
+        JLabel eventVenueLabel = new JLabel(getEventVenue());
         eventVenueLabel.setFont(new Font("Arial Narrow", Font.PLAIN, 20));
         topPanel.add(eventTypePanel);
         topPanel.add(eventNameLabel);
@@ -174,7 +182,6 @@ public class Ticket extends JPanel {
         codePanel.setMaximumSize(new Dimension(500, 150));
         codePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         codePanel.setLayout(new GridBagLayout());
-        codePanel.setAlignmentX(CENTER_ALIGNMENT);
         JLabel codeTextLabel = new JLabel("Your ticket code is:");
         codeTextLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         JLabel ticketCodeLabel = new JLabel(ticketCode);
@@ -191,7 +198,8 @@ public class Ticket extends JPanel {
         participantNamePanel.setOpaque(false);
         JLabel nameLabel = new JLabel("Participant name: ");
         nameLabel.setFont(defaultFont);
-        JLabel participantNameLabel = new JLabel(participantName);
+        JLabel participantNameLabel = new JLabel(
+                "<html><div align='right' style='width:300px;'>" + participant.getName() + "</div></html>");
         participantNameLabel.setFont(defaultBoldFont);
         participantNamePanel.add(nameLabel, BorderLayout.WEST);
         participantNamePanel.add(participantNameLabel, BorderLayout.EAST);
@@ -200,11 +208,20 @@ public class Ticket extends JPanel {
         participantIDPanel.setOpaque(false);
         JLabel IDLabel = new JLabel("ID: ");
         IDLabel.setFont(defaultFont);
-        JLabel participantIDLabel = new JLabel(participantID);
+        JLabel participantIDLabel = new JLabel(participant.getID());
         participantIDLabel.setFont(defaultBoldFont);
         participantIDPanel.add(IDLabel, BorderLayout.WEST);
         participantIDPanel.add(participantIDLabel, BorderLayout.EAST);
         participantIDPanel.setMaximumSize(new Dimension(600, participantIDPanel.getPreferredSize().height));
+        JPanel participantEmailPanel = new JPanel(new BorderLayout());
+        participantEmailPanel.setOpaque(false);
+        JLabel emailLabel = new JLabel("Email: ");
+        emailLabel.setFont(defaultFont);
+        JLabel participantEmailLabel = new JLabel(participant.getEmail());
+        participantEmailLabel.setFont(defaultBoldFont);
+        participantEmailPanel.add(emailLabel, BorderLayout.WEST);
+        participantEmailPanel.add(participantEmailLabel, BorderLayout.EAST);
+        participantEmailPanel.setMaximumSize(new Dimension(600, participantEmailPanel.getPreferredSize().height));
         JPanel paxPanel = new JPanel(new BorderLayout());
         paxPanel.setOpaque(false);
         JLabel paxTextLabel = new JLabel("Pax: ");
@@ -228,6 +245,7 @@ public class Ticket extends JPanel {
         middlePanel.add(Box.createRigidArea(new Dimension(0, 60)));
         middlePanel.add(participantNamePanel);
         middlePanel.add(participantIDPanel);
+        middlePanel.add(participantEmailPanel);
         middlePanel.add(paxPanel);
         middlePanel.add(regTypePanel);
         middlePanel.add(Box.createRigidArea(new Dimension(0, 30)));
@@ -239,11 +257,7 @@ public class Ticket extends JPanel {
         JLabel ticID = new JLabel("Ticket ID: " + Integer.toString(ticketID) + " ");
         ticID.setFont(new Font("Arial Narrow", Font.ITALIC, 16));
         ticID.setForeground(Color.GRAY);
-        JLabel ordID = new JLabel("Order ID: " + Integer.toString(orderID) + " ");
-        ordID.setFont(new Font("Arial Narrow", Font.ITALIC, 16));
-        ordID.setForeground(Color.GRAY);
         bottomPanel.add(ticID, BorderLayout.WEST);
-        bottomPanel.add(ordID, BorderLayout.EAST);
 
         ticket.add(topPanel, BorderLayout.NORTH);
         ticket.add(middlePanel, BorderLayout.CENTER);
@@ -253,7 +267,7 @@ public class Ticket extends JPanel {
 
     public JPanel ticketListItem(MyEventsPage page, JPanel rightPanel) {
         String iconPath = null;
-        switch (eventType) {
+        switch (getEventType().toUpperCase()) {
             case "SEMINAR":
                 iconPath = "src/icon/eventTypeIcons/seminar.png";
                 break;
@@ -282,9 +296,9 @@ public class Ticket extends JPanel {
         JPanel middlePanel = new JPanel();
         middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
         middlePanel.setOpaque(false);
-        JLabel eventNameLabel = new JLabel(eventName);
+        JLabel eventNameLabel = new JLabel(getEventName());
         eventNameLabel.setFont(new Font("Serif", Font.BOLD, 26));
-        JLabel eventDetailsLabel = new JLabel(eventDate + ", " + eventTime);
+        JLabel eventDetailsLabel = new JLabel(getEventDate().format(event.getFormatter()) + ", " + getEventTime());
         eventDetailsLabel.setFont(new Font("Serif", Font.PLAIN, 20));
         middlePanel.add(Box.createVerticalGlue());
         middlePanel.add(eventNameLabel);
@@ -329,5 +343,10 @@ public class Ticket extends JPanel {
             }
         });
         return panel;
+    }
+
+    @Override
+    public void update(boolean isCancelled) {
+        eventIsCancelled = isCancelled;
     }
 }

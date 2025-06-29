@@ -82,20 +82,20 @@ public class PaymentPage extends JPanel {
                     showErrorMsg();
                 else {
                     showThankYouDialog();
-                    Ticket ticket = new Ticket(1, 1, "WORKSHOP", "OOAD Workshop", "12 June 2025", "13:00-14:00",
-                            "FCI Study Space", null, "Abu bin Ahmad", "abc", 2);
+                    Ticket ticket = new Ticket(1, ev, null, p, 2, false);
                     List<String> fields = new ArrayList<>();
                     fields.add(String.valueOf(ticket.getTicketID()));
-                    fields.add(String.valueOf(ticket.getOrderID()));
                     fields.add(ticket.getEventType());
                     fields.add(ticket.getEventName());
-                    fields.add(ticket.getEventDate());
+                    fields.add(ticket.getEventDate().format(ticket.getEvent().getFormatter()));
                     fields.add(ticket.getEventTime());
                     fields.add(ticket.getEventVenue());
                     fields.add(ticket.getTicketCode());
                     fields.add(ticket.getParticipantName());
                     fields.add(ticket.getParticipantID());
+                    fields.add(ticket.getParticipantEmail());
                     fields.add(String.valueOf(ticket.getPax()));
+                    fields.add(String.valueOf(ticket.getEventIsCancelled()));
                     try {
                         SwingUtils.writeToCsv("database/tickets_" + ticket.getParticipantID() + ".csv", fields);
                     } catch (Exception e1) {

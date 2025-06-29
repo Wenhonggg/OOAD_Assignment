@@ -52,6 +52,14 @@ public class Event implements Subject {
         this.isCancelled = false;
     }
 
+    public Event(String eventType, String eventName, String eventDate, String eventTime, String eventVenue) {
+        setEventType(eventType);
+        this.eventName = eventName;
+        setEventDate(eventDate);
+        this.eventTime = eventTime;
+        this.eventVenue = eventVenue;
+    }
+
     public void setEventID(String eventID) {
         this.eventID = eventID;
     }
@@ -150,6 +158,7 @@ public class Event implements Subject {
 
     public void setIsCancelled(boolean isCancelled) {
         this.isCancelled = isCancelled;
+        notifyObservers();
     }
 
     public String getEventID() {
@@ -224,6 +233,10 @@ public class Event implements Subject {
         return isCancelled;
     }
 
+    public DateTimeFormatter getFormatter() {
+        return FORMATTER;
+    }
+    
     @Override
     public String toString() {
         return eventID + " - " + eventName + " - " + eventDate.format(FORMATTER) + " at " + eventTime;
@@ -272,19 +285,17 @@ public class Event implements Subject {
 
     @Override
     public void registerObserver(Observer o) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'registerObserver'");
+        observers.add(o);
     }
 
     @Override
     public void removeObserver(Observer o) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeObserver'");
+        observers.remove(o);
     }
 
     @Override
     public void notifyObservers() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'notifyObservers'");
+        for (Observer o : observers)
+            o.update(isCancelled);
     }
 }
