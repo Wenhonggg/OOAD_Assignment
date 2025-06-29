@@ -5,7 +5,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class Event {
+public class Event implements Subject {
     private String eventID;
     private EventType eventType;
     private String eventName;
@@ -23,6 +23,9 @@ public class Event {
     private double eventTransportationFee;
     private double eventCateringFee;
     private String imagePath;
+    private final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private List<Observer> observers;
+    private boolean isCancelled;
 
     public Event(String eventID, String eventType, String eventName, String eventDate, String eventTime,
             String eventVenue, int eventCapacity, double eventFee, String eventDetails, String eventRole,
@@ -30,6 +33,30 @@ public class Event {
             double eventEarlyBirdDiscPercentage, double eventTransportationFee, double eventCateringFee,
             String imagePath) {
         this.eventID = eventID;
+        setEventType(eventType);
+        this.eventName = eventName;
+        setEventDate(eventDate);
+        this.eventTime = eventTime;
+        this.eventVenue = eventVenue;
+        this.eventCapacity = eventCapacity;
+        this.eventFee = eventFee;
+        this.eventDetails = eventDetails;
+        setEventRole(eventRole);
+        this.eventGrpDiscReq = eventGrpDiscReq;
+        this.eventGrpDiscPercentage = eventGrpDiscPercentage;
+        setEventEarlyBirdDiscDeadline(eventEarlyBirdDiscDeadline);
+        this.eventEarlyBirdDiscPercentage = eventEarlyBirdDiscPercentage;
+        this.eventTransportationFee = eventTransportationFee;
+        this.eventCateringFee = eventCateringFee;
+        this.imagePath = imagePath;
+        this.isCancelled = false;
+    }
+
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
+    }
+
+    public void setEventType(String eventType) {
         switch (eventType.toUpperCase()) {
             case "SEMINAR":
                 this.eventType = EventType.SEMINAR;
@@ -46,13 +73,37 @@ public class Event {
             default:
                 break;
         }
+    }
+
+    public void setEventName(String eventName) {
         this.eventName = eventName;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        this.eventDate = LocalDate.parse(eventDate, formatter);
+    }
+
+    public void setEventDate(String eventDate) {
+        this.eventDate = LocalDate.parse(eventDate, FORMATTER);
+    }
+
+    public void setEventTime(String eventTime) {
         this.eventTime = eventTime;
+    }
+
+    public void setEventVenue(String eventVenue) {
+        this.eventVenue = eventVenue;
+    }
+
+    public void setEventCapacity(int eventCapacity) {
         this.eventCapacity = eventCapacity;
+    }
+
+    public void setEventFee(double eventFee) {
         this.eventFee = eventFee;
+    }
+
+    public void setEventDetails(String eventDetails) {
         this.eventDetails = eventDetails;
+    }
+
+    public void setEventRole(String eventRole) {
         switch (eventRole.toUpperCase()) {
             case "STUDENT":
                 this.eventRole = UserRole.STUDENT;
@@ -64,13 +115,41 @@ public class Event {
                 System.err.println("Unknown event role");
                 break;
         }
+    }
+
+    public void setEventGrpDiscReq(int eventGrpDiscReq) {
         this.eventGrpDiscReq = eventGrpDiscReq;
+    }
+
+    public void setEventGrpDiscPercentage(double eventGrpDiscPercentage) {
         this.eventGrpDiscPercentage = eventGrpDiscPercentage;
-        this.eventEarlyBirdDiscDeadline = LocalDate.parse(eventEarlyBirdDiscDeadline, formatter);
+    }
+
+    public void setEventEarlyBirdDiscDeadline(String eventEarlyBirdDiscDeadline) {
+        if (eventEarlyBirdDiscDeadline == null)
+            this.eventEarlyBirdDiscDeadline = null;
+        else
+            this.eventEarlyBirdDiscDeadline = LocalDate.parse(eventEarlyBirdDiscDeadline, FORMATTER);
+    }
+
+    public void setEventEarlyBirdDiscPercentage(double eventEarlyBirdDiscPercentage) {
         this.eventEarlyBirdDiscPercentage = eventEarlyBirdDiscPercentage;
+    }
+
+    public void setEventTransportationFee(double eventTransportationFee) {
         this.eventTransportationFee = eventTransportationFee;
+    }
+
+    public void setEventCateringFee(double eventCateringFee) {
         this.eventCateringFee = eventCateringFee;
+    }
+
+    public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public void setIsCancelled(boolean isCancelled) {
+        this.isCancelled = isCancelled;
     }
 
     public String getEventID() {
@@ -141,6 +220,15 @@ public class Event {
         return imagePath;
     }
 
+    public boolean getIsCancelled() {
+        return isCancelled;
+    }
+
+    @Override
+    public String toString() {
+        return eventID + " - " + eventName + " - " + eventDate.format(FORMATTER) + " at " + eventTime;
+    }
+
     public static List<Event> readEventsFromCSV(String csvPath) {
         List<Event> events = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(csvPath))) {
@@ -180,5 +268,23 @@ public class Event {
             e.printStackTrace();
         }
         return events;
+    }
+
+    @Override
+    public void registerObserver(Observer o) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'registerObserver'");
+    }
+
+    @Override
+    public void removeObserver(Observer o) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'removeObserver'");
+    }
+
+    @Override
+    public void notifyObservers() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'notifyObservers'");
     }
 }
