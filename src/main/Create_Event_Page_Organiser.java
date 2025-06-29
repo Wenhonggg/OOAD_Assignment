@@ -690,7 +690,6 @@ public class Create_Event_Page_Organiser extends JPanel {
                             Event event = new Event(eventCode, type, name, date, time, venue, capacity, fee, details,
                                     role, groupPrice, groupDiscount, earlyBirdDate, earlyDiscount, transportation,
                                     catering, "src/icon/cyber.png");
-                            event.setIsCancelled(isCancelled);
                             listModel.addElement(event);
                         }
                     } catch (NumberFormatException e) {
