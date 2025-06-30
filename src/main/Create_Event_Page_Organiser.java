@@ -29,7 +29,6 @@ public class Create_Event_Page_Organiser extends JPanel {
     private static final Color TEXT_LIGHT = new Color(100, 116, 139);
     private static final Color BORDER_LIGHT = new Color(226, 232, 240);
 
-    // Added "Is Cancelled" column to header
     private static final String[] CSV_HEADER = {
             "Event Code", "Event Name", "Date", "Time", "Venue", "Event Type",
             "Capacity", "Registration Fee", "Event Details", "Role",
@@ -53,9 +52,19 @@ public class Create_Event_Page_Organiser extends JPanel {
     private JLabel statusLabel;
 
     public Create_Event_Page_Organiser() {
+        this(null); 
+    }
+    
+    public Create_Event_Page_Organiser(Event eventToEdit) {
         initializeComponents();
         setupLayout();
         loadEvents();
+        
+        if (eventToEdit != null) {
+            selectedEvent = eventToEdit;
+            populateForm(eventToEdit);
+            updateStatus("Editing event: " + eventToEdit.getEventName());
+        }
     }
 
     private void initializeComponents() {
@@ -441,7 +450,7 @@ public class Create_Event_Page_Organiser extends JPanel {
                 String eventCode = generateEventCode(role);
                 Event event = new Event(
                         eventCode,
-                        ((String) typeComboBox.getSelectedItem()).substring(2),
+                        (String) typeComboBox.getSelectedItem(),
                         nameField.getText(),
                         new SimpleDateFormat("dd/MM/yyyy").format(dateChooser.getDate()),
                         timeField.getText(),
@@ -490,7 +499,7 @@ public class Create_Event_Page_Organiser extends JPanel {
                     selectedEvent.setEventDate(new SimpleDateFormat("dd/MM/yyyy").format(dateChooser.getDate()));
                     selectedEvent.setEventTime(timeField.getText());
                     selectedEvent.setEventVenue(menuField.getText());
-                    selectedEvent.setEventType(((String) typeComboBox.getSelectedItem()).substring(2));
+                    selectedEvent.setEventType((String) typeComboBox.getSelectedItem());
                     selectedEvent.setEventCapacity(Integer.parseInt(capacityField.getText()));
                     selectedEvent.setEventFee(Double.parseDouble(registrationFeeField.getText()));
                     selectedEvent.setEventDetails(detailsArea.getText());

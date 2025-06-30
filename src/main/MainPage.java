@@ -20,6 +20,26 @@ public abstract class MainPage extends JFrame {
     protected Color buttonColor = new Color(70, 130, 180); // Steel blue
     protected Color buttonHoverColor = new Color(100, 149, 237); // Cornflower blue
     
+    // Static method to get image path based on event type
+    protected static String getImagePathForEventType(EventType eventType) {
+        if (eventType == null) {
+            return "icon/celebration.png"; // Default fallback for null
+        }
+        
+        switch (eventType) {
+            case SEMINAR:
+                return "icon/celebration.png";
+            case WORKSHOP:
+                return "icon/cyber.png";
+            case SPORTS_EVENT:
+                return "icon/earth-day.png";
+            case CULTURAL_EVENT:
+                return "icon/glass.png";
+            default:
+                return "icon/celebration.png"; // Default fallback
+        }
+    }
+    
     public MainPage(String title, User u) {
         this.pageTitle = title;
         this.user = u;
@@ -308,8 +328,9 @@ public abstract class MainPage extends JFrame {
         card.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                Event eventData = (Event) card.getClientProperty("EVENT_DATA");
                 MainPage.this.remove(contentPanel);
-                MainPage.this.contentPanel = new ViewInfoPage(MainPage.this, new Event("1", "seminar","Sad Event", "02/07/2025", "18:00", "MPH", 100, 5.00, "This is an event", "student", 4, 2.5, "30/06/2025", 10, 10.00, 8.00, "src/icon/valentine"));
+                MainPage.this.contentPanel = new ViewInfoPage(MainPage.this, eventData);
                 MainPage.this.add(contentPanel);
                 MainPage.this.revalidate();
                 MainPage.this.repaint();

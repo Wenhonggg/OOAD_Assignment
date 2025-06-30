@@ -67,7 +67,15 @@ public class Event implements Subject {
     }
 
     public void setEventType(String eventType) {
-        switch (eventType.toUpperCase()) {
+        if (eventType == null) {
+            this.eventType = null;
+            return;
+        }
+        
+        // Clean the event type string - remove emojis and extra spaces
+        String cleanEventType = eventType.replaceAll("[^\\w\\s]", "").trim().toUpperCase();
+        
+        switch (cleanEventType) {
             case "SEMINAR":
                 this.eventType = EventType.SEMINAR;
                 break;
@@ -81,6 +89,19 @@ public class Event implements Subject {
                 this.eventType = EventType.CULTURAL_EVENT;
                 break;
             default:
+                // Try partial matching for cases where substring was used incorrectly
+                if (cleanEventType.contains("SEMINAR")) {
+                    this.eventType = EventType.SEMINAR;
+                } else if (cleanEventType.contains("WORKSHOP")) {
+                    this.eventType = EventType.WORKSHOP;
+                } else if (cleanEventType.contains("CULTURAL")) {
+                    this.eventType = EventType.CULTURAL_EVENT;
+                } else if (cleanEventType.contains("SPORTS")) {
+                    this.eventType = EventType.SPORTS_EVENT;
+                } else {
+                    System.err.println("Unknown event type: " + eventType + " (cleaned: " + cleanEventType + ")");
+                    this.eventType = EventType.SEMINAR; // Default fallback
+                }
                 break;
         }
     }
@@ -252,7 +273,46 @@ public class Event implements Subject {
         return eventID + " - " + eventName + " - " + eventDate.format(FORMATTER) + " at " + eventTime;
     }
 
-    // public void addParticipant()
+    public static List<Event> readEventsFromCSV(String csvPath) {
+        List<Event> events = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(csvPath))) {
+            String line;
+            boolean firstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                } // skip header
+                String[] parts = line.split(",", -1);
+                if (parts.length < 16)
+                    continue;
+                String eventID = parts[0].trim();
+                String eventName = parts[1].trim();
+                String eventDate = parts[2].trim();
+                String eventTime = parts[3].trim();
+                String eventVenue = parts[4].trim();
+                String eventType = parts[5].trim();
+                int capacity = Integer.parseInt(parts[6].trim());
+                double fee = Double.parseDouble(parts[7].trim());
+                String details = parts[8].trim();
+                String role = parts[9].trim();
+                int grpDiscReq = Integer.parseInt(parts[10].trim());
+                double grpDiscPercent = Double.parseDouble(parts[11].trim());
+                double earlyBirdPercent = parts[12].trim().equals("N/A") ? 0.0 : Double.parseDouble(parts[12].trim());
+                String earlyBirdDate = parts[13].trim().equals("N/A") ? null : parts[13].trim();
+                double transportation = Double.parseDouble(parts[14].trim());
+                double catering = Double.parseDouble(parts[15].trim());
+                // You can set a default image or logic for imagePath
+                String imagePath = "icon/default_event.png";
+                events.add(new Event(eventID, eventType, eventName, eventDate, eventTime, eventVenue, capacity, fee,
+                        details, role, grpDiscReq, grpDiscPercent, earlyBirdDate, earlyBirdPercent, transportation,
+                        catering, imagePath));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return events;
+    }
 
     @Override
     public void registerObserver(Observer o) {

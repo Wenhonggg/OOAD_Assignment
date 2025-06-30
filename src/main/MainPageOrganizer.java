@@ -4,8 +4,14 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.IOException;
+import util.SwingUtils;
 
 public class MainPageOrganizer extends MainPage {
+    private String currentFilter = "All"; 
+    
     public MainPageOrganizer(EventOrganizer eo) {
         super("Event Organizer", eo);
     }
@@ -32,6 +38,14 @@ public class MainPageOrganizer extends MainPage {
 
     @Override
     protected JComponent createContent() {
+        return createContent(currentFilter);
+    }
+    
+    protected JComponent createContent(String filter) {
+        if (filter == null) {
+            filter = "All";
+        }
+        
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBackground(pageBackground);
@@ -53,17 +67,25 @@ public class MainPageOrganizer extends MainPage {
         JPanel createEventCard = createCreateEventCard();
         gridPanel.add(createEventCard);
         
-        // Add mock event cards
-        String[] eventIDs = {"C#10 TO 2010", "C#09 TO 2010", "C#20 TO 2010", "C#30 TO 2010", "C#50 TO 2010"};
-        String[] eventNames = {"CMA6134-COMPUTATIONAL METHODS", "COP6214-ALGORITHM DESIGN AND ANALYSIS", 
-                              "COP6224-0040", "CSN6224-COMPUTER NETWORKS", "CCS6214-CYBERSECURITY FUNDAMENTALS"};
-        String[] images = {"icon/celebration.png", "icon/cyber.png", "icon/earth-day.png", "icon/glass.png", 
-                          "icon/olympia.png", "icon/singing.png", "icon/soccer.png", "icon/valentine.png", 
-                          "icon/volunteer.png"};
+        // Read events from CSV file
+        List<Event> events = Event.readEventsFromCSV("database/events.csv");
         
-        // Start from index 0 but add 9 cards (since we already added the create card)
-        for (int i = 0; i < 9; i++) {
-            gridPanel.add(createEventCard(eventIDs[i % 5], eventNames[i % 5], images[i % 9]));
+        // Filter events based on the selected filter
+        List<Event> filteredEvents = new ArrayList<>();
+        for (Event event : events) {
+            if (filter.equals("All") || 
+                (filter.equals("Student") && event.getEventRole().toString().equalsIgnoreCase("STUDENT")) ||
+                (filter.equals("Staff") && event.getEventRole().toString().equalsIgnoreCase("STAFF"))) {
+                filteredEvents.add(event);
+            }
+        }
+        
+        // Add filtered event cards
+        for (Event event : filteredEvents) {
+            String imagePath = getImagePathForEventType(event.getEventType());
+            JPanel eventCard = createEventCard(event.getEventID(), event.getEventName(), imagePath);
+            eventCard.putClientProperty("EVENT_DATA", event); // Store the Event object with the card
+            gridPanel.add(eventCard);
         }
         
         // Wrap grid panel in a container with margins
@@ -76,7 +98,7 @@ public class MainPageOrganizer extends MainPage {
         // Show more label
         JPanel showMorePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         showMorePanel.setBackground(pageBackground);
-        showMorePanel.add(new JLabel("Show 12") {{
+        showMorePanel.add(new JLabel("Show " + (filteredEvents.size() + 1)) {{ // +1 for the create event card
             setFont(new Font("Arial", Font.PLAIN, 12));
             setForeground(Color.GRAY);
         }});
@@ -133,7 +155,6 @@ public class MainPageOrganizer extends MainPage {
     }
     
     private JPanel createFilterButton() {
-        final String[] currentFilter = {"All"};
         final Color[] bgColor = {Color.BLACK};
         
         JPanel buttonPanel = new JPanel(new BorderLayout()) {
@@ -150,7 +171,7 @@ public class MainPageOrganizer extends MainPage {
         buttonPanel.setOpaque(false);
         buttonPanel.setPreferredSize(new Dimension(130, 30));
         
-        JLabel buttonLabel = new JLabel("Filter: All");
+        JLabel buttonLabel = new JLabel("Filter: " + currentFilter);
         buttonLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         buttonLabel.setForeground(Color.WHITE);
         buttonLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -176,13 +197,12 @@ public class MainPageOrganizer extends MainPage {
             public void mouseReleased(MouseEvent e) {
                 if (buttonPanel.contains(e.getPoint())) {
                     // Cycle through filter options
-                    switch(currentFilter[0]) {
-                        case "All": currentFilter[0] = "Student"; break;
-                        case "Student": currentFilter[0] = "Staff"; break;
-                        case "Staff": currentFilter[0] = "All"; break;
+                    switch(currentFilter) {
+                        case "All": currentFilter = "Student"; break;
+                        case "Student": currentFilter = "Staff"; break;
+                        case "Staff": currentFilter = "All"; break;
                     }
-                    buttonLabel.setText("Filter: " + currentFilter[0]);
-                    filterEventCards(currentFilter[0]);
+                    filterEventCards(currentFilter);
                 }
                 
                 bgColor[0] = buttonPanel.contains(e.getPoint()) ? Color.GRAY : Color.BLACK;
@@ -194,11 +214,14 @@ public class MainPageOrganizer extends MainPage {
     }
 
     private void filterEventCards(String filter) {
-        // Filter implementation would go here
-        repaint();
+        // Remove current content and recreate with filtered events
+        remove(MainPageOrganizer.this.contentPanel);
+        contentPanel = createContent(filter);
+        MainPageOrganizer.this.add(contentPanel);
         revalidate();
+        repaint();
     }
-
+    
     @Override
     protected JPanel createEventCard(String eventID, String eventName, String imagePath) {
         JPanel card = super.createEventCard(eventID, eventName, imagePath);
@@ -310,13 +333,19 @@ public class MainPageOrganizer extends MainPage {
     private void showEventOptions(JPanel eventCard) {
         JPopupMenu optionsMenu = new JPopupMenu();
         
+        // Get the Event data stored with this card
+        Event cardEvent = (Event) eventCard.getClientProperty("EVENT_DATA");
+        
         JMenuItem editItem = new JMenuItem("Edit");
-        editItem.addActionListener(e -> {
-            openCreateEventPage();
-        });
+        editItem.addActionListener(_ -> openCreateEventPage(cardEvent));
         
         JMenuItem deleteItem = new JMenuItem("Delete");
-        deleteItem.addActionListener(e -> {});
+        deleteItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deleteEvent(cardEvent);
+            }
+        });
         
         optionsMenu.add(editItem);
         optionsMenu.addSeparator();
@@ -406,9 +435,94 @@ public class MainPageOrganizer extends MainPage {
     }
 
     private void openCreateEventPage() {
+        openCreateEventPage(null);
+    }
+    
+    private void openCreateEventPage(Event eventToEdit) {
         remove(MainPageOrganizer.this.contentPanel);
-        contentPanel = new Create_Event_Page_Organiser();
+        contentPanel = new Create_Event_Page_Organiser(eventToEdit);
         MainPageOrganizer.this.add(contentPanel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+    private void deleteEvent(Event eventToDelete) {
+        if (eventToDelete == null) {
+            return;
+        }
+        
+        // Show confirmation dialog
+        int result = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to cancel this event '" + eventToDelete.getEventName() + "'?",
+            "Confirm Delete",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+        );
+        
+        if (result == JOptionPane.YES_OPTION) {
+            try {
+                // Read all events from CSV
+                List<List<String>> allRows = SwingUtils.readFromCsv("database/events.csv");
+                
+                if (allRows.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "No events found in database.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // Find and remove the event row
+                boolean eventFound = false;
+                List<List<String>> updatedRows = new ArrayList<>();
+                
+                // Keep header row
+                if (!allRows.isEmpty()) {
+                    updatedRows.add(allRows.get(0));
+                }
+                
+                // Check each row (skip header)
+                for (int i = 1; i < allRows.size(); i++) {
+                    List<String> row = allRows.get(i);
+                    if (!row.isEmpty() && row.get(0).equals(eventToDelete.getEventID())) {
+                        // This is the event to delete, skip it
+                        eventFound = true;
+                    } else {
+                        // Keep this row
+                        updatedRows.add(row);
+                    }
+                }
+                
+                if (!eventFound) {
+                    JOptionPane.showMessageDialog(this, "Event not found in database.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // Write updated data back to CSV
+                // First, clear the file by writing empty content
+                java.io.FileWriter clearWriter = new java.io.FileWriter("database/events.csv", false);
+                clearWriter.close();
+                
+                // Write all updated rows
+                for (List<String> row : updatedRows) {
+                    SwingUtils.writeToCsv("database/events.csv", row);
+                }
+                
+                // Show success message
+                JOptionPane.showMessageDialog(this, "Event deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                
+                // Refresh the page
+                refreshPage();
+                
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error deleting event: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+    private void refreshPage() {
+        // Remove current content and recreate with current filter
+        remove(MainPageOrganizer.this.contentPanel);
+        contentPanel = createContent(currentFilter);
+        MainPageOrganizer.this.add(contentPanel);
         revalidate();
         repaint();
     }
