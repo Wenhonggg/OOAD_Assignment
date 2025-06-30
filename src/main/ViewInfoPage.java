@@ -22,13 +22,6 @@ public class ViewInfoPage extends JPanel {
         setLayout(new BorderLayout());
 
         Font headerFont = new Font("Serif", Font.BOLD, 25);
-        List<Observer> observers = event.getObservers();
-        int sum = 0;
-        for(Observer o : observers) {
-            Ticket ticket = (Ticket)o;
-            sum += ticket.getPax();
-        }
-        System.out.println(sum);
 
         // need to replace with code from main page
         // String eventCode = JOptionPane.showInputDialog(this, "Enter Event Code (e.g.,

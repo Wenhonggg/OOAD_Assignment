@@ -26,10 +26,7 @@ public class Ticket implements Observer {
     public Ticket(int ticID, Event ev, String ticCode, Participant p, int qty, boolean cancel) {
         super();
         event = ev;
-        ticketID = ticID;
-        System.out.println(event.getObservers());
-        System.out.println(event.getObservers().size());
-        System.out.println(ticketID);   
+        ticketID = ticID;  
         participant = p;
         pax = qty;
         eventIsCancelled = cancel;
@@ -310,9 +307,9 @@ public class Ticket implements Observer {
         middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
         middlePanel.setOpaque(false);
         JLabel eventNameLabel = new JLabel(getEventName());
-        eventNameLabel.setFont(new Font("Serif", Font.BOLD, 26));
+        eventNameLabel.setFont(new Font("Serif", Font.BOLD, 22));
         JLabel eventDetailsLabel = new JLabel(getEventDate().format(event.getFormatter()) + ", " + getEventTime());
-        eventDetailsLabel.setFont(new Font("Serif", Font.PLAIN, 20));
+        eventDetailsLabel.setFont(new Font("Serif", Font.PLAIN, 18));
         middlePanel.add(Box.createVerticalGlue());
         middlePanel.add(eventNameLabel);
         middlePanel.add(eventDetailsLabel);
@@ -360,13 +357,11 @@ public class Ticket implements Observer {
 
     @Override
     public void update(boolean isCancelled, String eventID) {
-        System.out.println("in Ticket.update()");
         eventIsCancelled = isCancelled;
         Ticket[] tickets = participant.getTickets();
         List<List<String>> data = new ArrayList<>();
         for (Ticket t : tickets) {
             if (t.getTicketID() == ticketID && t.getEventID().equals(eventID)) {
-                System.out.println("Matching ticket ID!");
                 t.setEventIsCancelled(true);
             }
             List<String> fields = List.of(String.valueOf(t.getTicketID()), t.getEventID(), t.getEventType(),
@@ -376,7 +371,6 @@ public class Ticket implements Observer {
                     t.getParticipantName(), t.getParticipantID(), t.getParticipantEmail(),
                     String.valueOf(t.getPax()),
                     String.valueOf(t.getEventIsCancelled()));
-            System.out.println(t.getEventIsCancelled());
             data.add(fields);
         }
         try {

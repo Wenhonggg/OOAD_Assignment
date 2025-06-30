@@ -186,7 +186,6 @@ public class Event implements Subject {
     }
 
     public void setIsCancelled(boolean isCancelled) {
-        System.out.println("Event " + eventID + " is cancelled");
         this.isCancelled = isCancelled;
         if (isCancelled)
             notifyObservers();
@@ -315,7 +314,6 @@ public class Event implements Subject {
                 events.add(new Event(eventID, eventType, eventName, eventDate, eventTime, eventVenue, capacity, fee,
                         details, role, grpDiscReq, grpDiscPercent, earlyBirdDate, earlyBirdPercent, transportation,
                         catering, imagePath));
-                System.out.println("Adding event " + eventID);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -335,7 +333,6 @@ public class Event implements Subject {
 
     @Override
     public void notifyObservers() {
-        System.out.println("notifying observers");
         for (Observer o : observers)
             o.update(isCancelled, eventID);
     }

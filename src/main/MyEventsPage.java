@@ -5,10 +5,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
 public class MyEventsPage extends JPanel {
@@ -20,8 +22,10 @@ public class MyEventsPage extends JPanel {
 		JPanel leftPanel = new JPanel();
 		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 		leftPanel.setMaximumSize(new Dimension(500, Integer.MAX_VALUE));
-		leftPanel.setMinimumSize(new Dimension(500, leftPanel.getPreferredSize().height));
-		leftPanel.setPreferredSize(new Dimension(500, leftPanel.getPreferredSize().height));
+		// leftPanel.setMinimumSize(new Dimension(500,
+		// leftPanel.getPreferredSize().height));
+		// leftPanel.setPreferredSize(new Dimension(500,
+		// leftPanel.getPreferredSize().height));
 		JPanel ticketPanel = new JPanel();
 		ticketPanel.setBackground(new Color(227, 225, 227));
 		ticketPanel.setLayout(new GridBagLayout());
@@ -29,8 +33,11 @@ public class MyEventsPage extends JPanel {
 		Ticket[] tickets = p.getTickets();
 		if (tickets == null) {
 			leftPanel.setLayout(new GridBagLayout());
-			leftPanel.add(
-					new JLabel("You currently do not have any tickets."));
+			JLabel label = new JLabel(
+					"<html><div style='text-align:center;'>You currently do not have any tickets.</div></html>");
+			label.setPreferredSize(new Dimension(500, label.getPreferredSize().height));
+			label.setBorder(new EmptyBorder(0, 120, 0, 120));
+			leftPanel.add(label);
 			leftScrollPane = leftPanel;
 		} else {
 			JPanel[] ticketListPanels = new JPanel[tickets.length];

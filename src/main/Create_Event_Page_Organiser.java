@@ -71,7 +71,6 @@ public class Create_Event_Page_Organiser extends JPanel {
             }
         }
         eventList.setModel(listModel);
-        System.out.println(listModel.size());
 
         if (eventToEdit != null) {
             selectedEvent = eventToEdit;
@@ -549,7 +548,6 @@ public class Create_Event_Page_Organiser extends JPanel {
                     "Confirm Cancel",
                     JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                System.out.println(eventToDelete.getObservers());
                 // eventToDelete.setIsCancelled(true);
                 // Mark as cancelled in allEvents
                 for (Event ev : allEvents) {

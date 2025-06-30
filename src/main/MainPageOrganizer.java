@@ -14,8 +14,6 @@ public class MainPageOrganizer extends MainPage {
 
     public MainPageOrganizer(EventOrganizer eo) {
         super("Event Organizer", eo);
-        System.out.println(events.size());
-
         linkTicketsToEvents();
     }
 
@@ -470,7 +468,6 @@ public class MainPageOrganizer extends MainPage {
 
     private void openCreateEventPage(Event eventToEdit) {
         remove(MainPageOrganizer.this.contentPanel);
-        System.out.println(events.size());
         contentPanel = new Create_Event_Page_Organiser(eventToEdit, events);
         MainPageOrganizer.this.add(contentPanel, BorderLayout.CENTER);
         revalidate();
