@@ -25,8 +25,11 @@ public class Ticket implements Observer {
 
     public Ticket(int ticID, Event ev, String ticCode, Participant p, int qty, boolean cancel) {
         super();
-        ticketID = ticID;
         event = ev;
+        ticketID = ticID;
+        System.out.println(event.getObservers());
+        System.out.println(event.getObservers().size());
+        System.out.println(ticketID);   
         participant = p;
         pax = qty;
         eventIsCancelled = cancel;

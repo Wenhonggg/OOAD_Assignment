@@ -78,7 +78,8 @@ public class PaymentPage extends JPanel {
                     showErrorMsg();
                 else {
                     showThankYouDialog();
-                    Ticket ticket = new Ticket(1, ev, null, p, 2, false);
+                    Ticket ticket = new Ticket(event.getObservers().size() + 1, ev, null, p, 2, false);
+                    event.registerObserver(ticket);
                     List<String> fields = new ArrayList<>();
                     fields.add(String.valueOf(ticket.getTicketID()));
                     fields.add(ticket.getEventID());

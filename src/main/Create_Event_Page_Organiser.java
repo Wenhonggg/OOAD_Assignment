@@ -659,83 +659,6 @@ public class Create_Event_Page_Organiser extends JPanel {
         return maxNumber + 1;
     }
 
-    private void loadEvents() {
-        try {
-            if (Files.exists(Paths.get(CSV_FILE_PATH))) {
-                List<List<String>> rows = SwingUtils.readFromCsv(CSV_FILE_PATH);
-
-                for (int i = 0; i < rows.size(); i++) {
-                    List<String> columns = rows.get(i);
-
-                    if (columns.isEmpty() || columns.size() < 17) {
-                        continue;
-                    }
-                    if (i == 0 || columns.get(0).contains("Event Code")) {
-                        continue;
-                    }
-                    try {
-                        String eventCode = columns.get(0).trim();
-                        String name = columns.get(1).trim();
-                        String date = columns.get(2).trim();
-                        String time = columns.get(3).trim();
-                        String venue = columns.get(4).trim();
-                        String type = columns.get(5).trim();
-                        int capacity = Integer.parseInt(columns.get(6).trim());
-                        double fee = Double.parseDouble(columns.get(7).trim());
-                        String details = columns.get(8).trim();
-                        if (details.startsWith("\"") && details.endsWith("\"")) {
-                            details = details.substring(1, details.length() - 1);
-                            details = details.replace("\"\"", "\"");
-                        }
-                        String role = columns.get(9).trim();
-                        int groupPrice = 0;
-                        if (!columns.get(10).trim().equals("N/A")) {
-                            groupPrice = Integer.parseInt(columns.get(10).trim());
-                        }
-                        double groupDiscount = 0;
-                        if (!columns.get(11).trim().equals("N/A")) {
-                            groupDiscount = Double.parseDouble(columns.get(11).trim());
-                        }
-                        double earlyDiscount = 0;
-                        if (!columns.get(12).trim().equals("N/A")) {
-                            earlyDiscount = Double.parseDouble(columns.get(12).trim());
-                        }
-                        String earlyBirdDate = null;
-                        if (!columns.get(13).trim().equals("N/A")) {
-                            earlyBirdDate = columns.get(13).trim();
-                        }
-                        double transportation = 0;
-                        double catering = 0;
-                        if (columns.size() >= 16) {
-                            transportation = Double.parseDouble(columns.get(14).trim());
-                            catering = Double.parseDouble(columns.get(15).trim());
-                        }
-                        boolean isCancelled = false;
-                        if (columns.size() > 16) {
-                            isCancelled = columns.get(16).trim().equalsIgnoreCase("true");
-                        }
-
-                        Event event = new Event(eventCode, type, name, date, time, venue, capacity, fee, details,
-                                role, groupPrice, groupDiscount, earlyBirdDate, earlyDiscount, transportation,
-                                catering, "src/icon/cyber.png");
-                        event.setIsCancelled(isCancelled);
-                        allEvents.add(event); // Always add to all events
-
-                        if (!isCancelled) { // Only add not-cancelled events to visible list
-                            listModel.addElement(event);
-                        }
-                    } catch (NumberFormatException e) {
-                        System.err.println("Error parsing line: " + columns);
-                        e.printStackTrace();
-                    }
-                }
-                updateStatus("Loaded " + listModel.getSize() + " events from CSV");
-            }
-        } catch (IOException e) {
-            updateStatus("No existing events file found - starting fresh");
-        }
-    }
-
     private String formatDateForCsv(String dateString, SimpleDateFormat csvDateFormat) {
         if (dateString == null || dateString.isEmpty())
             return "N/A";
@@ -775,7 +698,8 @@ public class Create_Event_Page_Organiser extends JPanel {
                         event.getEventType().toString(),
                         String.valueOf(event.getEventCapacity()),
                         String.format("%.2f", event.getEventFee()),
-                        "\"" + event.getEventDetails().replace("\"", "\"\"").replace("\n", " ") + "\"",
+                        // "\"" + event.getEventDetails().replace("\"", "\"\"").replace("\n", " ") + "\"",
+                        event.getEventDetails(),
                         event.getEventRole().toString(),
                         event.getEventGrpDiscReq() > 0 ? String.valueOf(event.getEventGrpDiscReq()) : "N/A",
                         event.getEventGrpDiscPercentage() > 0 ? String.format("%.1f", event.getEventGrpDiscPercentage())

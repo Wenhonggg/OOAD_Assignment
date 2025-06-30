@@ -1,4 +1,9 @@
 Ticket ID,Event ID,Event Type,Event Name,Event Date,Event Time,Event Venue,Ticket Code,Participant Name,Participant ID,Participant Email,Pax,Event Is Cancelled?
 1,A007,Sports Event,ANNUAL SPORTS DAY,29/06/2025,12:32AM,MMU,a27Rzv0au8,Ang Zi Yin,STU1,zizi@gmail.com,2,true
-1,A013,Seminar,DIGITAL MARKETING SEMINAR,14/07/2025,12:12AM,FCI,GtpIrH9tCD,Ang Zi Yin,STU1,zizi@gmail.com,2,false
+1,A013,Seminar,DIGITAL MARKETING SEMINAR,14/07/2025,12:12AM,FCI,GtpIrH9tCD,Ang Zi Yin,STU1,zizi@gmail.com,2,true
 1,A010,Cultural Event,INTERNATIONAL FOOD FESTIVAL,29/06/2025,12:32AM,MMU,Bmckg9sR6B,Ang Zi Yin,STU1,zizi@gmail.com,2,false
+2,A007,Sports Event,ANNUAL SPORTS DAY,29/06/2025,12:32AM,MMU,XwQbxBSJys,Kee Wen Hong,STU1,kwh@gmail.com,2,false
+2,A010,Cultural Event,INTERNATIONAL FOOD FESTIVAL,29/06/2025,12:32AM,MMU,RmzZYwzF9x,Wendy Khong Wenxin,STU1,wendy@gmail.com,2,false
+3,A007,Sports Event,ANNUAL SPORTS DAY,29/06/2025,12:32AM,MMU,Jsbm19QgSr,Wendy Khong Wenxin,STU1,wendy@gmail.com,2,false
+4,A007,Sports Event,ANNUAL SPORTS DAY,29/06/2025,12:32AM,MMU,0FjxzUwvWF,Ang Zi Yin,STU1,zizi@gmail.com,2,false
+5,A007,Sports Event,ANNUAL SPORTS DAY,29/06/2025,12:32AM,MMU,8z7rGhZno7,Wendy Khong Wenxin,STU1,wendy@gmail.com,2,false

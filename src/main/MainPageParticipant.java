@@ -85,7 +85,6 @@ public class MainPageParticipant extends MainPage {
         gridPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
 
         // Read events from CSV file
-        events = Event.readEventsFromCSV("database/events.csv");
 
         // Filter events based on the current user's role
         List<Event> filteredEvents = new ArrayList<>();
