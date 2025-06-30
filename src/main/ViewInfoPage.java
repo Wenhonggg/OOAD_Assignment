@@ -23,28 +23,6 @@ public class ViewInfoPage extends JPanel {
 
         Font headerFont = new Font("Serif", Font.BOLD, 25);
 
-        // need to replace with code from main page
-        // String eventCode = JOptionPane.showInputDialog(this, "Enter Event Code (e.g.,
-        // B001):");
-        // if (eventCode == null || eventCode.trim().isEmpty()) {
-        // JOptionPane.showMessageDialog(this, "Event code is required.");
-        // System.exit(0);
-        // }
-
-        // String[] data = loadEventRow(eventCode.trim().toUpperCase());
-        // if (data == null || data.length < 6) {
-        // JOptionPane.showMessageDialog(this, "Event not found or incomplete.");
-        // System.exit(0);
-        // }
-
-        // Extract values from CSV row
-        // String eventName = data[1];
-        // String date = data[2];
-        // String time = data[3];
-        // String venue = data[4];
-        // String fee = data[7];
-        // String details = data[8];
-
         // Header
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(DEEP_PURPLE);

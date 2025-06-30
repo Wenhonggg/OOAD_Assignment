@@ -17,7 +17,7 @@ B003,INNOVATION CHALLENGE,05/06/2025,9am-12pm,FCI BUILDING,Cultural Event,20,10.
 B004,PRODUCTIVITY TRAINING,20/07/2025,9am-12pm,FCI BUILDING,Workshop,40,50.00,"Time management and efficiency techniques",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
 B005,WELLNESS RETREAT,05/06/2025,9am-12pm,FCI BUILDING,Cultural Event,20,10.00,"Mindfulness and stress management workshop",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
 B006,ADVANCED EXCEL TRAINING,20/07/2025,9am-12pm,FCI BUILDING,Workshop,40,50.00,"Master complex formulas and data analysis",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
-B007,STRATEGIC PLANNING SESSION,05/06/2025,9am-12pm,FCI BUILDING,Cultural Event,20,10.00,"Department roadmap development workshop",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
+B007,STRATEGIC PLANNING SESSION,05/10/2025,9am-12pm,FCI BUILDING,Cultural Event,20,100.00,"Department roadmap development workshop",STAFF,5,10.0,5.0,05/09/2025,20.0,20.0,false
 B008,COMMUNICATION SKILLS BOOTCAMP,20/07/2025,9am-12pm,FCI BUILDING,Workshop,40,50.00,"Improve public speaking and presentations",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
 A016,STUDY SKILLS WORKSHOP,07/06/2025,9am,fcm study space,Workshop,20,20.00,"Effective learning techniques for academic success",STUDENT,5,10.0,10.0,20/06/2025,20.0,20.0,false
 A017,JAVA SWING WORKSHOP,30/06/2025,16:05,FCI Study Space,Workshop,200,8.00,Learn how to create an event management system using Java Swing framework!,STUDENT,4,3.5,N/A,N/A,3.0,0.0,false
