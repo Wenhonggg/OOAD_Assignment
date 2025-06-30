@@ -46,10 +46,10 @@ public class Participant extends User {
         Ticket[] tickets = new Ticket[TICKET_COUNT];
         for (int i = 1; i < data.size(); i++) {
             List<String> row = data.get(i);
-            Event e = new Event(row.get(1), row.get(2), row.get(3), row.get(4), row.get(5));
-            Participant p = new Participant(row.get(7), row.get(8), row.get(9));
-            tickets[i - 1] = new Ticket(Integer.parseInt(row.get(0)), e, row.get(6), p,
-                    Integer.parseInt(row.get(10)), Boolean.parseBoolean(row.get(11)));
+            Event e = new Event(row.get(1), row.get(2), row.get(3), row.get(4), row.get(5), row.get(6));
+            Participant p = new Participant(row.get(8), row.get(9), row.get(10));
+            tickets[i - 1] = new Ticket(Integer.parseInt(row.get(0)), e, row.get(7), p,
+                    Integer.parseInt(row.get(11)), Boolean.parseBoolean(row.get(12)));
         }
         return tickets;
     }

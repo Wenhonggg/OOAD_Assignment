@@ -25,7 +25,7 @@ public class Event implements Subject {
     private String imagePath;
     private String filePath;
     private final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private List<Observer> observers;
+    private List<Observer> observers = new ArrayList<>();
     private boolean isCancelled;
 
     public Event(String eventID, String eventType, String eventName, String eventDate, String eventTime,
@@ -54,7 +54,9 @@ public class Event implements Subject {
         this.isCancelled = false;
     }
 
-    public Event(String eventType, String eventName, String eventDate, String eventTime, String eventVenue) {
+    public Event(String eventID, String eventType, String eventName, String eventDate, String eventTime,
+            String eventVenue) {
+        this.eventID = eventID;
         setEventType(eventType);
         this.eventName = eventName;
         setEventDate(eventDate);
@@ -71,10 +73,10 @@ public class Event implements Subject {
             this.eventType = null;
             return;
         }
-        
+
         // Clean the event type string - remove emojis and extra spaces
         String cleanEventType = eventType.replaceAll("[^\\w\\s]", "").trim().toUpperCase();
-        
+
         switch (cleanEventType) {
             case "SEMINAR":
                 this.eventType = EventType.SEMINAR;
@@ -184,8 +186,14 @@ public class Event implements Subject {
     }
 
     public void setIsCancelled(boolean isCancelled) {
+        System.out.println("Event " + eventID + " is cancelled");
         this.isCancelled = isCancelled;
-        notifyObservers();
+        if (isCancelled)
+            notifyObservers();
+    }
+
+    public List<Observer> getObservers() {
+        return observers;
     }
 
     public String getEventID() {
@@ -267,7 +275,7 @@ public class Event implements Subject {
     public DateTimeFormatter getFormatter() {
         return FORMATTER;
     }
-    
+
     @Override
     public String toString() {
         return eventID + " - " + eventName + " - " + eventDate.format(FORMATTER) + " at " + eventTime;
@@ -307,6 +315,7 @@ public class Event implements Subject {
                 events.add(new Event(eventID, eventType, eventName, eventDate, eventTime, eventVenue, capacity, fee,
                         details, role, grpDiscReq, grpDiscPercent, earlyBirdDate, earlyBirdPercent, transportation,
                         catering, imagePath));
+                System.out.println("Adding event " + eventID);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -326,7 +335,8 @@ public class Event implements Subject {
 
     @Override
     public void notifyObservers() {
+        System.out.println("notifying observers");
         for (Observer o : observers)
-            o.update(isCancelled);
+            o.update(isCancelled, eventID);
     }
 }

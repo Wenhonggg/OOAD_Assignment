@@ -81,6 +81,7 @@ public class PaymentPage extends JPanel {
                     Ticket ticket = new Ticket(1, ev, null, p, 2, false);
                     List<String> fields = new ArrayList<>();
                     fields.add(String.valueOf(ticket.getTicketID()));
+                    fields.add(ticket.getEventID());
                     fields.add(ticket.getEventType());
                     fields.add(ticket.getEventName());
                     fields.add(ticket.getEventDate().format(ticket.getEvent().getFormatter()));
@@ -94,7 +95,7 @@ public class PaymentPage extends JPanel {
                     fields.add(String.valueOf(ticket.getEventIsCancelled()));
                     String filePath = "database/tickets_" + ticket.getParticipantID() + ".csv";
                     if (!new File(filePath).exists()) {
-                        List<String> header = List.of("Ticket ID", "Event Type", "Event Name", "Event Date",
+                        List<String> header = List.of("Ticket ID", "Event ID", "Event Type", "Event Name", "Event Date",
                                 "Event Time", "Event Venue", "Ticket Code", "Participant Name", "Participant ID",
                                 "Participant Email", "Pax", "Event Is Cancelled?");
                         try {

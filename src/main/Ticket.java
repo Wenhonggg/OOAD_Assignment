@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import javax.swing.*;
@@ -62,6 +63,10 @@ public class Ticket implements Observer {
         return ticketID;
     }
 
+    public String getEventID() {
+        return event.getEventID();
+    }
+
     public Event getEvent() {
         return event;
     }
@@ -112,6 +117,10 @@ public class Ticket implements Observer {
 
     public boolean getEventIsCancelled() {
         return eventIsCancelled;
+    }
+
+    public void setEventIsCancelled(boolean c) {
+        eventIsCancelled = c;
     }
 
     private String generateTicketCode() {
@@ -347,14 +356,32 @@ public class Ticket implements Observer {
     }
 
     @Override
-    public void update(boolean isCancelled) {
+    public void update(boolean isCancelled, String eventID) {
+        System.out.println("in Ticket.update()");
         eventIsCancelled = isCancelled;
-        List<String> fields = List.of(String.valueOf(ticketID), getEventType(), getEventName(),
-                getEventDate().format(event.getFormatter()), getEventTime(), getEventVenue(), ticketCode,
-                getParticipantName(), getParticipantID(), getParticipantEmail(), String.valueOf(pax),
-                String.valueOf(eventIsCancelled));
+        Ticket[] tickets = participant.getTickets();
+        List<List<String>> data = new ArrayList<>();
+        for (Ticket t : tickets) {
+            if (t.getTicketID() == ticketID && t.getEventID().equals(eventID)) {
+                System.out.println("Matching ticket ID!");
+                t.setEventIsCancelled(true);
+            }
+            List<String> fields = List.of(String.valueOf(t.getTicketID()), t.getEventID(), t.getEventType(),
+                    t.getEventName(),
+                    t.getEventDate().format(event.getFormatter()), t.getEventTime(), t.getEventVenue(),
+                    t.getTicketCode(),
+                    t.getParticipantName(), t.getParticipantID(), t.getParticipantEmail(),
+                    String.valueOf(t.getPax()),
+                    String.valueOf(t.getEventIsCancelled()));
+            System.out.println(t.getEventIsCancelled());
+            data.add(fields);
+        }
         try {
-            SwingUtils.writeToCsv("database/tickets_" + getParticipantID() + ".csv", fields);
+            List<String> header = List.of("Ticket ID", "Event ID", "Event Type", "Event Name", "Event Date",
+                    "Event Time", "Event Venue", "Ticket Code", "Participant Name", "Participant ID",
+                    "Participant Email", "Pax", "Event Is Cancelled?");
+            SwingUtils.writeToCsv("database/tickets_" + getParticipantID() + ".csv", data, false, header);
+
         } catch (Exception e) {
             System.err.println("Failed to update ticket in csv file: " + e.getMessage());
             e.printStackTrace();

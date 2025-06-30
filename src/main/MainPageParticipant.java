@@ -8,11 +8,14 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class MainPageParticipant extends MainPage {
-    private JLabel logoLabel; 
+    private JLabel logoLabel;
+    Participant participant;
 
     public MainPageParticipant(Participant p) {
         super("Event Participant", p);
+        participant = p;
         updateLogo();
+        linkTicketsToEvents();
     }
 
     public void setUserType(UserRole r) {
@@ -82,8 +85,8 @@ public class MainPageParticipant extends MainPage {
         gridPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
 
         // Read events from CSV file
-        List<Event> events = Event.readEventsFromCSV("database/events.csv");
-        
+        events = Event.readEventsFromCSV("database/events.csv");
+
         // Filter events based on the current user's role
         List<Event> filteredEvents = new ArrayList<>();
         for (Event event : events) {
@@ -96,7 +99,7 @@ public class MainPageParticipant extends MainPage {
         for (Event event : filteredEvents) {
             String imagePath = getImagePathForEventType(event.getEventType());
             JPanel eventCard = createEventCard(event.getEventID(), event.getEventName(), imagePath);
-            eventCard.putClientProperty("EVENT_DATA", event); 
+            eventCard.putClientProperty("EVENT_DATA", event);
             gridPanel.add(eventCard);
         }
 
@@ -129,6 +132,8 @@ public class MainPageParticipant extends MainPage {
 
         return scrollPane;
     }
+
+    
 
     // Modern, minimal scroll bar UI
     private class ModernScrollBarUI extends BasicScrollBarUI {

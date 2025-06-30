@@ -1,9 +1,11 @@
 package util;
+
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
 import java.awt.Image;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +15,6 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
-
 
 // utility class for reusable functionalities
 public final class SwingUtils {
@@ -38,8 +39,38 @@ public final class SwingUtils {
         return new ImageIcon(scaledImage);
     }
 
+    public static void writeToCsv(String filePath, List<List<String>> fields, Boolean append, List<String> header)
+            throws IOException {
+        File file = new File(filePath);
+        boolean writeHeader = !append && header != null && !header.isEmpty();
+
+        FileWriter writer = new FileWriter(file, append);
+
+        // Write header if needed
+        if (writeHeader) {
+            for (int i = 0; i < header.size(); i++) {
+                writer.append(header.get(i));
+                if (i < header.size() - 1)
+                    writer.append(",");
+            }
+            writer.append("\n");
+        }
+
+        // Write each row
+        for (List<String> row : fields) {
+            for (int i = 0; i < row.size(); i++) {
+                writer.append(row.get(i));
+                if (i < row.size() - 1)
+                    writer.append(",");
+            }
+            writer.append("\n");
+        }
+
+        writer.close();
+    }
+
     public static void writeToCsv(String filePath, List<String> fields) throws IOException {
-        FileWriter writer = new FileWriter(filePath, true);
+        FileWriter writer = new FileWriter(filePath, true); 
         for (int i = 0; i < fields.size(); i++) {
             writer.append(fields.get(i));
             if (i < fields.size() - 1)

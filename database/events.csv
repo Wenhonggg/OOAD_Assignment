@@ -1,22 +1,22 @@
 Event Code,Event Name,Date,Time,Venue,Event Type,Capacity,Registration Fee,Event Details,Role,Group Pax,Group Discount,Early Bird Discount,Early Bird Date,Transportation,Catering,Is Cancelled
-A003,TECH CONFERENCE 2025,14/07/2025,12:12AM,FCI,Seminar,100,10.00,"Join industry leaders for cutting-edge tech insights",STUDENT,4,2.5,N/A,14/07/2025,1.0,0.0,false
-A004,MMU CULTURAL FEST,29/06/2025,12:32AM,MMU,Cultural Event,50,0.00,"Celebrate diversity with performances from 15 countries",STUDENT,4,1.0,N/A,N/A,0.0,0.0,false
-A005,SOFTWARE DEVELOPMENT BOOTCAMP,07/06/2025,7pm-10pm,FCM BUILDING CNMX1005,Workshop,80,15.00,"Hands-on training for modern development frameworks",STUDENT,5,20.0,10.0,05/06/2025,20.0,20.0,false
-A006,DATA SCIENCE SEMINAR,14/07/2025,12:12AM,FCI,Seminar,100,10.00,"Learn about AI and machine learning applications",STUDENT,4,2.5,N/A,14/07/2025,1.0,0.0,false
-A007,ANNUAL SPORTS DAY,29/06/2025,12:32AM,MMU,Sports Event,50,0.00,"Inter-department competitions with exciting prizes",STUDENT,4,1.0,N/A,N/A,0.0,0.0,false
-A008,UX DESIGN WORKSHOP,07/06/2025,7pm-10pm,FCM BUILDING CNMX1005,Workshop,80,15.00,"Master user experience design principles",STUDENT,5,20.0,10.0,05/06/2025,20.0,20.0,false
-A009,CYBER SECURITY SYMPOSIUM,14/07/2025,12:12AM,FCI,Seminar,100,10.00,"Experts discuss emerging security threats",STUDENT,4,2.5,N/A,14/07/2025,1.0,0.0,false
-A010,INTERNATIONAL FOOD FESTIVAL,29/06/2025,12:32AM,MMU,Cultural Event,50,0.00,"Taste cuisines from around the world",STUDENT,4,1.0,N/A,N/A,0.0,0.0,false
-A012,CLOUD COMPUTING MASTERCLASS,07/06/2025,7pm-10pm,FCM BUILDING CNMX1005,Workshop,80,15.00,"Practical guide to AWS and Azure platforms",STUDENT,5,20.0,10.0,05/06/2025,20.0,20.0,false
-A013,DIGITAL MARKETING SEMINAR,14/07/2025,12:12AM,FCI,Seminar,100,10.00,"Strategies for social media and online growth",STUDENT,4,2.5,N/A,14/07/2025,1.0,0.0,false
-A014,ART EXHIBITION OPENING,29/06/2025,12:32AM,MMU,Cultural Event,50,0.00,"Showcase of student and faculty artwork",STUDENT,4,1.0,N/A,N/A,0.0,0.0,false
-A015,MOBILE APP DEVELOPMENT,07/06/2025,7pm-10pm,FCM BUILDING CNMX1005,Workshop,80,15.00,"Build cross-platform apps with Flutter",STUDENT,5,20.0,10.0,05/06/2025,20.0,20.0,false
-B001,STAFF TEAM BUILDING,05/06/2025,9am-12pm,FCI BUILDING,Cultural Event,20,10.00,"Enhance collaboration through fun activities",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
-B002,LEADERSHIP WORKSHOP,20/07/2025,9am-12pm,FCI BUILDING,Workshop,40,50.00,"Develop essential management skills",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
-B003,INNOVATION CHALLENGE,05/06/2025,9am-12pm,FCI BUILDING,Cultural Event,20,10.00,"Pitch your creative solutions to real problems",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
-B004,PRODUCTIVITY TRAINING,20/07/2025,9am-12pm,FCI BUILDING,Workshop,40,50.00,"Time management and efficiency techniques",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
-B005,WELLNESS RETREAT,05/06/2025,9am-12pm,FCI BUILDING,Cultural Event,20,10.00,"Mindfulness and stress management workshop",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
-B006,ADVANCED EXCEL TRAINING,20/07/2025,9am-12pm,FCI BUILDING,Workshop,40,50.00,"Master complex formulas and data analysis",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
-B007,STRATEGIC PLANNING SESSION,05/06/2025,9am-12pm,FCI BUILDING,Cultural Event,20,10.00,"Department roadmap development workshop",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
-B008,COMMUNICATION SKILLS BOOTCAMP,20/07/2025,9am-12pm,FCI BUILDING,Workshop,40,50.00,"Improve public speaking and presentations",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
-A016,STUDY SKILLS WORKSHOP,07/06/2025,9am,fcm study space,Workshop,20,20.00,"Effective learning techniques for academic success",STUDENT,5,10.0,10.0,20/06/2025,20.0,20.0,false
+A003,TECH CONFERENCE 2025,14/07/2025,12:12AM,FCI,Seminar,100,10.00,"""""""Join industry leaders for cutting-edge tech insights""""""",STUDENT,4,2.5,N/A,14/07/2025,1.0,0.0,false
+A004,MMU CULTURAL FEST,29/06/2025,12:32AM,MMU,Cultural Event,50,0.00,"""""""Celebrate diversity with performances from 15 countries""""""",STUDENT,4,1.0,N/A,N/A,0.0,0.0,false
+A005,SOFTWARE DEVELOPMENT BOOTCAMP,07/06/2025,7pm-10pm,FCM BUILDING CNMX1005,Workshop,80,15.00,"""""""Hands-on training for modern development frameworks""""""",STUDENT,5,20.0,10.0,05/06/2025,20.0,20.0,false
+A006,DATA SCIENCE SEMINAR,14/07/2025,12:12AM,FCI,Seminar,100,10.00,"""""""Learn about AI and machine learning applications""""""",STUDENT,4,2.5,N/A,14/07/2025,1.0,0.0,false
+A007,ANNUAL SPORTS DAY,29/06/2025,12:32AM,MMU,Sports Event,50,0.00,"""""""Inter-department competitions with exciting prizes""""""",STUDENT,4,1.0,N/A,N/A,0.0,0.0,true
+A008,UX DESIGN WORKSHOP,07/06/2025,7pm-10pm,FCM BUILDING CNMX1005,Workshop,80,15.00,"""""""Master user experience design principles""""""",STUDENT,5,20.0,10.0,05/06/2025,20.0,20.0,false
+A009,CYBER SECURITY SYMPOSIUM,14/07/2025,12:12AM,FCI,Seminar,100,10.00,"""""""Experts discuss emerging security threats""""""",STUDENT,4,2.5,N/A,14/07/2025,1.0,0.0,false
+A010,INTERNATIONAL FOOD FESTIVAL,29/06/2025,12:32AM,MMU,Cultural Event,50,0.00,"""""""Taste cuisines from around the world""""""",STUDENT,4,1.0,N/A,N/A,0.0,0.0,false
+A012,CLOUD COMPUTING MASTERCLASS,07/06/2025,7pm-10pm,FCM BUILDING CNMX1005,Workshop,80,15.00,"""""""Practical guide to AWS and Azure platforms""""""",STUDENT,5,20.0,10.0,05/06/2025,20.0,20.0,false
+A013,DIGITAL MARKETING SEMINAR,14/07/2025,12:12AM,FCI,Seminar,100,10.00,"""""""Strategies for social media and online growth""""""",STUDENT,4,2.5,N/A,14/07/2025,1.0,0.0,false
+A014,ART EXHIBITION OPENING,29/06/2025,12:32AM,MMU,Cultural Event,50,0.00,"""""""Showcase of student and faculty artwork""""""",STUDENT,4,1.0,N/A,N/A,0.0,0.0,false
+A015,MOBILE APP DEVELOPMENT,07/06/2025,7pm-10pm,FCM BUILDING CNMX1005,Workshop,80,15.00,"""""""Build cross-platform apps with Flutter""""""",STUDENT,5,20.0,10.0,05/06/2025,20.0,20.0,false
+B001,STAFF TEAM BUILDING,05/06/2025,9am-12pm,FCI BUILDING,Cultural Event,20,10.00,"""""""Enhance collaboration through fun activities""""""",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
+B002,LEADERSHIP WORKSHOP,20/07/2025,9am-12pm,FCI BUILDING,Workshop,40,50.00,"""""""Develop essential management skills""""""",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
+B003,INNOVATION CHALLENGE,05/06/2025,9am-12pm,FCI BUILDING,Cultural Event,20,10.00,"""""""Pitch your creative solutions to real problems""""""",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
+B004,PRODUCTIVITY TRAINING,20/07/2025,9am-12pm,FCI BUILDING,Workshop,40,50.00,"""""""Time management and efficiency techniques""""""",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
+B005,WELLNESS RETREAT,05/06/2025,9am-12pm,FCI BUILDING,Cultural Event,20,10.00,"""""""Mindfulness and stress management workshop""""""",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
+B006,ADVANCED EXCEL TRAINING,20/07/2025,9am-12pm,FCI BUILDING,Workshop,40,50.00,"""""""Master complex formulas and data analysis""""""",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
+B007,STRATEGIC PLANNING SESSION,05/06/2025,9am-12pm,FCI BUILDING,Cultural Event,20,10.00,"""""""Department roadmap development workshop""""""",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
+B008,COMMUNICATION SKILLS BOOTCAMP,20/07/2025,9am-12pm,FCI BUILDING,Workshop,40,50.00,"""""""Improve public speaking and presentations""""""",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
+A016,STUDY SKILLS WORKSHOP,07/06/2025,9am,fcm study space,Workshop,20,20.00,"""""""Effective learning techniques for academic success""""""",STUDENT,5,10.0,10.0,20/06/2025,20.0,20.0,false

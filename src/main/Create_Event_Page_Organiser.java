@@ -20,7 +20,7 @@ import javax.swing.Timer;
 public class Create_Event_Page_Organiser extends JPanel {
     // Modern color palette
     private static final Color PRIMARY_DARK = new Color(30, 41, 59);
-    private static final Color ACCENT_BLUE = new Color(59, 130, 246);   
+    private static final Color ACCENT_BLUE = new Color(59, 130, 246);
     private static final Color SUCCESS_GREEN = new Color(34, 197, 94);
     private static final Color WARNING_ORANGE = new Color(251, 146, 60);
     private static final Color DANGER_RED = new Color(239, 68, 68);
@@ -37,6 +37,7 @@ public class Create_Event_Page_Organiser extends JPanel {
     };
 
     private static final String CSV_FILE_PATH = "database/events.csv";
+    private List<Event> events;
 
     private JTextField nameField, timeField, menuField, capacityField;
     private JTextField registrationFeeField, groupPaxField, transportationField, cateringField;
@@ -48,18 +49,30 @@ public class Create_Event_Page_Organiser extends JPanel {
     private JTextArea detailsArea;
     private JList<Event> eventList;
     private DefaultListModel<Event> listModel;
+    private ArrayList<Event> allEvents = new ArrayList<>(); // Stores all events, including cancelled
     private Event selectedEvent;
     private JLabel statusLabel;
 
-    public Create_Event_Page_Organiser() {
-        this(null); 
+    public Create_Event_Page_Organiser(List<Event> eventList) {
+        this(null, eventList);
     }
-    
-    public Create_Event_Page_Organiser(Event eventToEdit) {
+
+    public Create_Event_Page_Organiser(Event eventToEdit, List<Event> listOfEvents) {
         initializeComponents();
         setupLayout();
-        loadEvents();
-        
+        this.events = listOfEvents != null ? listOfEvents : new ArrayList<>();
+        allEvents = new ArrayList<>();
+        listModel = new DefaultListModel<>();
+        // only add not-cancelled events to visible list
+        for (Event e : this.events) {
+            allEvents.add(e);
+            if (!e.getIsCancelled()) {
+                listModel.addElement(e);
+            }
+        }
+        eventList.setModel(listModel);
+        System.out.println(listModel.size());
+
         if (eventToEdit != null) {
             selectedEvent = eventToEdit;
             populateForm(eventToEdit);
@@ -406,7 +419,6 @@ public class Create_Event_Page_Organiser extends JPanel {
         return card;
     }
 
-
     private JButton createModernButton(String text, Color background, Color foreground) {
         JButton button = new JButton(text);
         button.setFont(new Font("Segoe UI", Font.BOLD, 13));
@@ -471,7 +483,8 @@ public class Create_Event_Page_Organiser extends JPanel {
                         "src/icon/cyber.png");
                 event.setIsCancelled(false);
                 listModel.addElement(event);
-                saveEventToCSV(event);
+                allEvents.add(event);
+                saveAllEventsToCSV();
                 clearForm();
                 updateStatus("✅ Event created with code: " + eventCode);
                 showModernDialog("Success", "Event created successfully with code: " + eventCode, SUCCESS_GREEN);
@@ -536,9 +549,17 @@ public class Create_Event_Page_Organiser extends JPanel {
                     "Confirm Cancel",
                     JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                eventToDelete.setIsCancelled(true);
-                listModel.removeElement(eventToDelete); // Remove from visible list immediately
-                saveAllEventsToCSV(); // Save updated cancellation status to CSV
+                System.out.println(eventToDelete.getObservers());
+                // eventToDelete.setIsCancelled(true);
+                // Mark as cancelled in allEvents
+                for (Event ev : allEvents) {
+                    if (ev.getEventID().equals(eventToDelete.getEventID())) {
+                        ev.setIsCancelled(true);
+                        break;
+                    }
+                }
+                listModel.removeElement(eventToDelete); // Remove from visible list only
+                saveAllEventsToCSV(); // Save all events (including cancelled)
                 clearForm();
                 updateStatus("🗑️ Event cancelled successfully!");
                 showModernDialog("Success", "Event cancelled successfully!", SUCCESS_GREEN);
@@ -625,8 +646,7 @@ public class Create_Event_Page_Organiser extends JPanel {
 
     private int getNextEventNumber(String prefix) {
         int maxNumber = 0;
-        for (int i = 0; i < listModel.getSize(); i++) {
-            Event event = listModel.getElementAt(i);
+        for (Event event : allEvents) {
             String eventCode = event.getEventID();
             if (eventCode.startsWith(prefix) && eventCode.length() >= 4) {
                 try {
@@ -695,10 +715,13 @@ public class Create_Event_Page_Organiser extends JPanel {
                             isCancelled = columns.get(16).trim().equalsIgnoreCase("true");
                         }
 
-                        if (!isCancelled) { // Only add not-cancelled events
-                            Event event = new Event(eventCode, type, name, date, time, venue, capacity, fee, details,
-                                    role, groupPrice, groupDiscount, earlyBirdDate, earlyDiscount, transportation,
-                                    catering, "src/icon/cyber.png");
+                        Event event = new Event(eventCode, type, name, date, time, venue, capacity, fee, details,
+                                role, groupPrice, groupDiscount, earlyBirdDate, earlyDiscount, transportation,
+                                catering, "src/icon/cyber.png");
+                        event.setIsCancelled(isCancelled);
+                        allEvents.add(event); // Always add to all events
+
+                        if (!isCancelled) { // Only add not-cancelled events to visible list
                             listModel.addElement(event);
                         }
                     } catch (NumberFormatException e) {
@@ -726,56 +749,6 @@ public class Create_Event_Page_Organiser extends JPanel {
         return dateString;
     }
 
-    private void saveEventToCSV(Event event) {
-        try {
-            SimpleDateFormat csvDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            String formattedEventDate = formatDateForCsv(event.getEventDate().toString(), csvDateFormat);
-            String formattedEarlyBirdDate = event.getEventEarlyBirdDiscDeadline() != null
-                    ? formatDateForCsv(event.getEventEarlyBirdDiscDeadline().toString(), csvDateFormat)
-                    : "N/A";
-            String isCancelled = event.getIsCancelled() ? "true" : "false";
-
-            List<String> row = new ArrayList<>(Arrays.asList(
-                    event.getEventID(),
-                    event.getEventName(),
-                    formattedEventDate,
-                    event.getEventTime(),
-                    event.getEventVenue(),
-                    event.getEventType().toString(),
-                    String.valueOf(event.getEventCapacity()),
-                    String.format("%.2f", event.getEventFee()),
-                    "\"" + event.getEventDetails().replace("\"", "\"\"").replace("\n", " ") + "\"",
-                    event.getEventRole().toString(),
-                    event.getEventGrpDiscReq() > 0 ? String.valueOf(event.getEventGrpDiscReq()) : "N/A",
-                    event.getEventGrpDiscPercentage() > 0 ? String.format("%.1f", event.getEventGrpDiscPercentage())
-                            : "N/A",
-                    event.getEventEarlyBirdDiscPercentage() > 0
-                            ? String.format("%.1f", event.getEventEarlyBirdDiscPercentage())
-                            : "N/A",
-                    formattedEarlyBirdDate,
-                    String.valueOf(event.getEventTransportationFee()),
-                    String.valueOf(event.getEventCateringFee()),
-                    isCancelled));
-
-            File csvFile = new File(CSV_FILE_PATH);
-            boolean fileExists = csvFile.exists();
-
-            try (FileWriter fw = new FileWriter(csvFile, true);
-                    BufferedWriter bw = new BufferedWriter(fw)) {
-                if (!fileExists) {
-                    bw.write(String.join(",", CSV_HEADER));
-                    bw.newLine();
-                }
-                bw.write(String.join(",", row));
-                bw.newLine();
-            }
-
-            updateStatus("Event saved to " + CSV_FILE_PATH);
-        } catch (IOException e) {
-            showModernDialog("File Error", "Failed to save event: " + e.getMessage(), DANGER_RED);
-        }
-    }
-
     private void saveAllEventsToCSV() {
         try {
             PrintWriter pw = new PrintWriter(new FileWriter(CSV_FILE_PATH));
@@ -784,9 +757,7 @@ public class Create_Event_Page_Organiser extends JPanel {
 
             SimpleDateFormat csvDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-            for (int i = 0; i < listModel.getSize(); i++) {
-                Event event = listModel.getElementAt(i);
-
+            for (Event event : allEvents) {
                 String formattedEventDate = event.getEventDate() != null
                         ? formatDateForCsv(event.getEventDate().toString(), csvDateFormat)
                         : "";
@@ -846,23 +817,23 @@ public class Create_Event_Page_Organiser extends JPanel {
         updateStatus("Form cleared and ready for new event");
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            
-            // Create a test frame to hold the panel
-            JFrame testFrame = new JFrame("Event Management Dashboard");
-            testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            testFrame.setSize(1200, 800);
-            testFrame.setLocationRelativeTo(null);
-            
-            Create_Event_Page_Organiser panel = new Create_Event_Page_Organiser();
-            testFrame.add(panel);
-            testFrame.setVisible(true);
-        });
-    }
+    // public static void main(String[] args) {
+    // SwingUtilities.invokeLater(() -> {
+    // try {
+    // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
+
+    // // Create a test frame to hold the panel
+    // JFrame testFrame = new JFrame("Event Management Dashboard");
+    // testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    // testFrame.setSize(1200, 800);
+    // testFrame.setLocationRelativeTo(null);
+
+    // Create_Event_Page_Organiser panel = new Create_Event_Page_Organiser();
+    // testFrame.add(panel);
+    // testFrame.setVisible(true);
+    // });
+    // }
 }
