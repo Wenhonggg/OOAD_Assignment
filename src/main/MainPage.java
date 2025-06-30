@@ -33,20 +33,20 @@ public abstract class MainPage extends JFrame {
     // Static method to get image path based on event type
     protected static String getImagePathForEventType(EventType eventType) {
         if (eventType == null) {
-            return "icon/celebration.png"; // Default fallback for null
+            return "icon/celebration.png"; 
         }
 
         switch (eventType) {
             case SEMINAR:
-                return "icon/celebration.png";
+                return "icon/Seminar.png";
             case WORKSHOP:
-                return "icon/cyber.png";
+                return "icon/Workshop.jpg";
             case SPORTS_EVENT:
-                return "icon/earth-day.png";
+                return "icon/SportEvent.jpg";
             case CULTURAL_EVENT:
-                return "icon/glass.png";
+                return "icon/CultureEvents.jpg";
             default:
-                return "icon/celebration.png"; // Default fallback
+                return "icon/celebration.png"; 
         }
     }
 
