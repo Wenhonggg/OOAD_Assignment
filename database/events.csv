@@ -1,7 +1,7 @@
 Event Code,Event Name,Date,Time,Venue,Event Type,Capacity,Registration Fee,Event Details,Role,Group Pax,Group Discount,Early Bird Discount,Early Bird Date,Transportation,Catering,Is Cancelled
 B009,TECH CONFERENCE 2024,14/07/2025,12:12AM,FCI,Seminar,100,10.00,"Join industry leaders for cutting-edge tech insights",STAFF,4,2.5,N/A,14/07/2025,1.0,0.0,false
 A004,MMU CULTURAL FEST,29/06/2025,12:32AM,MMU,Cultural Event,50,0.00,"Celebrate diversity with performances from 15 countries",STUDENT,4,1.0,N/A,N/A,0.0,0.0,false
-A005,SOFTWARE DEVELOPMENT BOOTCAMP,07/06/2025,7pm-10pm,FCM BUILDING CNMX1005,Workshop,80,15.00,"Hands-on training for modern development frameworks",STUDENT,5,20.0,10.0,05/06/2025,20.0,20.0,false
+A005,SOFTWARE DEVELOPMENT BOOTCAMP,07/06/2025,7pm-10pm,FCM BUILDING CNMX1005,Workshop,80,15.00,"Hands-on training for modern development frameworks",STUDENT,5,20.0,10.0,05/06/2025,20.0,20.0,true
 A006,DATA SCIENCE SEMINAR,14/07/2025,12:12AM,FCI,Seminar,100,10.00,"Learn about AI and machine learning applications",STUDENT,4,2.5,N/A,14/07/2025,1.0,0.0,false
 A007,ANNUAL SPORTS DAY,29/06/2025,12:32AM,MMU,Sports Event,50,0.00,"Inter-department competitions with exciting prizes",STUDENT,4,1.0,N/A,N/A,0.0,0.0,false
 A008,UX DESIGN WORKSHOP,07/06/2025,7pm-10pm,FCM BUILDING CNMX1005,Workshop,80,15.00,"Master user experience design principles",STUDENT,5,20.0,10.0,05/06/2025,20.0,20.0,false
@@ -20,4 +20,4 @@ B006,ADVANCED EXCEL TRAINING,20/07/2025,9am-12pm,FCI BUILDING,Workshop,40,50.00,
 B007,STRATEGIC PLANNING SESSION,05/10/2025,9am-12pm,FCI BUILDING,Cultural Event,20,100.00,"Department roadmap development workshop",STAFF,5,10.0,5.0,05/09/2025,20.0,20.0,false
 B008,COMMUNICATION SKILLS BOOTCAMP,20/07/2025,9am-12pm,FCI BUILDING,Workshop,40,50.00,"Improve public speaking and presentations",STAFF,5,20.0,30.0,19/06/2025,20.0,20.0,false
 A016,STUDY SKILLS WORKSHOP,07/06/2025,9am,fcm study space,Workshop,20,20.00,"Effective learning techniques for academic success",STUDENT,5,10.0,10.0,20/06/2025,20.0,20.0,false
-A017,JAVA SWING WORKSHOP,30/06/2025,16:05,FCI Study Space,Workshop,200,8.00,Learn how to create an event management system using Java Swing framework!,STUDENT,4,3.5,N/A,N/A,3.0,0.0,false
+A017,JAVA SWING WORKSHOP,30/06/2025,16:05,FCI Study Space,Workshop,200,8.00,Learn how to create an event management system using Java Swing framework!,STUDENT,4,3.5,N/A,N/A,3.0,0.0,true

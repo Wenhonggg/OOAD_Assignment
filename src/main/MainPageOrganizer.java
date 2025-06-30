@@ -70,12 +70,12 @@ public class MainPageOrganizer extends MainPage {
 
         // Read events from CSV file
 
-        // Filter events based on the selected filter
+        // Filter events based on the selected filter and exclude cancelled events
         List<Event> filteredEvents = new ArrayList<>();
         for (Event event : events) {
-            if (filter.equals("All") ||
+            if (!event.getIsCancelled() && (filter.equals("All") ||
                     (filter.equals("Student") && event.getEventRole().toString().equalsIgnoreCase("STUDENT")) ||
-                    (filter.equals("Staff") && event.getEventRole().toString().equalsIgnoreCase("STAFF"))) {
+                    (filter.equals("Staff") && event.getEventRole().toString().equalsIgnoreCase("STAFF")))) {
                 filteredEvents.add(event);
             }
         }
@@ -544,7 +544,6 @@ public class MainPageOrganizer extends MainPage {
     }
 
     private void refreshPage() {
-        // Remove current content and recreate with current filter
         remove(MainPageOrganizer.this.contentPanel);
         contentPanel = createContent(currentFilter);
         MainPageOrganizer.this.add(contentPanel);

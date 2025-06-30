@@ -311,9 +311,17 @@ public class Event implements Subject {
                 double catering = Double.parseDouble(parts[15].trim());
                 // You can set a default image or logic for imagePath
                 String imagePath = "icon/default_event.png";
-                events.add(new Event(eventID, eventType, eventName, eventDate, eventTime, eventVenue, capacity, fee,
+                Event event = new Event(eventID, eventType, eventName, eventDate, eventTime, eventVenue, capacity, fee,
                         details, role, grpDiscReq, grpDiscPercent, earlyBirdDate, earlyBirdPercent, transportation,
-                        catering, imagePath));
+                        catering, imagePath);
+                
+                // Read the "Is Cancelled" column if it exists (index 16)
+                if (parts.length > 16 && !parts[16].trim().isEmpty()) {
+                    boolean isCancelled = parts[16].trim().equalsIgnoreCase("true");
+                    event.setIsCancelled(isCancelled);
+                }
+                
+                events.add(event);
             }
         } catch (IOException e) {
             e.printStackTrace();

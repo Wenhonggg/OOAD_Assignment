@@ -86,10 +86,10 @@ public class MainPageParticipant extends MainPage {
 
         // Read events from CSV file
 
-        // Filter events based on the current user's role
+        // Filter events based on the current user's role and exclude cancelled events
         List<Event> filteredEvents = new ArrayList<>();
         for (Event event : events) {
-            if (event.getEventRole().equals(user.role)) {
+            if (event.getEventRole().equals(user.role) && !event.getIsCancelled()) {
                 filteredEvents.add(event);
             }
         }
