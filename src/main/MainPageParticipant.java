@@ -17,16 +17,7 @@ public class MainPageParticipant extends MainPage {
 
     public void setUserType(UserRole r) {
         user.role = r;
-        // Update the logo label if it exists
-        if (logoLabel != null) {
-            if (user.role.equals(UserRole.STUDENT)) {
-                logoLabel.setText("STUDENT EVENT PORTAL");
-            } else if (user.role.equals(UserRole.STAFF)) {
-                logoLabel.setText("STAFF EVENT PORTAL");
-            } else {
-                logoLabel.setText("EVENT PORTAL");
-            }
-        }
+        updateLogo();
         refreshEventDisplay();
     }
 
@@ -177,16 +168,7 @@ public class MainPageParticipant extends MainPage {
 
     @Override
     protected JLabel createLogo() {
-        // Use safer string comparison and provide default
-        String displayText = "EVENT PORTAL"; // Default
-        if (user.role.equals(UserRole.STUDENT)) {
-            displayText = "STUDENT EVENT PORTAL";
-        } else if (user.role.equals(UserRole.STAFF)) {
-            displayText = "STAFF EVENT PORTAL";
-        }
-
-        logoLabel = new JLabel(displayText);
-
+        logoLabel = new JLabel(getPortalText());
         logoLabel.setFont(new Font("Arial", Font.BOLD, 24));
         logoLabel.setForeground(Color.BLACK);
 
@@ -202,15 +184,19 @@ public class MainPageParticipant extends MainPage {
         return logoLabel;
     }
 
+    private String getPortalText() {
+        if (user.role.equals(UserRole.STUDENT)) {
+            return "STUDENT EVENT PORTAL";
+        } else if (user.role.equals(UserRole.STAFF)) {
+            return "STAFF EVENT PORTAL";
+        } else {
+            return "EVENT PORTAL";
+        }
+    }
+
     private void updateLogo() {
         if (logoLabel != null) {
-            if (user.role.equals(UserRole.STUDENT)) {
-                logoLabel.setText("STUDENT EVENT PORTAL");
-            } else if (user.role.equals(UserRole.STAFF)) {
-                logoLabel.setText("STAFF EVENT PORTAL");
-            } else {
-                logoLabel.setText("EVENT PORTAL");
-            }
+            logoLabel.setText(getPortalText());
         }
     }
 }

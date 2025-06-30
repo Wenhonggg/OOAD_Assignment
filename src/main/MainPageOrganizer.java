@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.IOException;
+import util.SwingUtils;
 
 public class MainPageOrganizer extends MainPage {
     private String currentFilter = "All"; 
@@ -335,14 +337,13 @@ public class MainPageOrganizer extends MainPage {
         Event cardEvent = (Event) eventCard.getClientProperty("EVENT_DATA");
         
         JMenuItem editItem = new JMenuItem("Edit");
-        editItem.addActionListener(e -> openCreateEventPage(cardEvent));
+        editItem.addActionListener(_ -> openCreateEventPage(cardEvent));
         
         JMenuItem deleteItem = new JMenuItem("Delete");
         deleteItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Delete action implementation will go here
-                System.out.println("Delete event functionality to be implemented");
+                deleteEvent(cardEvent);
             }
         });
         
@@ -441,6 +442,87 @@ public class MainPageOrganizer extends MainPage {
         remove(MainPageOrganizer.this.contentPanel);
         contentPanel = new Create_Event_Page_Organiser(eventToEdit);
         MainPageOrganizer.this.add(contentPanel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+    private void deleteEvent(Event eventToDelete) {
+        if (eventToDelete == null) {
+            return;
+        }
+        
+        // Show confirmation dialog
+        int result = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to cancel this event '" + eventToDelete.getEventName() + "'?",
+            "Confirm Delete",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+        );
+        
+        if (result == JOptionPane.YES_OPTION) {
+            try {
+                // Read all events from CSV
+                List<List<String>> allRows = SwingUtils.readFromCsv("database/events.csv");
+                
+                if (allRows.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "No events found in database.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // Find and remove the event row
+                boolean eventFound = false;
+                List<List<String>> updatedRows = new ArrayList<>();
+                
+                // Keep header row
+                if (!allRows.isEmpty()) {
+                    updatedRows.add(allRows.get(0));
+                }
+                
+                // Check each row (skip header)
+                for (int i = 1; i < allRows.size(); i++) {
+                    List<String> row = allRows.get(i);
+                    if (!row.isEmpty() && row.get(0).equals(eventToDelete.getEventID())) {
+                        // This is the event to delete, skip it
+                        eventFound = true;
+                    } else {
+                        // Keep this row
+                        updatedRows.add(row);
+                    }
+                }
+                
+                if (!eventFound) {
+                    JOptionPane.showMessageDialog(this, "Event not found in database.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // Write updated data back to CSV
+                // First, clear the file by writing empty content
+                java.io.FileWriter clearWriter = new java.io.FileWriter("database/events.csv", false);
+                clearWriter.close();
+                
+                // Write all updated rows
+                for (List<String> row : updatedRows) {
+                    SwingUtils.writeToCsv("database/events.csv", row);
+                }
+                
+                // Show success message
+                JOptionPane.showMessageDialog(this, "Event deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                
+                // Refresh the page
+                refreshPage();
+                
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error deleting event: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+    private void refreshPage() {
+        // Remove current content and recreate with current filter
+        remove(MainPageOrganizer.this.contentPanel);
+        contentPanel = createContent(currentFilter);
+        MainPageOrganizer.this.add(contentPanel);
         revalidate();
         repaint();
     }
