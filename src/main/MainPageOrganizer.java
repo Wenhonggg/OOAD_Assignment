@@ -11,6 +11,7 @@ import util.SwingUtils;
 
 public class MainPageOrganizer extends MainPage {
     private String currentFilter = "All";
+    private String currentSearchText = "";
 
     public MainPageOrganizer(EventOrganizer eo) {
         super("Event Organizer", eo);
@@ -72,12 +73,19 @@ public class MainPageOrganizer extends MainPage {
 
         // Read events from CSV file
 
-        // Filter events based on the selected filter and exclude cancelled events
+        // Filter events based on the selected filter, exclude cancelled events, and apply search filter
         List<Event> filteredEvents = new ArrayList<>();
         for (Event event : events) {
-            if (!event.getIsCancelled() && (filter.equals("All") ||
+            // Check role filter and cancellation status
+            boolean passesRoleFilter = !event.getIsCancelled() && (filter.equals("All") ||
                     (filter.equals("Student") && event.getEventRole().toString().equalsIgnoreCase("STUDENT")) ||
-                    (filter.equals("Staff") && event.getEventRole().toString().equalsIgnoreCase("STAFF")))) {
+                    (filter.equals("Staff") && event.getEventRole().toString().equalsIgnoreCase("STAFF")));
+            
+            // Check search filter (case-insensitive search by event name)
+            boolean passesSearchFilter = (currentSearchText == null || currentSearchText.isEmpty()) || 
+                    event.getEventName().toLowerCase().contains(currentSearchText.toLowerCase());
+            
+            if (passesRoleFilter && passesSearchFilter) {
                 filteredEvents.add(event);
             }
         }
@@ -551,5 +559,11 @@ public class MainPageOrganizer extends MainPage {
         MainPageOrganizer.this.add(contentPanel);
         revalidate();
         repaint();
+    }
+
+    @Override
+    protected void performSearch(String searchText) {
+        currentSearchText = searchText;
+        refreshPage();
     }
 }

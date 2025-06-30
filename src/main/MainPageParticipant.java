@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class MainPageParticipant extends MainPage {
     private JLabel logoLabel;
     Participant participant;
+    private String currentSearchText = "";
 
     public MainPageParticipant(Participant p) {
         super("Event Participant", p);
@@ -86,10 +87,17 @@ public class MainPageParticipant extends MainPage {
 
         // Read events from CSV file
 
-        // Filter events based on the current user's role and exclude cancelled events
+        // Filter events based on the current user's role, exclude cancelled events, and apply search filter
         List<Event> filteredEvents = new ArrayList<>();
         for (Event event : events) {
-            if (event.getEventRole().equals(user.role) && !event.getIsCancelled()) {
+            // Check role filter and cancellation status
+            boolean passesRoleFilter = event.getEventRole().equals(user.role) && !event.getIsCancelled();
+            
+            // Check search filter (case-insensitive search by event name)
+            boolean passesSearchFilter = (currentSearchText == null || currentSearchText.isEmpty()) || 
+                    event.getEventName().toLowerCase().contains(currentSearchText.toLowerCase());
+            
+            if (passesRoleFilter && passesSearchFilter) {
                 filteredEvents.add(event);
             }
         }
@@ -202,5 +210,11 @@ public class MainPageParticipant extends MainPage {
         if (logoLabel != null) {
             logoLabel.setText(getPortalText());
         }
+    }
+
+    @Override
+    protected void performSearch(String searchText) {
+        currentSearchText = searchText;
+        refreshEventDisplay();
     }
 }

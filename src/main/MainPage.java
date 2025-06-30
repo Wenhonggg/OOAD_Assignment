@@ -160,6 +160,17 @@ public abstract class MainPage extends JFrame {
         searchField.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 5));
         searchField.setOpaque(false);
         searchField.setPreferredSize(new Dimension(140, 30));
+        searchField.setToolTipText("Search events by name...");
+        
+        // Add search functionality
+        searchField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                String searchText = searchField.getText().trim();
+                performSearch(searchText);
+            }
+        });
+        
         searchPanel.add(searchField, BorderLayout.CENTER);
 
         try {
@@ -402,5 +413,8 @@ public abstract class MainPage extends JFrame {
 
         // Add ALL events back to the list (with observers updated)
         events.addAll(eventBackup);
+    }
+
+    protected void performSearch(String searchText) {
     }
 }

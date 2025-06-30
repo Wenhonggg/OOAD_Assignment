@@ -304,7 +304,7 @@ public class Event implements Subject {
                 String details = parts[8].trim();
                 String role = parts[9].trim();
                 int grpDiscReq = Integer.parseInt(parts[10].trim());
-                double grpDiscPercent = Double.parseDouble(parts[11].trim());
+                double grpDiscPercent = parts[11].trim().equals("N/A") ? 0.0 : Double.parseDouble(parts[11].trim());
                 double earlyBirdPercent = parts[12].trim().equals("N/A") ? 0.0 : Double.parseDouble(parts[12].trim());
                 String earlyBirdDate = parts[13].trim().equals("N/A") ? null : parts[13].trim();
                 double transportation = Double.parseDouble(parts[14].trim());
