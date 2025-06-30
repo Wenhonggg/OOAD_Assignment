@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
@@ -17,54 +16,76 @@ public class ViewInfoPage extends JPanel {
     private final Color PINK_BG = Color.decode("#F8E7F6");
     private final Color ACCENT = Color.decode("#DD88CF");
     private final Color DEEP_PURPLE = Color.decode("#4B164C");
-
-    public ViewInfoPage(JFrame f, Event event) {
+    
+    // EO (Event Organizer) color scheme
+    private final Color BLUE_BG = Color.decode("#E7F3FF");
+    private final Color BLUE_ACCENT = Color.decode("#4A90E2");
+    private final Color DEEP_BLUE = Color.decode("#1C3A5B");
+    
+    private boolean isEventOrganizer;
+    private Color backgroundColor;
+    private Color accentColor;
+    private Color textColor;
+    
+    public ViewInfoPage(JFrame f, Event event, boolean isEventOrganizer) {
+        this.isEventOrganizer = isEventOrganizer;
+        
+        // Set color scheme based on user type
+        if (isEventOrganizer) {
+            backgroundColor = BLUE_BG;
+            accentColor = BLUE_ACCENT;
+            textColor = DEEP_BLUE;
+        } else {
+            backgroundColor = PINK_BG;
+            accentColor = ACCENT;
+            textColor = DEEP_PURPLE;
+        }
         setLayout(new BorderLayout());
 
         Font headerFont = new Font("Serif", Font.BOLD, 25);
 
         // Header
         JPanel headerPanel = new JPanel(new BorderLayout());
-        headerPanel.setBackground(DEEP_PURPLE);
+        headerPanel.setBackground(textColor);
         headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        JLabel titleLabel = new JLabel("Event Information");
+        JLabel titleLabel = new JLabel(isEventOrganizer ? "Event Management" : "Event Information");
         titleLabel.setFont(headerFont);
         titleLabel.setForeground(Color.WHITE);
         headerPanel.add(titleLabel, BorderLayout.WEST);
 
-        JButton registerButton = new JButton("Register Now");
-        registerButton.setBackground(ACCENT);
-        registerButton.setForeground(Color.WHITE);
-        registerButton.setFont(new Font("Serif", Font.BOLD, 14));
-        registerButton.setFocusPainted(false);
-        registerButton.setBorder(new RoundedBorder(15, 2, ACCENT));
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // JComponent panel = ((MainPage) f).contentPanel;
-                f.remove(((MainPage) f).contentPanel);
-                ((MainPage) f).contentPanel = new InputRegisterDetailsPage(f, event);
-                f.add(((MainPage) f).contentPanel);
-                f.revalidate();
-                f.repaint();
-            }
-        });
+        add(headerPanel, BorderLayout.NORTH);
 
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        bottomPanel.setBackground(PINK_BG);
-        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        bottomPanel.add(registerButton);
-        add(bottomPanel, BorderLayout.SOUTH);
+        // Only show register button for participants
+        if (!isEventOrganizer) {
+            JButton registerButton = new JButton("Register Now");
+            registerButton.setBackground(accentColor);
+            registerButton.setForeground(Color.WHITE);
+            registerButton.setFont(new Font("Serif", Font.BOLD, 14));
+            registerButton.setFocusPainted(false);
+            registerButton.setBorder(new RoundedBorder(15, 2, accentColor));
+            registerButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    f.remove(((MainPage) f).contentPanel);
+                    ((MainPage) f).contentPanel = new InputRegisterDetailsPage(f, event);
+                    f.add(((MainPage) f).contentPanel);
+                    f.revalidate();
+                    f.repaint();
+                }
+            });
 
-        add(headerPanel, BorderLayout.NORTH); // just title now
-        // add(scrollPane, BorderLayout.CENTER); // event info
-        add(bottomPanel, BorderLayout.SOUTH); // register button
+            JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            bottomPanel.setBackground(backgroundColor);
+            bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+            bottomPanel.add(registerButton);
+            add(bottomPanel, BorderLayout.SOUTH);
+        }
 
         // Info panel with labels
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-        infoPanel.setBackground(PINK_BG);
+        infoPanel.setBackground(backgroundColor);
         infoPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
         // Styled labels
@@ -83,29 +104,40 @@ public class ViewInfoPage extends JPanel {
 
         JLabel detailsLabel = new JLabel(formattedDetails);
         detailsLabel.setFont(new Font("Monospaced", Font.PLAIN, 14));
-        detailsLabel.setForeground(DEEP_PURPLE);
-        detailsLabel.setBackground(PINK_BG);
+        detailsLabel.setForeground(textColor);
+        detailsLabel.setBackground(backgroundColor);
         detailsLabel.setOpaque(false);
 
         JPanel detailsPanel = new JPanel(new BorderLayout());
-        detailsPanel.setBackground(PINK_BG);
+        detailsPanel.setBackground(backgroundColor);
         detailsPanel.setBorder(BorderFactory.createCompoundBorder(
                 new TitledBorder(BorderFactory.createEmptyBorder(), "Event Details",
                         TitledBorder.LEFT, TitledBorder.TOP,
-                        new Font("Serif", Font.BOLD, 14), DEEP_PURPLE),
-                new RoundedBorder(20, 2, ACCENT)));
+                        new Font("Serif", Font.BOLD, 14), textColor),
+                new RoundedBorder(20, 2, accentColor)));
         detailsPanel.add(detailsLabel, BorderLayout.CENTER);
         detailsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         infoPanel.add(detailsPanel);
 
         infoPanel.add(Box.createVerticalStrut(15));
 
-        String combinedFees = String.format(
-            "Registration fee: RM%.2f  |  Catering: RM%.2f  |  Transport: RM%.2f",
-            event.getEventFee(),
-            event.getEventCateringFee(),
-            event.getEventTransportationFee()
-        );
+        String combinedFees;
+        if (isEventOrganizer) {
+            combinedFees = String.format(
+                "Registration fee: RM%.2f  |  Catering: RM%.2f  |  Transport: RM%.2f  |  Capacity: %d participants",
+                event.getEventFee(),
+                event.getEventCateringFee(),
+                event.getEventTransportationFee(),
+                event.getEventCapacity()
+            );
+        } else {
+            combinedFees = String.format(
+                "Registration fee: RM%.2f  |  Catering: RM%.2f  |  Transport: RM%.2f",
+                event.getEventFee(),
+                event.getEventCateringFee(),
+                event.getEventTransportationFee()
+            );
+        }
 
         infoPanel.add(makeLabel(combinedFees, new Font("Serif", Font.PLAIN, 16)));
 
@@ -121,14 +153,10 @@ public class ViewInfoPage extends JPanel {
     private JLabel makeLabel(String text, Font font) {
         JLabel label = new JLabel(text);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        label.setForeground(DEEP_PURPLE);
+        label.setForeground(textColor);
         label.setFont(font);
         return label;
     }
-
-    // public static void main(String[] args) {
-    // SwingUtilities.invokeLater(ViewInfoPage::new);
-    // }
 
     // RoundedBorder class
     static class RoundedBorder extends AbstractBorder {

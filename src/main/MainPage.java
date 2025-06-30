@@ -343,8 +343,9 @@ public abstract class MainPage extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Event eventData = (Event) card.getClientProperty("EVENT_DATA");
+                boolean isEventOrganizer = user instanceof EventOrganizer;
                 MainPage.this.remove(contentPanel);
-                MainPage.this.contentPanel = new ViewInfoPage(MainPage.this, eventData);
+                MainPage.this.contentPanel = new ViewInfoPage(MainPage.this, eventData, isEventOrganizer);
                 MainPage.this.add(contentPanel);
                 MainPage.this.revalidate();
                 MainPage.this.repaint();

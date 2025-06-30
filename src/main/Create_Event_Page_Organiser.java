@@ -19,7 +19,7 @@ import javax.swing.Timer;
 
 public class Create_Event_Page_Organiser extends JPanel {
     // Modern color palette
-    private static final Color PRIMARY_DARK = new Color(30, 41, 59);
+    private static final Color PRIMARY_DARK = Color.decode("#1C3A5B");
     private static final Color ACCENT_BLUE = new Color(59, 130, 246);
     private static final Color SUCCESS_GREEN = new Color(34, 197, 94);
     private static final Color WARNING_ORANGE = new Color(251, 146, 60);
@@ -371,9 +371,9 @@ public class Create_Event_Page_Organiser extends JPanel {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 16));
         buttonPanel.setBackground(Color.WHITE);
 
-        JButton createBtn = createModernButton(" Create Event", Color.WHITE, Color.BLACK);
-        JButton updateBtn = createModernButton(" Update Event", Color.WHITE, Color.BLACK);
-        JButton clearBtn = createModernButton(" Clear Form", Color.WHITE, Color.BLACK);
+        JButton createBtn = createModernButton(" Create Event", Color.decode("#E7F3FF"), Color.BLACK);
+        JButton updateBtn = createModernButton(" Update Event", Color.decode("#E7F3FF"), Color.BLACK);
+        JButton clearBtn = createModernButton(" Clear Form", Color.decode("#E7F3FF"), Color.BLACK);
 
         createBtn.addActionListener(this::createEvent);
         updateBtn.addActionListener(this::updateEvent);
@@ -400,7 +400,7 @@ public class Create_Event_Page_Organiser extends JPanel {
         cardTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
         cardTitle.setForeground(TEXT_DARK);
 
-        JButton deleteBtn = createModernButton(" Delete", Color.WHITE, Color.BLACK);
+        JButton deleteBtn = createModernButton(" Delete", Color.decode("#E7F3FF"), Color.BLACK);
         deleteBtn.addActionListener(this::deleteEvent);
 
         cardHeader.add(cardTitle, BorderLayout.WEST);
