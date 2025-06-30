@@ -2,6 +2,7 @@ package main;
 
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 
@@ -128,6 +129,29 @@ public class InputRegisterDetailsPage extends JPanel {
             showStyledDialog("Please fill in all personal information.");
             return;
         }
+
+        // Calculate current participants
+        List<Observer> observers = event.getObservers();
+        int currentParticipants = 0;
+        if(observers != null) {
+            for(Observer o : observers) {
+                if(o instanceof Ticket) {
+                    Ticket ticket = (Ticket) o;
+                    currentParticipants += ticket.getPax();
+                }
+            }
+        }
+
+        int remainingCapacity = event.getEventCapacity() - currentParticipants;
+        
+        if(remainingCapacity <= 0) {
+            showStyledDialog("This event is full.");
+            return;
+        } else if(qty > remainingCapacity) {
+            showStyledDialog("Only " + remainingCapacity + " space(s) left. Please reduce quantity.");
+            return;
+        }
+
         Participant p = new Participant(name, id, email);
         frame.remove(((MainPage) frame).contentPanel);
         ((MainPage) frame).contentPanel = new PaymentPage(frame, event, p, qty, catering, transport);
