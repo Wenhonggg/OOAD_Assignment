@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 import javax.swing.*;
 
@@ -348,5 +349,15 @@ public class Ticket implements Observer {
     @Override
     public void update(boolean isCancelled) {
         eventIsCancelled = isCancelled;
+        List<String> fields = List.of(String.valueOf(ticketID), getEventType(), getEventName(),
+                getEventDate().format(event.getFormatter()), getEventTime(), getEventVenue(), ticketCode,
+                getParticipantName(), getParticipantID(), getParticipantEmail(), String.valueOf(pax),
+                String.valueOf(eventIsCancelled));
+        try {
+            SwingUtils.writeToCsv("database/tickets_" + getParticipantID() + ".csv", fields);
+        } catch (Exception e) {
+            System.err.println("Failed to update ticket in csv file: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

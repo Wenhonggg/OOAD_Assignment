@@ -3,10 +3,7 @@ package main;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
-import java.io.*;
 import java.time.format.DateTimeFormatter;
 
 import javax.swing.*;
@@ -148,22 +145,6 @@ public class ViewInfoPage extends JPanel {
         label.setForeground(DEEP_PURPLE);
         label.setFont(font);
         return label;
-    }
-
-    private String[] loadEventRow(String code) {
-        try (BufferedReader br = new BufferedReader(new FileReader("database/events.csv"))) {
-            br.readLine(); // skip header
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",", -1);
-                if (data.length > 0 && data[0].trim().equalsIgnoreCase(code)) {
-                    return data;
-                }
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error reading CSV: " + e.getMessage());
-        }
-        return null;
     }
 
     // public static void main(String[] args) {

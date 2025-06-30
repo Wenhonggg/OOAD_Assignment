@@ -23,6 +23,7 @@ public class Event implements Subject {
     private double eventTransportationFee;
     private double eventCateringFee;
     private String imagePath;
+    private String filePath;
     private final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private List<Observer> observers;
     private boolean isCancelled;
@@ -49,6 +50,7 @@ public class Event implements Subject {
         this.eventTransportationFee = eventTransportationFee;
         this.eventCateringFee = eventCateringFee;
         this.imagePath = imagePath;
+        this.filePath = "database/" + eventName.replace(' ', '_') + ".csv";
         this.isCancelled = false;
     }
 
@@ -156,6 +158,10 @@ public class Event implements Subject {
         this.imagePath = imagePath;
     }
 
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
     public void setIsCancelled(boolean isCancelled) {
         this.isCancelled = isCancelled;
         notifyObservers();
@@ -229,6 +235,10 @@ public class Event implements Subject {
         return imagePath;
     }
 
+    public String getFilePath() {
+        return filePath;
+    }
+
     public boolean getIsCancelled() {
         return isCancelled;
     }
@@ -242,46 +252,7 @@ public class Event implements Subject {
         return eventID + " - " + eventName + " - " + eventDate.format(FORMATTER) + " at " + eventTime;
     }
 
-    public static List<Event> readEventsFromCSV(String csvPath) {
-        List<Event> events = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(csvPath))) {
-            String line;
-            boolean firstLine = true;
-            while ((line = br.readLine()) != null) {
-                if (firstLine) {
-                    firstLine = false;
-                    continue;
-                } // skip header
-                String[] parts = line.split(",", -1);
-                if (parts.length < 16)
-                    continue;
-                String eventID = parts[0].trim();
-                String eventName = parts[1].trim();
-                String eventDate = parts[2].trim();
-                String eventTime = parts[3].trim();
-                String eventVenue = parts[4].trim();
-                String eventType = parts[5].trim();
-                int capacity = Integer.parseInt(parts[6].trim());
-                double fee = Double.parseDouble(parts[7].trim());
-                String details = parts[8].trim();
-                String role = parts[9].trim();
-                int grpDiscReq = Integer.parseInt(parts[10].trim());
-                double grpDiscPercent = Double.parseDouble(parts[11].trim());
-                double earlyBirdPercent = Double.parseDouble(parts[12].trim());
-                String earlyBirdDate = parts[13].trim();
-                double transportation = Double.parseDouble(parts[14].trim());
-                double catering = Double.parseDouble(parts[15].trim());
-                // You can set a default image or logic for imagePath
-                String imagePath = "icon/default_event.png";
-                events.add(new Event(eventID, eventType, eventName, eventDate, eventTime, eventVenue, capacity, fee,
-                        details, role, grpDiscReq, grpDiscPercent, earlyBirdDate, earlyBirdPercent, transportation,
-                        catering, imagePath));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return events;
-    }
+    // public void addParticipant()
 
     @Override
     public void registerObserver(Observer o) {
