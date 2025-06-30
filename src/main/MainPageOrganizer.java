@@ -27,6 +27,8 @@ public class MainPageOrganizer extends MainPage {
         JPanel mainMenuBtn = createStandardCategoryButton("MAIN MENU", true);
         mainMenuBtn.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
+                events = Event.readEventsFromCSV("database/events.csv");
+                linkTicketsToEvents(); 
                 remove(MainPageOrganizer.this.contentPanel);
                 contentPanel = createContent();
                 MainPageOrganizer.this.add(contentPanel);
