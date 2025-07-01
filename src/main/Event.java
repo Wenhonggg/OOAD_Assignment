@@ -299,16 +299,16 @@ public class Event implements Subject {
                 String eventTime = parts[3].trim();
                 String eventVenue = parts[4].trim();
                 String eventType = parts[5].trim();
-                int capacity = Integer.parseInt(parts[6].trim());
-                double fee = Double.parseDouble(parts[7].trim());
+                int capacity = parts[6].trim().equals("N/A") ? 0 : Integer.parseInt(parts[6].trim());
+                double fee = parts[7].trim().equals("N/A") ? 0.0 : Double.parseDouble(parts[7].trim());
                 String details = parts[8].trim();
                 String role = parts[9].trim();
-                int grpDiscReq = Integer.parseInt(parts[10].trim());
+                int grpDiscReq = parts[10].trim().equals("N/A") ? 0 : Integer.parseInt(parts[10].trim());
                 double grpDiscPercent = parts[11].trim().equals("N/A") ? 0.0 : Double.parseDouble(parts[11].trim());
                 double earlyBirdPercent = parts[12].trim().equals("N/A") ? 0.0 : Double.parseDouble(parts[12].trim());
                 String earlyBirdDate = parts[13].trim().equals("N/A") ? null : parts[13].trim();
-                double transportation = Double.parseDouble(parts[14].trim());
-                double catering = Double.parseDouble(parts[15].trim());
+                double transportation = parts[14].trim().equals("N/A") ? 0.0 : Double.parseDouble(parts[14].trim());
+                double catering = parts[15].trim().equals("N/A") ? 0.0 : Double.parseDouble(parts[15].trim());
                 // You can set a default image or logic for imagePath
                 String imagePath = "icon/default_event.png";
                 Event event = new Event(eventID, eventType, eventName, eventDate, eventTime, eventVenue, capacity, fee,
