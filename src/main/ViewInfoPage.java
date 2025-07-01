@@ -99,7 +99,7 @@ public class ViewInfoPage extends JPanel {
 
         infoPanel.add(Box.createVerticalStrut(15));
 
-        String formattedDetails = "<html><body style='width: 300px;'>" +
+        String formattedDetails = "<html><body style='width: 850px;'>" +
                 event.getEventDetails().replaceAll("\n", "<br>") + "</body></html>";
 
         JLabel detailsLabel = new JLabel(formattedDetails);
