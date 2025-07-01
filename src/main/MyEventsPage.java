@@ -34,7 +34,7 @@ public class MyEventsPage extends JPanel {
 		if (tickets == null) {
 			leftPanel.setLayout(new GridBagLayout());
 			JLabel label = new JLabel(
-					"<html><div style='text-align:center;'>You currently do not have any tickets.</div></html>");
+					"You currently do not have any tickets.");
 			label.setPreferredSize(new Dimension(500, label.getPreferredSize().height));
 			label.setBorder(new EmptyBorder(0, 120, 0, 120));
 			leftPanel.add(label);
