@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import swing.Button;
 import swing.MyTextField;
+import swing.MyPasswordField;
 import javax.swing.BorderFactory;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.Graphics;
@@ -108,7 +109,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         txtUser.setHint("Username");
         login.add(txtUser, "w 60%");
 
-        MyTextField txtPassword = new MyTextField();
+        MyPasswordField txtPassword = new MyPasswordField();
         txtPassword.setPrefixIcon(new ImageIcon(getClass().getResource("/icon/pass.png")));
         txtPassword.setHint("Password");
         login.add(txtPassword, "w 60%");
@@ -132,7 +133,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         // Add action listener for the Sign In button
         cmd.addActionListener(e -> {
             String username = txtUser.getText().trim();
-            String password = txtPassword.getText().trim();
+            String password = new String(txtPassword.getPassword()).trim();
 
             // Validate inputs
             if (username.isEmpty() || password.isEmpty()) {
