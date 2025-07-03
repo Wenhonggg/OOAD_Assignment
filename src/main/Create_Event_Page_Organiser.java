@@ -18,7 +18,7 @@ import util.SwingUtils;
 import javax.swing.Timer;
 
 public class Create_Event_Page_Organiser extends JPanel {
-    // Modern color palette
+   
     private static final Color PRIMARY_DARK = Color.decode("#1C3A5B");
     private static final Color ACCENT_BLUE = new Color(59, 130, 246);
     private static final Color SUCCESS_GREEN = new Color(34, 197, 94);
@@ -49,7 +49,7 @@ public class Create_Event_Page_Organiser extends JPanel {
     private JTextArea detailsArea;
     private JList<Event> eventList;
     private DefaultListModel<Event> listModel;
-    private ArrayList<Event> allEvents = new ArrayList<>(); // Stores all events, including cancelled
+    private ArrayList<Event> allEvents = new ArrayList<>(); 
     private Event selectedEvent;
     private JLabel statusLabel;
 
@@ -63,7 +63,7 @@ public class Create_Event_Page_Organiser extends JPanel {
         this.events = listOfEvents != null ? listOfEvents : new ArrayList<>();
         allEvents = new ArrayList<>();
         listModel = new DefaultListModel<>();
-        // only add not-cancelled events to visible list
+        
         for (Event e : this.events) {
             allEvents.add(e);
             if (!e.getIsCancelled()) {
@@ -109,7 +109,7 @@ public class Create_Event_Page_Organiser extends JPanel {
                 new LineBorder(BORDER_LIGHT, 1, true),
                 new EmptyBorder(8, 12, 8, 12)));
 
-        String[] eventTypes = { "🎓Seminar", "🔧Workshop", "🎭Cultural Event", "⚽Sports Event" };
+        String[] eventTypes = { "Seminar", "Workshop", "Cultural Event", "Sports Event" };
         typeComboBox = new JComboBox<>(eventTypes);
         styleComboBox(typeComboBox);
 
@@ -485,7 +485,7 @@ public class Create_Event_Page_Organiser extends JPanel {
                 allEvents.add(event);
                 saveAllEventsToCSV();
                 clearForm();
-                updateStatus("✅ Event created with code: " + eventCode);
+                updateStatus(" Event created with code: " + eventCode);
                 showModernDialog("Success", "Event created successfully with code: " + eventCode, SUCCESS_GREEN);
             }
         } catch (NumberFormatException ex) {
@@ -504,7 +504,7 @@ public class Create_Event_Page_Organiser extends JPanel {
                     if (!newRole.equals(oldRole)) {
                         String newEventCode = generateEventCode(newRole);
                         selectedEvent.setEventID(newEventCode);
-                        updateStatus("✅ Event code updated to: " + newEventCode);
+                        updateStatus(" Event code updated to: " + newEventCode);
                     }
 
                     selectedEvent.setEventName(nameField.getText());
@@ -528,7 +528,7 @@ public class Create_Event_Page_Organiser extends JPanel {
 
                     eventList.repaint();
                     saveAllEventsToCSV();
-                    updateStatus("✅ Event updated successfully!");
+                    updateStatus(" Event updated successfully!");
                     showModernDialog("Success", "Event updated successfully!", SUCCESS_GREEN);
                 }
             } catch (Exception ex) {
@@ -548,18 +548,17 @@ public class Create_Event_Page_Organiser extends JPanel {
                     "Confirm Cancel",
                     JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                // eventToDelete.setIsCancelled(true);
-                // Mark as cancelled in allEvents
+               
                 for (Event ev : allEvents) {
                     if (ev.getEventID().equals(eventToDelete.getEventID())) {
                         ev.setIsCancelled(true);
                         break;
                     }
                 }
-                listModel.removeElement(eventToDelete); // Remove from visible list only
-                saveAllEventsToCSV(); // Save all events (including cancelled)
+                listModel.removeElement(eventToDelete); 
+                saveAllEventsToCSV(); 
                 clearForm();
-                updateStatus("🗑️ Event cancelled successfully!");
+                updateStatus(" Event cancelled successfully!");
                 showModernDialog("Success", "Event cancelled successfully!", SUCCESS_GREEN);
             }
         } else {
@@ -608,7 +607,7 @@ public class Create_Event_Page_Organiser extends JPanel {
             dateChooser.setDate(null);
             System.out.println(ex.getMessage());
         }
-        // Set event type combo box: match by type name at end
+       
         String eventType = event.getEventType().toString().trim();
         for (int i = 0; i < typeComboBox.getItemCount(); i++) {
             String item = typeComboBox.getItemAt(i).trim();
@@ -696,7 +695,7 @@ public class Create_Event_Page_Organiser extends JPanel {
                         event.getEventType().toString(),
                         String.valueOf(event.getEventCapacity()),
                         String.format("%.2f", event.getEventFee()),
-                        // "\"" + event.getEventDetails().replace("\"", "\"\"").replace("\n", " ") + "\"",
+                        
                         event.getEventDetails(),
                         event.getEventRole().toString(),
                         event.getEventGrpDiscReq() > 0 ? String.valueOf(event.getEventGrpDiscReq()) : "N/A",
@@ -739,23 +738,4 @@ public class Create_Event_Page_Organiser extends JPanel {
         updateStatus("Form cleared and ready for new event");
     }
 
-    // public static void main(String[] args) {
-    // SwingUtilities.invokeLater(() -> {
-    // try {
-    // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-
-    // // Create a test frame to hold the panel
-    // JFrame testFrame = new JFrame("Event Management Dashboard");
-    // testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    // testFrame.setSize(1200, 800);
-    // testFrame.setLocationRelativeTo(null);
-
-    // Create_Event_Page_Organiser panel = new Create_Event_Page_Organiser();
-    // testFrame.add(panel);
-    // testFrame.setVisible(true);
-    // });
-    // }
 }
