@@ -224,7 +224,7 @@ public class Create_Event_Page_Organiser extends JPanel {
         JPanel titleSection = new JPanel(new FlowLayout(FlowLayout.LEFT));
         titleSection.setBackground(PRIMARY_DARK);
 
-        JLabel titleLabel = new JLabel("🎪 Event Management Dashboard");
+        JLabel titleLabel = new JLabel(" Event Management Dashboard");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
         titleLabel.setForeground(Color.WHITE);
 
