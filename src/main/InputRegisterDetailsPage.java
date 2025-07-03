@@ -25,7 +25,6 @@ public class InputRegisterDetailsPage extends JPanel {
         Font headerFont = new Font("Serif", Font.BOLD, 25);
         Font labelFont = new Font("Monospaced", Font.PLAIN, 14);
 
-        // Header
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(DEEP_PURPLE);
         JLabel titleLabel = new JLabel("Register for Event");
@@ -35,13 +34,11 @@ public class InputRegisterDetailsPage extends JPanel {
         headerPanel.add(titleLabel, BorderLayout.WEST);
         add(headerPanel, BorderLayout.NORTH);
 
-        // Content Panel
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBackground(LIGHT_GRAY);
         contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Personal Info
         JPanel infoPanel = new JPanel(new GridLayout(3, 2, 10, 10));
         infoPanel.setBackground(PINK_BG);
         infoPanel.setBorder(BorderFactory.createTitledBorder("Personal Information"));
@@ -66,7 +63,6 @@ public class InputRegisterDetailsPage extends JPanel {
         contentPanel.add(infoPanel);
         contentPanel.add(Box.createVerticalStrut(15));
 
-        // Quantity Panel (default box)
         JPanel quantityPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         quantityPanel.setBackground(PINK_BG);
         quantityPanel.setBorder(BorderFactory.createTitledBorder("Number of People"));
@@ -81,7 +77,6 @@ public class InputRegisterDetailsPage extends JPanel {
         contentPanel.add(quantityPanel);
         contentPanel.add(Box.createVerticalStrut(15));
 
-        // Services Panel
         JPanel servicePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         servicePanel.setBackground(PINK_BG);
         servicePanel.setBorder(BorderFactory.createTitledBorder("Additional Services"));
@@ -98,7 +93,6 @@ public class InputRegisterDetailsPage extends JPanel {
 
         add(new JScrollPane(contentPanel), BorderLayout.CENTER);
 
-        // Pay Now Button
         JButton payButton = new JButton("Pay Now");
         payButton.setBackground(ACCENT);
         payButton.setForeground(Color.WHITE);
@@ -130,7 +124,6 @@ public class InputRegisterDetailsPage extends JPanel {
             return;
         }
 
-        // Calculate current participants
         List<Observer> observers = event.getObservers();
         int currentParticipants = 0;
         if(observers != null) {
@@ -208,7 +201,6 @@ public class InputRegisterDetailsPage extends JPanel {
         cb.setFocusPainted(false);
     }
 
-    // extra design
     static class RoundedBorder extends AbstractBorder {
         private final int radius;
         private final int thickness;
@@ -248,8 +240,4 @@ public class InputRegisterDetailsPage extends JPanel {
             return insets;
         }
     }
-
-    // public static void main(String[] args) {
-    // SwingUtilities.invokeLater(InputRegisterDetailsPage::new);
-    // }
 }

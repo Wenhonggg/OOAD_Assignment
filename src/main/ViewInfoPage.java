@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
 import java.time.format.DateTimeFormatter;
-
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.border.TitledBorder;
@@ -16,8 +15,7 @@ public class ViewInfoPage extends JPanel {
     private final Color PINK_BG = Color.decode("#F8E7F6");
     private final Color ACCENT = Color.decode("#DD88CF");
     private final Color DEEP_PURPLE = Color.decode("#4B164C");
-    
-    // EO (Event Organizer) color scheme
+
     private final Color BLUE_BG = Color.decode("#E7F3FF");
     private final Color BLUE_ACCENT = Color.decode("#4A90E2");
     private final Color DEEP_BLUE = Color.decode("#1C3A5B");
@@ -30,7 +28,6 @@ public class ViewInfoPage extends JPanel {
     public ViewInfoPage(JFrame f, Event event, boolean isEventOrganizer) {
         this.isEventOrganizer = isEventOrganizer;
         
-        // Set color scheme based on user type
         if (isEventOrganizer) {
             backgroundColor = BLUE_BG;
             accentColor = BLUE_ACCENT;
@@ -44,7 +41,6 @@ public class ViewInfoPage extends JPanel {
 
         Font headerFont = new Font("Serif", Font.BOLD, 25);
 
-        // Header
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(textColor);
         headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
@@ -56,7 +52,6 @@ public class ViewInfoPage extends JPanel {
 
         add(headerPanel, BorderLayout.NORTH);
 
-        // Only show register button for participants
         if (!isEventOrganizer) {
             JButton registerButton = new JButton("Register Now");
             registerButton.setBackground(accentColor);
@@ -82,13 +77,11 @@ public class ViewInfoPage extends JPanel {
             add(bottomPanel, BorderLayout.SOUTH);
         }
 
-        // Info panel with labels
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setBackground(backgroundColor);
         infoPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
-        // Styled labels
         infoPanel.add(makeLabel(event.getEventName(), new Font("Serif", Font.BOLD, 40)));
         infoPanel.add(Box.createVerticalStrut(15));
 
@@ -158,7 +151,6 @@ public class ViewInfoPage extends JPanel {
         return label;
     }
 
-    // RoundedBorder class
     static class RoundedBorder extends AbstractBorder {
         private final int radius;
         private final int thickness;
