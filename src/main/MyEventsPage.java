@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -22,10 +21,6 @@ public class MyEventsPage extends JPanel {
 		JPanel leftPanel = new JPanel();
 		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 		leftPanel.setMaximumSize(new Dimension(500, Integer.MAX_VALUE));
-		// leftPanel.setMinimumSize(new Dimension(500,
-		// leftPanel.getPreferredSize().height));
-		// leftPanel.setPreferredSize(new Dimension(500,
-		// leftPanel.getPreferredSize().height));
 		JPanel ticketPanel = new JPanel();
 		ticketPanel.setBackground(new Color(227, 225, 227));
 		ticketPanel.setLayout(new GridBagLayout());

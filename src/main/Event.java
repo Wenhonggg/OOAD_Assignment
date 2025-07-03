@@ -74,7 +74,6 @@ public class Event implements Subject {
             return;
         }
 
-        // Clean the event type string - remove emojis and extra spaces
         String cleanEventType = eventType.replaceAll("[^\\w\\s]", "").trim().toUpperCase();
 
         switch (cleanEventType) {
@@ -91,7 +90,6 @@ public class Event implements Subject {
                 this.eventType = EventType.CULTURAL_EVENT;
                 break;
             default:
-                // Try partial matching for cases where substring was used incorrectly
                 if (cleanEventType.contains("SEMINAR")) {
                     this.eventType = EventType.SEMINAR;
                 } else if (cleanEventType.contains("WORKSHOP")) {
@@ -102,7 +100,7 @@ public class Event implements Subject {
                     this.eventType = EventType.SPORTS_EVENT;
                 } else {
                     System.err.println("Unknown event type: " + eventType + " (cleaned: " + cleanEventType + ")");
-                    this.eventType = EventType.SEMINAR; // Default fallback
+                    this.eventType = EventType.SEMINAR;  
                 }
                 break;
         }
@@ -289,7 +287,7 @@ public class Event implements Subject {
                 if (firstLine) {
                     firstLine = false;
                     continue;
-                } // skip header
+                } 
                 String[] parts = line.split(",", -1);
                 if (parts.length < 16)
                     continue;
@@ -309,13 +307,11 @@ public class Event implements Subject {
                 String earlyBirdDate = parts[13].trim().equals("N/A") ? null : parts[13].trim();
                 double transportation = parts[14].trim().equals("N/A") ? 0.0 : Double.parseDouble(parts[14].trim());
                 double catering = parts[15].trim().equals("N/A") ? 0.0 : Double.parseDouble(parts[15].trim());
-                // You can set a default image or logic for imagePath
                 String imagePath = "icon/default_event.png";
                 Event event = new Event(eventID, eventType, eventName, eventDate, eventTime, eventVenue, capacity, fee,
                         details, role, grpDiscReq, grpDiscPercent, earlyBirdDate, earlyBirdPercent, transportation,
                         catering, imagePath);
                 
-                // Read the "Is Cancelled" column if it exists (index 16)
                 if (parts.length > 16 && !parts[16].trim().isEmpty()) {
                     boolean isCancelled = parts[16].trim().equalsIgnoreCase("true");
                     event.setIsCancelled(isCancelled);
