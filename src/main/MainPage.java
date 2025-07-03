@@ -15,22 +15,19 @@ import javax.swing.border.EmptyBorder;
 import util.ExcelUtil;
 
 public abstract class MainPage extends JFrame {
-    // Core properties
+
     protected String pageTitle;
     protected JComponent contentPanel;
     protected User user;
     List<Event> events;
-
-    // Color scheme
     protected Color headerBackground = Color.WHITE;
     protected Color headerTextColor = Color.BLACK;
     protected Color cardBackground = Color.WHITE;
-    protected Color cardHeaderColor = new Color(144, 238, 144); // Light green
-    protected Color pageBackground = new Color(240, 240, 240); // Light grey
-    protected Color buttonColor = new Color(70, 130, 180); // Steel blue
-    protected Color buttonHoverColor = new Color(100, 149, 237); // Cornflower blue
+    protected Color cardHeaderColor = new Color(144, 238, 144); 
+    protected Color pageBackground = new Color(240, 240, 240); 
+    protected Color buttonColor = new Color(70, 130, 180); 
+    protected Color buttonHoverColor = new Color(100, 149, 237); 
 
-    // Static method to get image path based on event type
     protected static String getImagePathForEventType(EventType eventType) {
         if (eventType == null) {
             return "icon/celebration.png"; 
@@ -57,16 +54,11 @@ public abstract class MainPage extends JFrame {
         setupPage();
     }
 
-    // Abstract methods to be implemented by subclasses
     protected abstract JComponent createCategoryButton();
-
     protected abstract JComponent createMainMenuBtn();
-
     protected abstract JComponent createContent();
-
     protected abstract JLabel createLogo();
 
-    // Template method defining the page structure
     private void setupPage() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 800);
@@ -80,13 +72,11 @@ public abstract class MainPage extends JFrame {
     }
 
     private JPanel createHeader() {
-        // Main header panel with logo, category buttons, search and logout
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(headerBackground);
         headerPanel.setBorder(new EmptyBorder(13, 0, 10, 20));
         headerPanel.setPreferredSize(new Dimension(getWidth(), 70));
 
-        // Left side with logo and category buttons
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 30, 0));
         leftPanel.setBackground(headerBackground);
         leftPanel.add(createLogo());
@@ -102,7 +92,6 @@ public abstract class MainPage extends JFrame {
         }
         headerPanel.add(leftPanel, BorderLayout.WEST);
 
-        // Right side with search and logout
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
         rightPanel.setBackground(headerBackground);
         rightPanel.add(createSearchPanel());
@@ -139,7 +128,6 @@ public abstract class MainPage extends JFrame {
     }
 
     private JPanel createSearchPanel() {
-        // Search panel with rounded border and search icon
         JPanel searchPanel = new JPanel(new BorderLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
@@ -155,14 +143,12 @@ public abstract class MainPage extends JFrame {
         searchPanel.setOpaque(false);
         searchPanel.setPreferredSize(new Dimension(170, 30));
 
-        // Add text field and search icon
         JTextField searchField = new JTextField(15);
         searchField.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 5));
         searchField.setOpaque(false);
         searchField.setPreferredSize(new Dimension(140, 30));
         searchField.setToolTipText("Search events by name...");
         
-        // Add search functionality
         searchField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -188,7 +174,6 @@ public abstract class MainPage extends JFrame {
     }
 
     private JLabel createLogoutButton() {
-        // Create a label with custom painting
         final JLabel logOutIcon = new JLabel("LOG OUT") {
             boolean isHovered = false;
 
@@ -202,7 +187,6 @@ public abstract class MainPage extends JFrame {
                 super.paintComponent(g);
             }
 
-            // Initialize with mouse listeners
             {
                 addMouseListener(new MouseAdapter() {
                     public void mouseEntered(MouseEvent e) {
@@ -369,7 +353,7 @@ public abstract class MainPage extends JFrame {
     protected void linkTicketsToEvents() {
         // Map for fast access by eventID
         Map<String, Event> eventMap = new HashMap<>();
-        List<Event> eventBackup = new ArrayList<>(events); // backup all events
+        List<Event> eventBackup = new ArrayList<>(events);
 
         // Clear and rebuild the events list
         events.clear();

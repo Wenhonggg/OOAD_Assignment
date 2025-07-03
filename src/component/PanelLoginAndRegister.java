@@ -1,13 +1,16 @@
 package component;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Component;
 import java.awt.Window;
+import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import swing.Button;
@@ -29,7 +32,7 @@ import main.UserRole;
 import main.Participant;
 import main.EventOrganizer;
 
-public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
+public class PanelLoginAndRegister extends JLayeredPane {
 
     public PanelLoginAndRegister() {
         initComponents();
@@ -46,11 +49,10 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         label1.setForeground(new Color(75, 22, 76));
         register.add(label1);
 
-        // First content card
         RoundedPanel card1 = new RoundedPanel(40);
         card1.setLayout(new MigLayout("wrap", "15[]15", "15[]10[]15"));
         card1.setBackground(new Color(248, 231, 246));
-        card1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add some padding
+        card1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         JLabel cardTitle1 = new JLabel("Event Types");
         cardTitle1.setFont(new Font("sansserif", 1, 18));
@@ -75,11 +77,10 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
 
         register.add(card1, "w 80%");
 
-        // Second content card
         RoundedPanel card2 = new RoundedPanel(40);
         card2.setLayout(new MigLayout("wrap", "15[]15", "15[]10[]15"));
         card2.setBackground(new Color(248, 231, 246));
-        card2.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add some padding
+        card2.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); 
 
         JLabel cardTitle2 = new JLabel("Discounts");
         cardTitle2.setFont(new Font("sansserif", 1, 18));
@@ -129,39 +130,27 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         cmd.setForeground(new Color(255, 255, 255));
         cmd.setText("SIGN IN");
         cmd.setFocusPainted(false);
-
-        // Add action listener for the Sign In button
         cmd.addActionListener(e -> {
             String username = txtUser.getText().trim();
             String password = new String(txtPassword.getPassword()).trim();
-
-            // Validate inputs
             if (username.isEmpty() || password.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please enter both username and password",
                         "Login Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Read users from Excel file
             try {
-                // Define the path to users.xlsx file
                 String usersFilePath = "database" + File.separator + "users.xlsx";
-
-                // Read all data from the Excel file
                 List<List<String>> userData = ExcelUtil.readExcelData(usersFilePath, 0);
-
                 boolean found = false;
                 String userRole = "";
 
-                // Check if file has data
                 if (userData != null && !userData.isEmpty()) {
-                    // Find matching username and password
                     for (List<String> row : userData) {
-                        // Check if row has at least 3 columns (username, password, role)
                         if (row.size() >= 3) {
-                            String excelUsername = row.get(0); // First column is username
-                            String excelPassword = row.get(1); // Second column is password
-                            String role = row.get(2); // Third column is role
+                            String excelUsername = row.get(0); 
+                            String excelPassword = row.get(1);
+                            String role = row.get(2);
 
                             if (username.equals(excelUsername) && password.equals(excelPassword)) {
                                 found = true;
@@ -172,12 +161,9 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
                     }
                 }
 
-                // Process login result
                 if (found) {
                     JOptionPane.showMessageDialog(null, "Login successful! ",
                             "Success", JOptionPane.INFORMATION_MESSAGE);
-
-                    // Find and dispose the parent window
                     Component component = PanelLoginAndRegister.this;
                     while (component != null && !(component instanceof Window)) {
                         component = component.getParent();
@@ -187,24 +173,19 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
                         ((Window) component).dispose();
                     }
 
-                    // Forward to appropriate page based on user role
                     if (userRole.equalsIgnoreCase("EO")) {
-                        // Open organizer page
                         SwingUtilities.invokeLater(() -> {
                             new MainPageOrganizer(new EventOrganizer(username, UserRole.EO));
                         });
                     } else if (userRole.equalsIgnoreCase("STUDENT")) {
-                        // Open participant page for students
                         SwingUtilities.invokeLater(() -> {
                             new MainPageParticipant(new Participant(username, UserRole.STUDENT));
                         });
                     } else if (userRole.equalsIgnoreCase("STAFF")) {
-                        // Open participant page for staff
                         SwingUtilities.invokeLater(() -> {
                             new MainPageParticipant(new Participant(username, UserRole.STAFF));
                         });
                     } else {
-                        // Fallback for unknown roles
                         JOptionPane.showMessageDialog(null,
                                 "Unknown user role: " + userRole,
                                 "Error", JOptionPane.ERROR_MESSAGE);
@@ -234,47 +215,39 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        login = new JPanel();
+        register = new JPanel();
+        setLayout(new CardLayout());
+        login.setBackground(new Color(255, 255, 255));
 
-        login = new javax.swing.JPanel();
-        register = new javax.swing.JPanel();
-
-        setLayout(new java.awt.CardLayout());
-
-        login.setBackground(new java.awt.Color(255, 255, 255));
-
-        javax.swing.GroupLayout loginLayout = new javax.swing.GroupLayout(login);
+        GroupLayout loginLayout = new GroupLayout(login);
         login.setLayout(loginLayout);
         loginLayout.setHorizontalGroup(
-                loginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                loginLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGap(0, 325, Short.MAX_VALUE));
         loginLayout.setVerticalGroup(
-                loginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                loginLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGap(0, 309, Short.MAX_VALUE));
 
         add(login, "card3");
 
-        register.setBackground(new java.awt.Color(255, 255, 255));
+        register.setBackground(new Color(255, 255, 255));
 
-        javax.swing.GroupLayout registerLayout = new javax.swing.GroupLayout(register);
+        GroupLayout registerLayout = new GroupLayout(register);
         register.setLayout(registerLayout);
         registerLayout.setHorizontalGroup(
-                registerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                registerLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGap(0, 325, Short.MAX_VALUE));
         registerLayout.setVerticalGroup(
-                registerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                registerLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGap(0, 309, Short.MAX_VALUE));
 
         add(register, "card2");
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel login;
-    private javax.swing.JPanel register;
-    // End of variables declaration//GEN-END:variables
+    private JPanel login;
+    private JPanel register;
 
     class RoundedPanel extends JPanel {
         private int radius;

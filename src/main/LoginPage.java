@@ -2,15 +2,21 @@ package main;
 
 import component.PanelCover;
 import component.PanelLoginAndRegister;
+import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
+import javax.swing.GroupLayout;
+import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
+import javax.swing.WindowConstants;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
-public class LoginPage extends javax.swing.JFrame {
+public class LoginPage extends JFrame {
 
     private MigLayout layout;
     private PanelCover cover;
@@ -96,49 +102,43 @@ public class LoginPage extends javax.swing.JFrame {
         });
     }
 
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bg = new JLayeredPane();
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        bg = new javax.swing.JLayeredPane();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        bg.setBackground(new java.awt.Color(255, 255, 255));
+        bg.setBackground(new Color(255, 255, 255));
         bg.setOpaque(true);
 
-        javax.swing.GroupLayout bgLayout = new javax.swing.GroupLayout(bg);
+        GroupLayout bgLayout = new GroupLayout(bg);
         bg.setLayout(bgLayout);
         bgLayout.setHorizontalGroup(
-                bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                bgLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGap(0, 933, Short.MAX_VALUE));
         bgLayout.setVerticalGroup(
-                bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                bgLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGap(0, 536, Short.MAX_VALUE));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(bg, javax.swing.GroupLayout.Alignment.TRAILING));
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(bg, GroupLayout.Alignment.TRAILING));
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(bg));
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
     public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new LoginPage().setVisible(true);
             }
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLayeredPane bg;
-    // End of variables declaration//GEN-END:variables
+    private JLayeredPane bg;
+
 }

@@ -25,16 +25,12 @@ public class MainPageParticipant extends MainPage {
         refreshEventDisplay();
     }
 
-    // Method to refresh the event display based on user type
     private void refreshEventDisplay() {
-        // Update window title based on user type
         if (user.role.equals(UserRole.STUDENT)) {
             setTitle("Student Event Portal");
         } else if (user.role.equals(UserRole.STAFF)) {
             setTitle("Staff Event Portal");
         }
-
-        // Refresh the content to show events filtered by user role
         remove(this.contentPanel);
         contentPanel = createContent();
         this.add(contentPanel);
@@ -85,15 +81,10 @@ public class MainPageParticipant extends MainPage {
         gridPanel.setBackground(pageBackground);
         gridPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
 
-        // Read events from CSV file
-
-        // Filter events based on the current user's role, exclude cancelled events, and apply search filter
         List<Event> filteredEvents = new ArrayList<>();
         for (Event event : events) {
-            // Check role filter and cancellation status
             boolean passesRoleFilter = event.getEventRole().equals(user.role) && !event.getIsCancelled();
             
-            // Check search filter (case-insensitive search by event name)
             boolean passesSearchFilter = (currentSearchText == null || currentSearchText.isEmpty()) || 
                     event.getEventName().toLowerCase().contains(currentSearchText.toLowerCase());
             
@@ -130,7 +121,6 @@ public class MainPageParticipant extends MainPage {
         contentPanel.add(Box.createVerticalStrut(15));
         contentPanel.add(showMorePanel);
 
-        // Scrollable panel with modern scrollbar
         JScrollPane scrollPane = new JScrollPane(contentPanel);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.getVerticalScrollBar().setUI(new ModernScrollBarUI());
@@ -140,9 +130,6 @@ public class MainPageParticipant extends MainPage {
         return scrollPane;
     }
 
-    
-
-    // Modern, minimal scroll bar UI
     private class ModernScrollBarUI extends BasicScrollBarUI {
         @Override
         protected JButton createDecreaseButton(int orientation) {

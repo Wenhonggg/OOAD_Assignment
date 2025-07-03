@@ -71,17 +71,12 @@ public class MainPageOrganizer extends MainPage {
         JPanel createEventCard = createCreateEventCard();
         gridPanel.add(createEventCard);
 
-        // Read events from CSV file
-
-        // Filter events based on the selected filter, exclude cancelled events, and apply search filter
         List<Event> filteredEvents = new ArrayList<>();
         for (Event event : events) {
-            // Check role filter and cancellation status
             boolean passesRoleFilter = !event.getIsCancelled() && (filter.equals("All") ||
                     (filter.equals("Student") && event.getEventRole().toString().equalsIgnoreCase("STUDENT")) ||
                     (filter.equals("Staff") && event.getEventRole().toString().equalsIgnoreCase("STAFF")));
-            
-            // Check search filter (case-insensitive search by event name)
+
             boolean passesSearchFilter = (currentSearchText == null || currentSearchText.isEmpty()) || 
                     event.getEventName().toLowerCase().contains(currentSearchText.toLowerCase());
             
@@ -105,11 +100,10 @@ public class MainPageOrganizer extends MainPage {
         gridWrapper.add(gridPanel, BorderLayout.CENTER);
         contentPanel.add(gridWrapper);
 
-        // Show more label
         JPanel showMorePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         showMorePanel.setBackground(pageBackground);
         showMorePanel.add(new JLabel("Show " + (filteredEvents.size() + 1)) {
-            { // +1 for the create event card
+            { 
                 setFont(new Font("Arial", Font.PLAIN, 12));
                 setForeground(Color.GRAY);
             }
@@ -117,7 +111,6 @@ public class MainPageOrganizer extends MainPage {
         contentPanel.add(Box.createVerticalStrut(15));
         contentPanel.add(showMorePanel);
 
-        // Scrollable panel
         JScrollPane scrollPane = new JScrollPane(contentPanel);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.getVerticalScrollBar().setUI(new ModernScrollBarUI());
@@ -127,7 +120,6 @@ public class MainPageOrganizer extends MainPage {
         return scrollPane;
     }
 
-    // Simplified modern scrollbar UI
     private class ModernScrollBarUI extends BasicScrollBarUI {
         @Override
         protected JButton createDecreaseButton(int orientation) {
@@ -460,7 +452,6 @@ public class MainPageOrganizer extends MainPage {
             }
 
             public void mouseClicked(MouseEvent e) {
-                // Forward to create event page
                 openCreateEventPage();
             }
         });
@@ -489,7 +480,6 @@ public class MainPageOrganizer extends MainPage {
             return;
         }
 
-        // Show confirmation dialog
         int result = JOptionPane.showConfirmDialog(
                 this,
                 "Are you sure you want to cancel this event '" + eventToDelete.getEventName() + "'?",
@@ -500,7 +490,6 @@ public class MainPageOrganizer extends MainPage {
         if (result == JOptionPane.YES_OPTION) {
             eventToDelete.setIsCancelled(true);
             try {
-                // Read all events from CSV
                 List<List<String>> allRows = SwingUtils.readFromCsv("database/events.csv");
 
                 if (allRows.isEmpty()) {
@@ -515,9 +504,7 @@ public class MainPageOrganizer extends MainPage {
                 for (int i = 1; i < allRows.size(); i++) { // skip header
                     List<String> row = allRows.get(i);
                     if (!row.isEmpty() && row.get(0).equals(eventToDelete.getEventID())) {
-                        // Set the last column ("Is Cancelled") to "true"
                         if (row.size() < 17) {
-                            // pad with empty strings to ensure column 16 exists
                             while (row.size() < 17)
                                 row.add("");
                         }
@@ -542,8 +529,6 @@ public class MainPageOrganizer extends MainPage {
 
                 JOptionPane.showMessageDialog(this, "Event cancelled successfully!", "Success",
                         JOptionPane.INFORMATION_MESSAGE);
-
-                // Refresh the page/UI to reflect change
                 refreshPage();
 
             } catch (IOException e) {

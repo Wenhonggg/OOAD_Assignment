@@ -10,10 +10,11 @@ import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import javax.swing.Action;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import swing.ButtonOutLine;
 
-public class PanelCover extends javax.swing.JPanel {
+public class PanelCover extends JPanel {
     
     private final DecimalFormat df= new DecimalFormat("##0.###");
     private ActionListener event;
@@ -59,9 +60,6 @@ public class PanelCover extends javax.swing.JPanel {
         add(button, "w 60%, h 40");
     }
     
-    
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -74,7 +72,7 @@ public class PanelCover extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 300, Short.MAX_VALUE)
         );
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
     @Override
     protected void paintComponent(Graphics grphcs){
@@ -144,6 +142,4 @@ public class PanelCover extends javax.swing.JPanel {
             this.isLogin = login;
         }
     }
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    // End of variables declaration//GEN-END:variables
 }
